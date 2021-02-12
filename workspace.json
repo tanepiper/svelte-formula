@@ -43,7 +43,7 @@
             "assets": [
               {
                 "glob": "README.md",
-                "input": "libs/rxjs/example-lib/.",
+                "input": "packages/svelte/formula/.",
                 "output": "."
               }
             ]
