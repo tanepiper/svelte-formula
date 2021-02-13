@@ -1,6 +1,6 @@
 # Svelte Formula
 
-![The Svelte Formula Logo](logo.png)
+![The Svelte Formula Logo](https://raw.githubusercontent.com/tanepiper/svelte-plugins/main/packages/svelte/formula/logo.png)
 
 Formula is a zero-configuration reactive form library for Svelte, currently in early development.
 
