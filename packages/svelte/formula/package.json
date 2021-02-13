@@ -1,8 +1,12 @@
 {
   "name": "svelte-formula",
   "description": "Reactive Forms for Svelte",
-  "version": "0.0.2",
-  "keywords": ["svelte", "forms", "reactive"],
+  "version": "0.0.3",
+  "keywords": [
+    "svelte",
+    "forms",
+    "reactive"
+  ],
   "license": "MIT",
   "author": {
     "name": "Tane Piper",
