@@ -1,14 +1,23 @@
 import { createForm } from './lib/form';
 import { writable } from 'svelte/store';
+import { FormErrors, FormValues } from './types/forms';
 
+/**
+ * The forumla function returns a form object that can be bound to any HTML
+ * element that contains form inputs.  Once bound you can get the current values
+ *
+ */
 export function formula() {
-
-  const values = writable({});
-  const isValid = writable(false);
+  const formValues = writable<FormValues>({});
+  const submitValues = writable<FormValues>({});
+  const validity = writable<FormErrors>({});
+  const formValid = writable<boolean>(false);
 
   return {
-    form: createForm(values, isValid),
-    values: values,
-    isValid: isValid
+    form: createForm(formValues, submitValues, validity, formValid),
+    formValues,
+    submitValues,
+    validity,
+    formValid,
   };
 }
