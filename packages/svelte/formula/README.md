@@ -27,7 +27,7 @@ submit, as well as the current value of the form.
   import { onDestroy } from 'svelte'
   import { formula } from 'svelte-formula'
 
-  const { form, formValues, submitValues, validity, formValid } = formula();
+  const { form, formValues, submitValues, validity, touched, formValid } = formula();
 
   const valueSub = formValues.subscribe(values => console.log(values));
   const submitSub = submitValues.subscribe(values => console.log(values));
@@ -83,10 +83,15 @@ the following properties
 * `errors` - `Object` - A map of errors that are true returned by
   the [Constraint Validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation#the_constraint_validation_api)
   API.
-  
+
 ### formValid
 
-A store that is a single `Boolean` value if the form is currently valid or not - this only emits when the form
-validity changes
+A store that is a single `Boolean` value if the form is currently valid or not - this only emits when the form validity
+changes
+
+### touched
+
+A store that updates when fields are marked as touched - contains an `Object` with key/value of `name` and `Boolean`,
+fields are added to the store as they are touched
 
 Icon made by [Eucalyp](https://creativemarket.com/eucalyp) from [flaticon.com](https://www.flaticon.com)

@@ -10,13 +10,15 @@ import { FormErrors, FormValues } from './types/forms';
 export function formula() {
   const formValues = writable<FormValues>({});
   const submitValues = writable<FormValues>({});
+  const touched = writable<Record<string, boolean>>({});
   const validity = writable<FormErrors>({});
   const formValid = writable<boolean>(false);
 
   return {
-    form: createForm(formValues, submitValues, validity, formValid),
+    form: createForm(formValues, submitValues, validity, formValid, touched),
     formValues,
     submitValues,
+    touched,
     validity,
     formValid,
   };
