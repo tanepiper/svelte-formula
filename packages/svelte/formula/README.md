@@ -77,10 +77,10 @@ using a `<form>` element
 A store that contains a key/value `Object` where again the key is the `name` property. The value is another object with
 the following properties
 
-* `valid` - `Boolean` - If the field is valid
-* `invalid` - `Boolean` - if the field is invalid
-* `message` - `String` - The message returned from the HTML validity
-* `errors` - `Object` - A map of errors that are true returned by
+- `valid` - `Boolean` - If the field is valid
+- `invalid` - `Boolean` - if the field is invalid
+- `message` - `String` - The message returned from the HTML validity
+- `errors` - `Object` - A map of errors that are true returned by
   the [Constraint Validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation#the_constraint_validation_api)
   API.
 
