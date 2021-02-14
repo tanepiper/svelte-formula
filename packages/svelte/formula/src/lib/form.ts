@@ -1,8 +1,14 @@
 import { FormEl, FormErrors, FormValues } from '../types/forms';
 import { Writable } from 'svelte/store';
 import { getAllFieldsWithValidity } from './dom';
-import { createCheckHandler, createSubmitHandler, createTouchHandler, createValueHandler } from './event';
-import { initCheckboxValue, initFormValue } from './init';
+import {
+  createCheckHandler,
+  createRadioHandler,
+  createSubmitHandler,
+  createTouchHandler,
+  createValueHandler,
+} from './event';
+import { initCheckboxValue, initFormValue, initRadioValue } from './init';
 
 export function createForm(
   values: Writable<FormValues>,
@@ -25,8 +31,8 @@ export function createForm(
       createTouchHandler(el, touched);
 
       if (el.type === 'radio') {
-        initFormValue(el, values, errors, touched);
-        const elChangeHandler = createValueHandler(values, errors, isValid);
+        initRadioValue(el as HTMLInputElement, values, errors, touched);
+        const elChangeHandler = createRadioHandler(values, errors, isValid);
         el.addEventListener('change', elChangeHandler);
         radioHandlers.set(el, elChangeHandler);
       }

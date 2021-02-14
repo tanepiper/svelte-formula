@@ -1,6 +1,6 @@
 import { Writable } from 'svelte/store';
 import { FormEl, FormError, FormErrors } from '../types/forms';
-import { extractCheckbox, extractData } from './extract';
+import { extractCheckbox, extractData, extractRadio } from './extract';
 
 function valueUpdate(
   details: any,
@@ -42,8 +42,20 @@ export function createCheckHandler(
   isValid: Writable<boolean>,
 ) {
   return (event: KeyboardEvent | MouseEvent) => {
-    const el = (event.currentTarget || event.target) as FormEl;
-    const details = extractCheckbox(el as HTMLInputElement);
+    const el = (event.currentTarget || event.target) as HTMLInputElement;
+    const details = extractCheckbox(el);
+    valueUpdate(details, values, errors, isValid);
+  };
+}
+
+export function createRadioHandler(
+  values: Writable<Record<string, unknown>>,
+  errors: Writable<FormErrors>,
+  isValid: Writable<boolean>,
+) {
+  return (event: KeyboardEvent | MouseEvent) => {
+    const el = (event.currentTarget || event.target) as HTMLInputElement;
+    const details = extractRadio(el);
     valueUpdate(details, values, errors, isValid);
   };
 }

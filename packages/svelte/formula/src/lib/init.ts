@@ -1,6 +1,6 @@
 import { Writable } from 'svelte/store';
 import { FormEl, FormErrors, FormValues } from '../types/forms';
-import { extractCheckbox, extractData } from './extract';
+import { extractCheckbox, extractData, extractRadio } from './extract';
 
 function initValues(
   details: any,
@@ -38,5 +38,15 @@ export function initCheckboxValue(
   touched: Writable<Record<string, boolean>>,
 ) {
   const details = extractCheckbox(el);
+  initValues(details, values, errors, touched);
+}
+
+export function initRadioValue(
+  el: HTMLInputElement,
+  values: Writable<FormValues>,
+  errors: Writable<FormErrors>,
+  touched: Writable<Record<string, boolean>>,
+) {
+  const details = extractRadio(el);
   initValues(details, values, errors, touched);
 }
