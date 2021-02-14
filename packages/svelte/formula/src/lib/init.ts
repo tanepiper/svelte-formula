@@ -1,15 +1,13 @@
 import { Writable } from 'svelte/store';
 import { FormEl, FormErrors, FormValues } from '../types/forms';
-import { extractData } from './extract';
+import { extractCheckbox, extractData } from './extract';
 
-export function initValues(
-  el: FormEl,
+function initValues(
+  details: any,
   values: Writable<FormValues>,
   errors: Writable<FormErrors>,
   touched: Writable<Record<string, boolean>>,
 ) {
-  const details = extractData(el);
-
   values.update((state) => ({ ...state, [details.name]: details.value }));
   errors.update((state) => ({
     ...state,
@@ -21,4 +19,24 @@ export function initValues(
     },
   }));
   touched.update((state) => ({ ...state, [details.name]: false }));
+}
+
+export function initFormValue(
+  el: FormEl,
+  values: Writable<FormValues>,
+  errors: Writable<FormErrors>,
+  touched: Writable<Record<string, boolean>>,
+) {
+  const details = extractData(el);
+  initValues(details, values, errors, touched);
+}
+
+export function initCheckboxValue(
+  el: HTMLInputElement,
+  values: Writable<FormValues>,
+  errors: Writable<FormErrors>,
+  touched: Writable<Record<string, boolean>>,
+) {
+  const details = extractCheckbox(el);
+  initValues(details, values, errors, touched);
 }

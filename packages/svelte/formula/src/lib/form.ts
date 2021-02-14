@@ -1,8 +1,8 @@
 import { FormEl, FormErrors, FormValues } from '../types/forms';
 import { Writable } from 'svelte/store';
 import { getAllFieldsWithValidity } from './dom';
-import { createCheckHandler, createSubmitHandler, createValueHandler } from './event';
-import { initValues } from './init';
+import { createCheckHandler, createSubmitHandler, createTouchHandler, createValueHandler } from './event';
+import { initCheckboxValue, initFormValue, initValues } from './init';
 
 export function createForm(
   values: Writable<FormValues>,
@@ -22,18 +22,21 @@ export function createForm(
     formElements.forEach((el: FormEl) => {
       console.dir(el);
       // Initialise the form data
-      initValues(el, values, errors, touched);
+      createTouchHandler(el, touched);
 
       if (el.type === 'radio') {
+        initFormValue(el, values, errors, touched);
         const elChangeHandler = createValueHandler(values, errors, isValid);
         el.addEventListener('change', elChangeHandler);
         radioHandlers.set(el, elChangeHandler);
       }
       if (el.type === 'checkbox') {
+        initCheckboxValue(el as HTMLInputElement, values, errors, touched);
         const elChangeHandler = createCheckHandler(values, errors, isValid);
         el.addEventListener('change', elChangeHandler);
         checkboxHandlers.set(el, elChangeHandler);
       } else {
+        initFormValue(el, values, errors, touched);
         const elKeyUpHandler = createValueHandler(values, errors, isValid);
         el.addEventListener('keyup', elKeyUpHandler);
         keyupHandlers.set(el, elKeyUpHandler);
@@ -57,12 +60,6 @@ export function createForm(
         if (submitHander) {
           node.removeEventListener('submit', submitHander);
         }
-
-        // if (node instanceof HTMLFormElement) {
-        //   node.removeEventListener('submit', submitHandler);
-        // }
-        // node.removeEventListener('keyup', valueHandler);
-        // node.removeEventListener('blur', valueHandler);
       },
     };
   };
