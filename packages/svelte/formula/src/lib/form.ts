@@ -2,7 +2,7 @@ import { FormEl, FormErrors, FormValues } from '../types/forms';
 import { Writable } from 'svelte/store';
 import { getAllFieldsWithValidity } from './dom';
 import { createCheckHandler, createSubmitHandler, createTouchHandler, createValueHandler } from './event';
-import { initCheckboxValue, initFormValue, initValues } from './init';
+import { initCheckboxValue, initFormValue } from './init';
 
 export function createForm(
   values: Writable<FormValues>,
