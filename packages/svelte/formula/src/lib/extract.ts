@@ -20,3 +20,13 @@ export function extractCheckbox(el: HTMLInputElement) {
     errors: extractErrors(el),
   };
 }
+
+export function extractRadio(el: HTMLInputElement) {
+  return {
+    name: el.getAttribute('name') as string,
+    value: el.checked ? el.value : '',
+    valid: el.checkValidity(),
+    message: el.validationMessage,
+    errors: extractErrors(el),
+  };
+}
