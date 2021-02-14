@@ -30,3 +30,21 @@ export function extractRadio(el: HTMLInputElement) {
     errors: extractErrors(el),
   };
 }
+
+export function extractSelect(el: HTMLSelectElement) {
+  function getMultiValue(collection: HTMLCollectionOf<HTMLOptionElement>) {
+    const value = [];
+    for (let i = 0; i < collection.length; i++) {
+      value.push(collection[i].value);
+    }
+    return value;
+  }
+
+  return {
+    name: el.getAttribute('name') as string,
+    value: el.multiple ? getMultiValue(el.selectedOptions) : el.value,
+    valid: el.checkValidity(),
+    message: el.validationMessage,
+    errors: extractErrors(el),
+  };
+}

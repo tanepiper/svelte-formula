@@ -4,6 +4,7 @@ import { getAllFieldsWithValidity } from './dom';
 import {
   createCheckHandler,
   createRadioHandler,
+  createSelectHandler,
   createSubmitHandler,
   createTouchHandler,
   createValueHandler,
@@ -30,22 +31,26 @@ export function createForm(
       // Initialise the form data
       createTouchHandler(el, touched);
 
-      if (el.type === 'radio') {
+      if (el instanceof HTMLSelectElement) {
+        initFormValue(el, values, errors, touched);
+        const handler = createSelectHandler(values, errors, isValid);
+        el.addEventListener('change', handler);
+        keyupHandlers.set(el, handler);
+      } else if (el.type === 'radio') {
         initRadioValue(el as HTMLInputElement, values, errors, touched);
-        const elChangeHandler = createRadioHandler(values, errors, isValid);
-        el.addEventListener('change', elChangeHandler);
-        radioHandlers.set(el, elChangeHandler);
-      }
-      if (el.type === 'checkbox') {
+        const handler = createRadioHandler(values, errors, isValid);
+        el.addEventListener('change', handler);
+        radioHandlers.set(el, handler);
+      } else if (el.type === 'checkbox') {
         initCheckboxValue(el as HTMLInputElement, values, errors, touched);
-        const elChangeHandler = createCheckHandler(values, errors, isValid);
-        el.addEventListener('change', elChangeHandler);
-        checkboxHandlers.set(el, elChangeHandler);
+        const handler = createCheckHandler(values, errors, isValid);
+        el.addEventListener('change', handler);
+        checkboxHandlers.set(el, handler);
       } else {
         initFormValue(el, values, errors, touched);
-        const elKeyUpHandler = createValueHandler(values, errors, isValid);
-        el.addEventListener('keyup', elKeyUpHandler);
-        keyupHandlers.set(el, elKeyUpHandler);
+        const handler = createValueHandler(values, errors, isValid);
+        el.addEventListener('keyup', handler);
+        keyupHandlers.set(el, handler);
       }
     });
 
