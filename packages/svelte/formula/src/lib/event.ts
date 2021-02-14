@@ -58,3 +58,13 @@ export function createSubmitHandler(
     })();
   };
 }
+
+export function createTouchHandler(el: FormEl, touched: Writable<Record<string, boolean>>) {
+  function updateTouched(event: MouseEvent) {
+    const name = el.getAttribute('name');
+    touched.update((state) => ({ ...state, [name]: true }));
+    el.removeEventListener('focus', updateTouched);
+  }
+
+  el.addEventListener('focus', updateTouched);
+}
