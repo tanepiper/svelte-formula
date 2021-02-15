@@ -92,6 +92,32 @@ changes
 ### touched
 
 A store that updates when fields are marked as touched - contains an `Object` with key/value of `name` and `Boolean`,
-fields are added to the store as they are touched
+fields are added to the store as they receive a `focus` event
+
+### dirty
+
+A store that updates when fields are marked as dirty - contains an `Object` with key/value of `name` and `Boolean`,
+fields where the user triggers a `blur` event, and the value has been changed from the original value.
+
+## Roadmap
+
+### Field Type Support
+
+- [x] Support Basic Input fields (text, number, password, email, url) as text values
+  - [ ] Return correct value type for fields (return number as Number value)
+- [x] Support Select Fields
+  - [x] Support Multiple Select Fields
+- [x] Support Radio Fields
+- [x] Support Checkbox Fields
+  - [x] Support Multiple Checkbox Fields
+- [ ] Support the Range input
+- [ ] Support the Color input
+- [ ] Support the Date / Time / DateTime inputs
+- [ ] Support the File input
+
+### Other Items
+
+- [ ] Add Unit Tests
+- [ ] Add full documentation
 
 Icon made by [Eucalyp](https://creativemarket.com/eucalyp) from [flaticon.com](https://www.flaticon.com)

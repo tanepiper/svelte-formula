@@ -1,6 +1,5 @@
 import { ExtractedFormInfo, FormEl } from '../types/forms';
 import { extractErrors } from './errors';
-import { isMultiCheckbox } from 'packages/svelte/formula/src/lib/dom';
 
 /**
  * Generic handle for extracting data from an `<input>` or `<textarea>` element that

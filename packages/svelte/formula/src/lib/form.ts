@@ -10,7 +10,8 @@ import {
 } from './event';
 import { createInitialValues } from './init';
 import { createTouchHandler } from './touch';
-import { checkboxMultiUpdate } from 'packages/svelte/formula/src/lib/checkbox';
+import { checkboxMultiUpdate } from './checkbox';
+import { createDirtyHandler } from './dirty';
 
 export function createForm(
   values: Writable<FormValues>,
@@ -18,6 +19,7 @@ export function createForm(
   errors: Writable<FormErrors>,
   isValid: Writable<boolean>,
   touched: Writable<Record<string, boolean>>,
+  dirty: Writable<Record<string, boolean>>,
 ) {
   return function form(node: HTMLElement) {
     const keyupHandlers = new Map<HTMLElement, any>();
@@ -31,6 +33,7 @@ export function createForm(
       // Create a single touch handler for each element, this is removed after it has first been focused
       createTouchHandler(el, touched);
       createInitialValues(el, formElements, values, errors, touched);
+      createDirtyHandler(el, dirty, values);
 
       if (el instanceof HTMLSelectElement) {
         const handler = createSelectHandler(values, errors, isValid);
