@@ -82,8 +82,8 @@ element
 
 ### formValidity
 
-A store that contains a key/value `Object` of errors on the form when using `formValidators` - this only emits on form
-submission.
+A store that contains a key/value `Object` of errors on the form when using `formValidators` - unlike `validity` this only
+contains a key and string value that is any message from the validator.
 
 ### isFormValid
 
