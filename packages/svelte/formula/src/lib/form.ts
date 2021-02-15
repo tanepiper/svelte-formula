@@ -1,15 +1,16 @@
 import { FormEl, FormErrors, FormValues } from '../types/forms';
 import { Writable } from 'svelte/store';
-import { getAllFieldsWithValidity } from './dom';
+import { getAllFieldsWithValidity, isMultiCheckbox } from './dom';
 import {
   createCheckHandler,
   createRadioHandler,
   createSelectHandler,
   createSubmitHandler,
-  createTouchHandler,
   createValueHandler,
 } from './event';
-import { initCheckboxValue, initFormValue, initRadioValue } from './init';
+import { createInitialValues } from './init';
+import { createTouchHandler } from './touch';
+import { checkboxMultiUpdate } from 'packages/svelte/formula/src/lib/checkbox';
 
 export function createForm(
   values: Writable<FormValues>,
@@ -20,34 +21,36 @@ export function createForm(
 ) {
   return function form(node: HTMLElement) {
     const keyupHandlers = new Map<HTMLElement, any>();
-    const radioHandlers = new Map<HTMLElement, any>();
-    const checkboxHandlers = new Map<HTMLElement, any>();
+    const changeHandlers = new Map<HTMLElement, any>();
+
     let submitHander = undefined;
 
     const formElements = getAllFieldsWithValidity(node);
 
     formElements.forEach((el: FormEl) => {
-      console.dir(el);
-      // Initialise the form data
+      // Create a single touch handler for each element, this is removed after it has first been focused
       createTouchHandler(el, touched);
+      createInitialValues(el, formElements, values, errors, touched);
 
       if (el instanceof HTMLSelectElement) {
-        initFormValue(el, values, errors, touched);
         const handler = createSelectHandler(values, errors, isValid);
         el.addEventListener('change', handler);
-        keyupHandlers.set(el, handler);
+        changeHandlers.set(el, handler);
       } else if (el.type === 'radio') {
-        initRadioValue(el as HTMLInputElement, values, errors, touched);
         const handler = createRadioHandler(values, errors, isValid);
         el.addEventListener('change', handler);
-        radioHandlers.set(el, handler);
+        changeHandlers.set(el, handler);
       } else if (el.type === 'checkbox') {
-        initCheckboxValue(el as HTMLInputElement, values, errors, touched);
-        const handler = createCheckHandler(values, errors, isValid);
+        const name = el.getAttribute('name') as string;
+        const isMultiple = isMultiCheckbox(name, formElements);
+        let updateMultiple;
+        if (isMultiple) {
+          updateMultiple = checkboxMultiUpdate(name);
+        }
+        const handler = createCheckHandler(values, errors, isValid, updateMultiple);
         el.addEventListener('change', handler);
-        checkboxHandlers.set(el, handler);
+        changeHandlers.set(el, handler);
       } else {
-        initFormValue(el, values, errors, touched);
         const handler = createValueHandler(values, errors, isValid);
         el.addEventListener('keyup', handler);
         keyupHandlers.set(el, handler);
@@ -65,7 +68,7 @@ export function createForm(
         [...keyupHandlers].forEach(([el, fn]) => {
           el.removeEventListener('keyup', fn);
         });
-        [...radioHandlers, ...checkboxHandlers].forEach(([el, fn]) => {
+        [...changeHandlers].forEach(([el, fn]) => {
           el.removeEventListener('change', fn);
         });
         if (submitHander) {

@@ -1,9 +1,10 @@
 import { Writable } from 'svelte/store';
-import { FormEl, FormError, FormErrors } from '../types/forms';
+import { ExtractedFormInfo, FormEl, FormErrors, FormulaError } from '../types/forms';
 import { extractCheckbox, extractData, extractRadio, extractSelect } from './extract';
+import { isMultiCheckbox } from 'packages/svelte/formula/src/lib/dom';
 
 function valueUpdate(
-  details: any,
+  details: ExtractedFormInfo,
   values: Writable<Record<string, unknown>>,
   errors: Writable<FormErrors>,
   isValid: Writable<boolean>,
@@ -19,7 +20,7 @@ function valueUpdate(
         message: details.message,
       },
     };
-    isValid.set(Object.values(result).every((v: FormError) => v.valid));
+    isValid.set(Object.values(result).every((v: FormulaError) => v.valid));
     return result;
   });
 }
@@ -44,6 +45,7 @@ export function createValueHandler(
 
 /**
  * Create a handler for checkbox elements
+ * @param updateMultiple,
  * @param values
  * @param errors
  * @param isValid
@@ -52,10 +54,11 @@ export function createCheckHandler(
   values: Writable<Record<string, unknown>>,
   errors: Writable<FormErrors>,
   isValid: Writable<boolean>,
+  updateMultiple?: any,
 ) {
   return (event: KeyboardEvent | MouseEvent) => {
     const el = (event.currentTarget || event.target) as HTMLInputElement;
-    const details = extractCheckbox(el);
+    const details = extractCheckbox(el, updateMultiple);
     valueUpdate(details, values, errors, isValid);
   };
 }
@@ -107,20 +110,4 @@ export function createSubmitHandler(
   submit: Writable<Record<string, unknown>>,
 ) {
   return (): void => values.subscribe((v) => submit.set(v))();
-}
-
-/**
- * Create a handler for an element for when it's focused, when it is called update the
- * touched store and unsubscribe immediately
- * @param el
- * @param touched
- */
-export function createTouchHandler(el: FormEl, touched: Writable<Record<string, boolean>>) {
-  function updateTouched(event: MouseEvent) {
-    const name = el.getAttribute('name');
-    touched.update((state) => ({ ...state, [name]: true }));
-    el.removeEventListener('focus', updateTouched);
-  }
-
-  el.addEventListener('focus', updateTouched);
 }
