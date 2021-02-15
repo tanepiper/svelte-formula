@@ -1,9 +1,11 @@
 import { Writable } from 'svelte/store';
-import { FormEl, FormErrors, FormValues } from '../types/forms';
-import { extractCheckbox, extractData, extractRadio } from './extract';
+import { ExtractedFormInfo, FormEl, FormErrors, FormValues } from '../types/forms';
+import { extractCheckbox, extractData, extractRadio, extractSelect } from './extract';
+import { isMultiCheckbox } from 'packages/svelte/formula/src/lib/dom';
+import { checkboxMultiUpdate } from 'packages/svelte/formula/src/lib/checkbox';
 
 function initValues(
-  details: any,
+  details: ExtractedFormInfo,
   values: Writable<FormValues>,
   errors: Writable<FormErrors>,
   touched: Writable<Record<string, boolean>>,
@@ -21,32 +23,37 @@ function initValues(
   touched.update((state) => ({ ...state, [details.name]: false }));
 }
 
-export function initFormValue(
+/**
+ * Create the initial value type for the current element, handling cases for multiple
+ * values
+ * @param el
+ * @param allElements
+ * @param values
+ * @param errors
+ * @param touched
+ */
+export function createInitialValues(
   el: FormEl,
+  allElements: FormEl[],
   values: Writable<FormValues>,
   errors: Writable<FormErrors>,
   touched: Writable<Record<string, boolean>>,
 ) {
-  const details = extractData(el);
-  initValues(details, values, errors, touched);
-}
-
-export function initCheckboxValue(
-  el: HTMLInputElement,
-  values: Writable<FormValues>,
-  errors: Writable<FormErrors>,
-  touched: Writable<Record<string, boolean>>,
-) {
-  const details = extractCheckbox(el);
-  initValues(details, values, errors, touched);
-}
-
-export function initRadioValue(
-  el: HTMLInputElement,
-  values: Writable<FormValues>,
-  errors: Writable<FormErrors>,
-  touched: Writable<Record<string, boolean>>,
-) {
-  const details = extractRadio(el);
+  let details: ExtractedFormInfo;
+  if (el instanceof HTMLSelectElement) {
+    details = extractSelect(el);
+  } else if (el.type === 'radio') {
+    details = extractRadio(el as HTMLInputElement);
+  } else if (el.type === 'checkbox') {
+    const name = el.getAttribute('name') as string;
+    const isMultiple = isMultiCheckbox(name, allElements);
+    let updateMultiple;
+    if (isMultiple) {
+      updateMultiple = checkboxMultiUpdate(name);
+    }
+    details = extractCheckbox(el as HTMLInputElement, updateMultiple);
+  } else {
+    details = extractData(el);
+  }
   initValues(details, values, errors, touched);
 }
