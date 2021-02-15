@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] 2021-02-15
+
+### Added
+
+- Support for `range`, `color`, `date`, `time`, `week` inputs
+- Support for `file` input
+
+### Changed
+
+- `number` input type returns a number value, or `undefined` if not set
+
 ## [0.2.0] 2021-02-15
 
 ### Changed
@@ -13,10 +24,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Support for custom field-level validators via the `validators` property of the `formula` options. Validators are provided as an
-  object - the key is the `name` of the fields, and the value is another object containing the validators. Each
-  validator is has a key that is the name of the validation and a function that returns a string if the validation fails or
-  `null` if it passes. The string message is used to display the message, the key is added to the `errors` object in `validity`
+- Support for custom field-level validators via the `validators` property of the `formula` options. Validators are
+  provided as an object - the key is the `name` of the fields, and the value is another object containing the
+  validators. Each validator is has a key that is the name of the validation and a function that returns a string if the
+  validation fails or
+  `null` if it passes. The string message is used to display the message, the key is added to the `errors` object
+  in `validity`
 
   ```sveltehtml
   <script>
@@ -46,8 +59,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
    <div hidden={$validity?.['invoice-ids']?.valid}>{$validity?.['invoice-ids']?.message}</div>
   ```
 
-- Support for custom form-level validators via the `formValidators` property of the `formula` options. Validators are provided as an
-  object - Each validator has a key that is the name of the validation, and a function that returns a string if the validation fails or
+- Support for custom form-level validators via the `formValidators` property of the `formula` options. Validators are
+  provided as an object - Each validator has a key that is the name of the validation, and a function that returns a
+  string if the validation fails or
   `null` if it passes. The error message are available via the `formValidity` store.
 
   ```sveltehtml
@@ -62,7 +76,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
   <input type='password' name='password' required minlength='8'>
   <input type='password' name='passwordMatch' required minlength='8'>
-  <div hidden="{!$submitValidity?.passwordsMatch}">{$submitValidity?.passwordsMatch}</div>
+  <div hidden='{!$submitValidity?.passwordsMatch}'>{$submitValidity?.passwordsMatch}</div>
   ```
 
 ### Fixed
