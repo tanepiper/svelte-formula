@@ -1,7 +1,7 @@
 {
   "name": "svelte-formula",
   "description": "Reactive Forms for Svelte",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "keywords": [
     "svelte",
     "sveltejs",
@@ -13,11 +13,15 @@
     "name": "Tane Piper",
     "url": "https://tane.dev"
   },
+  "homepage": "https://github.com/tanepiper/svelte-plugins/tree/main/packages/svelte/formula",
+  "bugs": {
+    "url": "https://github.com/tanepiper/svelte-plugins/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/tanepiper/svelte-plugins.git"
   },
   "peerDependencies": {
-    "svelte": ">=3.32.0"
+    "svelte": ">=3.0.0"
   }
 }
