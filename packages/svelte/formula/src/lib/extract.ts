@@ -11,7 +11,14 @@ import { ValidationRules } from '../types/validation';
  */
 export function extractData(el: FormEl, updateMultiple?: any, customValidators?: ValidationRules): ExtractedFormInfo {
   const name = el.getAttribute('name') as string;
-  const value = updateMultiple ? updateMultiple(el.id, el.value) : el.value;
+
+  let val;
+  if (['number', 'range'].includes(el.getAttribute('type'))) {
+    val = el.value === '' ? undefined : parseInt(el.value);
+  } else {
+    val = el.value;
+  }
+  const value = updateMultiple ? updateMultiple(el.id, val) : val;
   const validity = checkValidity(el, value, customValidators);
 
   return {
@@ -85,6 +92,22 @@ export function extractSelect(el: HTMLSelectElement, customValidators?: Validati
 
   const name = el.getAttribute('name') as string;
   const value = el.multiple ? getMultiValue(el.selectedOptions) : el.value;
+  const validity = checkValidity(el, value, customValidators);
+  return {
+    name,
+    value,
+    ...validity,
+  };
+}
+
+/**
+ * Extract data from the files
+ * @param el
+ * @param customValidators
+ */
+export function extractFile(el: HTMLInputElement, customValidators?: ValidationRules): ExtractedFormInfo {
+  const name = el.getAttribute('name') as string;
+  const value = el.files;
   const validity = checkValidity(el, value, customValidators);
   return {
     name,

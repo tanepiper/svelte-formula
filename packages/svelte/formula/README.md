@@ -186,16 +186,16 @@ field based on another form field condition)
 
 - [x] Support Basic Input fields (text, number, password, email, url) as text values
   - [x] Support multiple named fields with unique `id` attributes, with an array of results sorted by ID alphabetically
-  - [ ] Return correct value type for fields (return number as Number value)
+  - [x] Return correct value type for fields (return number as Number value)
 - [x] Support Select Fields
   - [x] Support Multiple Select Fields
 - [x] Support Radio Fields
 - [x] Support Checkbox Fields
   - [x] Support Multiple Checkbox Fields
-- [ ] Support the Range input
-- [ ] Support the Color input
-- [ ] Support the Date / Time / DateTime inputs
-- [ ] Support the File input
+- [x] Support the Range input
+- [x] Support the Color input
+- [x] Support the Date / Time inputs
+- [x] Support the File input
 
 ### Validation
 

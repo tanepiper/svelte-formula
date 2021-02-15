@@ -3,6 +3,7 @@ import { Writable } from 'svelte/store';
 import { getAllFieldsWithValidity, hasMultipleNames, isMultiCheckbox } from './fields';
 import {
   createCheckHandler,
+  createFileHandler,
   createRadioHandler,
   createSelectHandler,
   createSubmitHandler,
@@ -69,6 +70,10 @@ export function createForm({
         const handler = createCheckHandler(formValues, validity, isFormValid, updateMultiple, customValidations);
         el.addEventListener('change', handler);
         changeHandlers.set(el, handler);
+      } else if (el.type === 'file') {
+        const handler = createFileHandler(formValues, validity, isFormValid, customValidations);
+        el.addEventListener('change', handler);
+        changeHandlers.set(el, handler);
       } else {
         const isMultiple = hasMultipleNames(name, formElements);
         let updateMultiple;
@@ -76,8 +81,13 @@ export function createForm({
           updateMultiple = inputMultiUpdate(name, options?.locale);
         }
         const handler = createValueHandler(formValues, validity, isFormValid, updateMultiple, customValidations);
-        el.addEventListener('keyup', handler);
-        keyupHandlers.set(el, handler);
+        if (['range', 'color', 'date', 'time', 'week'].includes(el.type)) {
+          el.addEventListener('change', handler);
+          changeHandlers.set(el, handler);
+        } else {
+          el.addEventListener('keyup', handler);
+          keyupHandlers.set(el, handler);
+        }
       }
     });
 

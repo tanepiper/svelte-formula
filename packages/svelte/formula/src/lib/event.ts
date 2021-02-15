@@ -1,6 +1,6 @@
 import { Writable } from 'svelte/store';
 import { ExtractedFormInfo, FormEl, FormErrors, FormulaError } from '../types/forms';
-import { extractCheckbox, extractData, extractRadio, extractSelect } from './extract';
+import { extractCheckbox, extractData, extractFile, extractRadio, extractSelect } from './extract';
 import { ValidationRules } from '../types/validation';
 
 /**
@@ -112,6 +112,19 @@ export function createSelectHandler(
   return (event: KeyboardEvent | MouseEvent) => {
     const el = (event.currentTarget || event.target) as HTMLSelectElement;
     const details = extractSelect(el, customValidators);
+    valueUpdate(details, values, errors, isValid);
+  };
+}
+
+export function createFileHandler(
+  values: Writable<Record<string, unknown>>,
+  errors: Writable<FormErrors>,
+  isValid: Writable<boolean>,
+  customValidators?: ValidationRules,
+) {
+  return (event: KeyboardEvent | MouseEvent) => {
+    const el = (event.currentTarget || event.target) as HTMLInputElement;
+    const details = extractFile(el, customValidators);
     valueUpdate(details, values, errors, isValid);
   };
 }
