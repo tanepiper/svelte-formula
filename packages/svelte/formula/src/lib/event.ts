@@ -1,6 +1,7 @@
 import { Writable } from 'svelte/store';
 import { ExtractedFormInfo, FormEl, FormErrors, FormulaError } from '../types/forms';
 import { extractCheckbox, extractData, extractRadio, extractSelect } from './extract';
+import { ValidationRules } from '../types/validation';
 
 /**
  * Update the value and error stores, also update form validity
@@ -37,16 +38,18 @@ function valueUpdate(
  * @param errors
  * @param isValid
  * @param updateMultiple
+ * @param customValidators
  */
 export function createValueHandler(
   values: Writable<Record<string, unknown>>,
   errors: Writable<FormErrors>,
   isValid: Writable<boolean>,
   updateMultiple?: any,
+  customValidators?: ValidationRules,
 ) {
   return (event: KeyboardEvent | MouseEvent) => {
     const el = (event.currentTarget || event.target) as FormEl;
-    const details = extractData(el, updateMultiple);
+    const details = extractData(el, updateMultiple, customValidators);
     valueUpdate(details, values, errors, isValid);
   };
 }
@@ -57,16 +60,18 @@ export function createValueHandler(
  * @param values
  * @param errors
  * @param isValid
+ * @param customValidators?
  */
 export function createCheckHandler(
   values: Writable<Record<string, unknown>>,
   errors: Writable<FormErrors>,
   isValid: Writable<boolean>,
   updateMultiple?: any,
+  customValidators?: ValidationRules,
 ) {
   return (event: KeyboardEvent | MouseEvent) => {
     const el = (event.currentTarget || event.target) as HTMLInputElement;
-    const details = extractCheckbox(el, updateMultiple);
+    const details = extractCheckbox(el, updateMultiple, customValidators);
     valueUpdate(details, values, errors, isValid);
   };
 }
@@ -76,15 +81,17 @@ export function createCheckHandler(
  * @param values
  * @param errors
  * @param isValid
+ * @param customValidators
  */
 export function createRadioHandler(
   values: Writable<Record<string, unknown>>,
   errors: Writable<FormErrors>,
   isValid: Writable<boolean>,
+  customValidators?: ValidationRules,
 ) {
   return (event: KeyboardEvent | MouseEvent) => {
     const el = (event.currentTarget || event.target) as HTMLInputElement;
-    const details = extractRadio(el);
+    const details = extractRadio(el, customValidators);
     valueUpdate(details, values, errors, isValid);
   };
 }
@@ -94,15 +101,17 @@ export function createRadioHandler(
  * @param values
  * @param errors
  * @param isValid
+ * @param customValidators
  */
 export function createSelectHandler(
   values: Writable<Record<string, unknown>>,
   errors: Writable<FormErrors>,
   isValid: Writable<boolean>,
+  customValidators?: ValidationRules,
 ) {
   return (event: KeyboardEvent | MouseEvent) => {
     const el = (event.currentTarget || event.target) as HTMLSelectElement;
-    const details = extractSelect(el);
+    const details = extractSelect(el, customValidators);
     valueUpdate(details, values, errors, isValid);
   };
 }

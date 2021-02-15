@@ -25,7 +25,7 @@ export function formula(options?: FormulaOptions) {
      * The form action, this is used with Sveltes `use` directive which attaches to any element
      * and handles internal form state creation
      */
-    form: createForm(formValues, submitValues, validity, formValid, touched, dirty),
+    form: createForm(formValues, submitValues, validity, formValid, touched, dirty, options),
     /**
      * The store with the current form values
      * @typedef Writable<FormValues>

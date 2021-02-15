@@ -27,7 +27,7 @@ export function createForm(
     const keyupHandlers = new Map<HTMLElement, any>();
     const changeHandlers = new Map<HTMLElement, any>();
 
-    let submitHander = undefined;
+    let submitHandler = undefined;
 
     const formElements = getAllFieldsWithValidity(node);
 
@@ -37,41 +37,42 @@ export function createForm(
       createInitialValues(el, formElements, values, errors, touched);
       createDirtyHandler(el, dirty, values);
 
+      const name = el.getAttribute('name') as string;
+
+      const customValidations = options?.validators?.[name];
+
       if (el instanceof HTMLSelectElement) {
-        const handler = createSelectHandler(values, errors, isValid);
+        const handler = createSelectHandler(values, errors, isValid, customValidations);
         el.addEventListener('change', handler);
         changeHandlers.set(el, handler);
       } else if (el.type === 'radio') {
-        const handler = createRadioHandler(values, errors, isValid);
+        const handler = createRadioHandler(values, errors, isValid, customValidations);
         el.addEventListener('change', handler);
         changeHandlers.set(el, handler);
       } else if (el.type === 'checkbox') {
-        const name = el.getAttribute('name') as string;
         const isMultiple = isMultiCheckbox(name, formElements);
         let updateMultiple;
         if (isMultiple) {
           updateMultiple = checkboxMultiUpdate(name);
         }
-        const handler = createCheckHandler(values, errors, isValid, updateMultiple);
+        const handler = createCheckHandler(values, errors, isValid, updateMultiple, customValidations);
         el.addEventListener('change', handler);
         changeHandlers.set(el, handler);
       } else {
-        const name = el.getAttribute('name') as string;
         const isMultiple = hasMultipleNames(name, formElements);
         let updateMultiple;
         if (isMultiple) {
           updateMultiple = inputMultiUpdate(name, options?.locale);
         }
-        const handler = createValueHandler(values, errors, isValid, updateMultiple);
+        const handler = createValueHandler(values, errors, isValid, updateMultiple, customValidations);
         el.addEventListener('keyup', handler);
         keyupHandlers.set(el, handler);
       }
     });
 
     if (node instanceof HTMLFormElement) {
-      const submitHandler = createSubmitHandler(values, submit);
+      submitHandler = createSubmitHandler(values, submit);
       node.addEventListener('submit', submitHandler);
-      submitHander = submitHandler;
     }
 
     return {
@@ -82,8 +83,8 @@ export function createForm(
         [...changeHandlers].forEach(([el, fn]) => {
           el.removeEventListener('change', fn);
         });
-        if (submitHander) {
-          node.removeEventListener('submit', submitHander);
+        if (submitHandler) {
+          node.removeEventListener('submit', submitHandler);
         }
       },
     };

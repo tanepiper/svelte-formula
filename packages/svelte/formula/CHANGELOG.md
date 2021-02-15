@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Support for custom field-level validators via the `validators` property of the `formula` options. Validators are provided as an
+  object - the key is the `name` of the fields, and the value is another object containing the validators. Each
+  validator is has a key that is the name of the validation and a function that returns a string if the validation fails or
+  `null` if it passes. The string message is used to display the message, the key is added to the `errors` object in `validity`
+
+  ```sveltehtml
+  <script>
+  import { formula } from 'svelte-formula'
+  import { calculateStrong } from '../libs/password'
+   const { form, formValues, submitValues, validity, touched, dirty, formValid } = formula({
+        validators: {
+            password: {
+              isStrong: (value: string) => calculateStrong(value) ? null : 'Your password is too weak'
+            },
+            'invoice-ids': {
+              invoicePrefix: (values: string[]) => values.every(value => value.startsWith('INV-')) ? null : 'Your invoice IDs must all begin with INV-'
+            }
+        }
+  });
+  </script>
+
+  ...
+  <input type='password' name='password' required minlength='8' class:error={$touched?.password && $validity?.username?.invalid}/>
+  <div hidden={$validity?.password?.valid}>{$validity?.password?.message}</div>
+  <div hidden={$validity?.password?.errors?.isStrong}>You have a strong password!</div>
+  ...
+
+  <input type='text' id='invoice-1' name='invoice-ids' />
+  <input type='text' id='invoice-2' name='invoice-ids' />
+  <input type='text' id='invoice-3' name='invoice-ids' />
+   <div hidden={$validity?.['invoice-ids']?.valid}>{$validity?.['invoice-ids']?.message}</div>
+  ```
+
+### Fixed
+
+- Correctly pass options to form creation
+
 ## [0.1.1] 2021-02-15
 
 ### Added
@@ -14,7 +55,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Support for multiple input types that are not checkboxes (e.g `text`, `number`, etc) - when using this each input with
   the same name REQUIRES and `id` property. Returns an array sorted on the `id` property alphabetically in the users'
-  locale if detected (and always falls back to `en` if not), if this needs to be overridden it can be passed to the formula constructor (e.g `formula({ locale: 'de' });`)
+  locale if detected (and always falls back to `en` if not), if this needs to be overridden it can be passed to the
+  formula constructor (e.g `formula({ locale: 'de' });`)
 
 ## [0.1.0] 2021-02-15
 
