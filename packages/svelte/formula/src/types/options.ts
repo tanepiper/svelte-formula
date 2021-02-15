@@ -1,4 +1,4 @@
-import { CustomValidationRules } from './validation';
+import { CustomValidationRules, ValidationRules } from './validation';
 
 /**
  * Optional settings for Formula
@@ -12,4 +12,9 @@ export interface FormulaOptions {
    * Custom Validators for fields
    */
   validators?: CustomValidationRules;
+
+  /**
+   * Validation rules for the entire form
+   */
+  formValidators?: ValidationRules;
 }

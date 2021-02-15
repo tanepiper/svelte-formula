@@ -42,6 +42,25 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
    <div hidden={$validity?.['invoice-ids']?.valid}>{$validity?.['invoice-ids']?.message}</div>
   ```
 
+- Support for custom form-level validators via the `formValidators` property of the `formula` options. Validators are provided as an
+  object - Each validator has a key that is the name of the validation, and a function that returns a string if the validation fails or
+  `null` if it passes. The error message are available at submission time of the form via the `submitValidity` store.
+
+  ```sveltehtml
+  <script>
+  import { formula } from 'svelte-formula'
+  const { form, submitValues, submitValidity, formValid } = formula({
+    formValidators: {
+      passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Your passwords must match'
+    }
+  })
+  </script>
+
+  <input type='password' name='password' required minlength='8'>
+  <input type='password' name='passwordMatch' required minlength='8'>
+  <div hidden="{!$submitValidity?.passwordsMatch}">{$submitValidity?.passwordsMatch}</div>
+  ```
+
 ### Fixed
 
 - Correctly pass options to form creation
