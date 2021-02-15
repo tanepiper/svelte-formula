@@ -1,4 +1,5 @@
 import { FormEl } from '../types/forms';
+import { ValidationRules } from '../types/validation';
 
 /**
  * Extract the errors from the element validity - as it's not enumerable, it cannot be
@@ -16,4 +17,31 @@ export function extractErrors(el: FormEl): Record<string, boolean> {
     }
   }
   return output;
+}
+
+export function checkValidity(el: FormEl, value: unknown | unknown[], customValidators?: ValidationRules) {
+  const result = {
+    valid: el.checkValidity(),
+    message: el.validationMessage,
+    errors: extractErrors(el),
+  };
+  if (customValidators) {
+    const validators = Object.entries(customValidators);
+
+    for (let i = 0; i < validators.length; i++) {
+      const [name, validator] = validators[i];
+      const message = validator(value);
+      if (message === null) {
+        continue;
+      }
+      if (result.valid === true) {
+        result.valid = false;
+        result.message = message;
+        result.errors[name] = true;
+      } else {
+        result.errors[name] = true;
+      }
+    }
+  }
+  return result;
 }
