@@ -2,6 +2,8 @@
 
 ![The Svelte Formula Logo](https://raw.githubusercontent.com/tanepiper/svelte-plugins/main/packages/svelte/formula/logo.png)
 
+[![svelte-formula](https://img.shields.io/npm/v/svelte-formula?label=svelte-formula)](https://www.npmjs.com/package/svelte-formula)
+
 Formula is a zero-configuration reactive form library for Svelte, currently in early development.
 
 This library uses HTML form attributes to do validation, and works with the localised message from the browser.
