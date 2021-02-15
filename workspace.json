@@ -46,6 +46,11 @@
                 "output": "."
               },
               {
+                "glob": "CHANGELOG.md",
+                "input": "packages/svelte/formula/.",
+                "output": "."
+              },
+              {
                 "glob": "logo.png",
                 "input": "packages/svelte/formula/.",
                 "output": "."

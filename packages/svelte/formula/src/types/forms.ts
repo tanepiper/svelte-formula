@@ -45,8 +45,11 @@ export interface FormulaError {
 }
 
 /**
- *
+ * Form Values
  */
 export type FormValues = Record<string, ValueType>;
 
+/**
+ * Form Errors
+ */
 export type FormErrors = Record<string, FormulaError>;

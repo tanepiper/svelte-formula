@@ -1,9 +1,16 @@
 import { Writable } from 'svelte/store';
 import { ExtractedFormInfo, FormEl, FormErrors, FormValues } from '../types/forms';
 import { extractCheckbox, extractData, extractRadio, extractSelect } from './extract';
-import { isMultiCheckbox } from 'packages/svelte/formula/src/lib/dom';
-import { checkboxMultiUpdate } from 'packages/svelte/formula/src/lib/checkbox';
+import { isMultiCheckbox } from './dom';
+import { checkboxMultiUpdate } from './checkbox';
 
+/**
+ * Initialise the value of the store with the details provided
+ * @param details
+ * @param values
+ * @param errors
+ * @param touched
+ */
 function initValues(
   details: ExtractedFormInfo,
   values: Writable<FormValues>,

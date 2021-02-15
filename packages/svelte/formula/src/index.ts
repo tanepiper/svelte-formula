@@ -1,5 +1,5 @@
 import { createForm } from './lib/form';
-import { writable } from 'svelte/store';
+import { writable, Writable } from 'svelte/store';
 import { FormErrors, FormValues } from './types/forms';
 
 export { FormValues, FormErrors };
@@ -13,6 +13,7 @@ export function formula() {
   const formValues = writable<FormValues>({});
   const submitValues = writable<FormValues>({});
   const touched = writable<Record<string, boolean>>({});
+  const dirty = writable<Record<string, boolean>>({});
   const validity = writable<FormErrors>({});
   const formValid = writable<boolean>(false);
 
@@ -21,7 +22,7 @@ export function formula() {
      * The form action, this is used with Sveltes `use` directive which attaches to any element
      * and handles internal form state creation
      */
-    form: createForm(formValues, submitValues, validity, formValid, touched),
+    form: createForm(formValues, submitValues, validity, formValid, touched, dirty),
     /**
      * The store with the current form values
      * @typedef Writable<FormValues>
@@ -37,6 +38,11 @@ export function formula() {
      * @typedef Writable<Record<string, boolean>>
      */
     touched,
+    /**
+     * Store with the current dirty state of elements
+     * @typedef Writable<Record<string, boolean>>
+     */
+    dirty,
     /**
      * The store with the current form errors
      * @typedef Writable<FormErrors>

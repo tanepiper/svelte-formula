@@ -1,8 +1,14 @@
 import { Writable } from 'svelte/store';
 import { ExtractedFormInfo, FormEl, FormErrors, FormulaError } from '../types/forms';
 import { extractCheckbox, extractData, extractRadio, extractSelect } from './extract';
-import { isMultiCheckbox } from 'packages/svelte/formula/src/lib/dom';
 
+/**
+ * Update the value and error stores, also update form validity
+ * @param details
+ * @param values
+ * @param errors
+ * @param isValid
+ */
 function valueUpdate(
   details: ExtractedFormInfo,
   values: Writable<Record<string, unknown>>,

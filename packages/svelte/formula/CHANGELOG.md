@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support for `<input type="radio">` values where there can be multiple named values
 - Add support for `<select>` fields for both single and multi-value select fields
+- Added `dirty` store that fires when a value is changed, and the selected field is blurred away from
 
 ### Changed
 
