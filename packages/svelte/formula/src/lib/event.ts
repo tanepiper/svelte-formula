@@ -36,15 +36,17 @@ function valueUpdate(
  * @param values
  * @param errors
  * @param isValid
+ * @param updateMultiple
  */
 export function createValueHandler(
   values: Writable<Record<string, unknown>>,
   errors: Writable<FormErrors>,
   isValid: Writable<boolean>,
+  updateMultiple?: any,
 ) {
   return (event: KeyboardEvent | MouseEvent) => {
     const el = (event.currentTarget || event.target) as FormEl;
-    const details = extractData(el);
+    const details = extractData(el, updateMultiple);
     valueUpdate(details, values, errors, isValid);
   };
 }

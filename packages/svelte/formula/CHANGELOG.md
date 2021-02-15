@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] 2021-02-15
+
+### Added
+
+- First config option for `formula` - allowing the locale for sorting to be overridden if you don't want to use the
+  users own locale
+
+- Support for multiple input types that are not checkboxes (e.g `text`, `number`, etc) - when using this each input with
+  the same name REQUIRES and `id` property. Returns an array sorted on the `id` property alphabetically in the users'
+  locale if detected (and always falls back to `en` if not), if this needs to be overridden it can be passed to the formula constructor (e.g `formula({ locale: 'de' });`)
+
 ## [0.1.0] 2021-02-15
 
 ### Added

@@ -5,11 +5,12 @@ import { extractErrors } from './errors';
  * Generic handle for extracting data from an `<input>` or `<textarea>` element that
  * doesn't have a special case
  * @param el
+ * @param updateMultiple
  */
-export function extractData(el: FormEl) {
+export function extractData(el: FormEl, updateMultiple?: any) {
   return {
     name: el.getAttribute('name') as string,
-    value: el.value,
+    value: updateMultiple ? updateMultiple(el.id, el.value) : el.value,
     valid: el.checkValidity(),
     message: el.validationMessage,
     errors: extractErrors(el),
