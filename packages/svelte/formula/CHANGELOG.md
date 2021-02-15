@@ -7,6 +7,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- `formValid` now `isFormValid`
+-
+
 ### Added
 
 - Support for custom field-level validators via the `validators` property of the `formula` options. Validators are provided as an
@@ -44,7 +49,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Support for custom form-level validators via the `formValidators` property of the `formula` options. Validators are provided as an
   object - Each validator has a key that is the name of the validation, and a function that returns a string if the validation fails or
-  `null` if it passes. The error message are available at submission time of the form via the `submitValidity` store.
+  `null` if it passes. The error message are available via the `formValidity` store.
 
   ```sveltehtml
   <script>

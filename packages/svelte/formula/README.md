@@ -22,9 +22,11 @@ the `form` action and the available stores.
 While the library is zero-configuration it does support options which can be passed as an object to the `formula`
 constructor method.
 
-| Options | Type     | Description                                                 |
-| ------- | -------- | ----------------------------------------------------------- |
-| `local` | `string` | Optional locale for `id` sorting when using multiple values |
+| Options          | Type     | Description                                                 |
+| ---------------- | -------- | ----------------------------------------------------------- |
+| `locale`         | `String` | Optional locale for `id` sorting when using multiple values |
+| `validators`     | `Object` | An object containing custom validators for fields           |
+| `formValidators` | `Object` | An object containing custom validators for the form         |
 
 ### Example
 
@@ -35,29 +37,24 @@ submit, as well as the current value of the form.
 ```sveltehtml
 
 <script>
-  import { onDestroy } from 'svelte'
   import { formula } from 'svelte-formula'
 
   const { form, formValues, submitValues, validity, touched, formValid } = formula();
 
-  const valueSub = formValues.subscribe(values => console.log(values));
-  const submitSub = submitValues.subscribe(values => console.log(values));
+  $: console.log($formValues);
+  $: console.log($submitValues);
 
   function handleSubmit(e) {
     e.preventDefault();
   }
 
-  onDestroy(() => {
-    valueSub();
-    submitSub();
-  })
 
 </script>
 
 <form use:form on:submit={handleSubmit}>
   <div class='form-field'>
     <label for='username'>Username</label>
-    <input type='text' id='username' name='username' required />
+    <input type='email' id='username' name='username' required />
     <span hidden={$validity?.username?.valid}>{ validity?.username?.message }</span>
   </div>
   <div class='form-field'>
@@ -72,16 +69,36 @@ submit, as well as the current value of the form.
 
 ## Stores
 
+### dirty
+
+A store that updates when fields are marked as dirty - contains an `Object` with key/value of `name` and `Boolean`,
+fields where the user triggers a `blur` event, and the value has been changed from the original value.
+
 ### formValues
 
 The `formValues` store can be subscribed to and will emit every time the user types into, or blurs off from a field. The
 value is a `Object` that contains a key/value map of all form fields with the key being the `name` property of the
 element
 
+### formValidity
+
+A store that contains a key/value `Object` of errors on the form when using `formValidators` - this only emits on form
+submission.
+
+### isFormValid
+
+A store that is a single `Boolean` value if the form is currently valid or not - this only emits when the form validity
+changes
+
 ### submitValues
 
 Similar to the `formValues` object, the subscription only emits when a form submit event occurs, and only emits when
 using a `<form>` element
+
+### touched
+
+A store that updates when fields are marked as touched - contains an `Object` with key/value of `name` and `Boolean`,
+fields are added to the store as they receive a `focus` event
 
 ### validity
 
@@ -93,22 +110,75 @@ the following properties
 - `message` - `String` - The message returned from the HTML validity
 - `errors` - `Object` - A map of errors that are true returned by
   the [Constraint Validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation#the_constraint_validation_api)
-  API.
+  API, or from custom `validators` in the options.
 
-### formValid
+## Custom Field Validations
 
-A store that is a single `Boolean` value if the form is currently valid or not - this only emits when the form validity
-changes
+While Formula is zero-config and uses validations set on the HTML5 elements, it's also possible to provide custom
+validations via the `validations` option passed to `formula` on initialisation.
 
-### touched
+First provide the `name` of the field as a key, and the value as an `Object` - each object contains further keys per
+error, and a function that does the validation - the result should be a `string` if it fails, or `null` if it passes.
 
-A store that updates when fields are marked as touched - contains an `Object` with key/value of `name` and `Boolean`,
-fields are added to the store as they receive a `focus` event
+Custom validation will always be added to the `errors` object, however the `message` - HTML validations will always take
+precedence over custom validations (e.g. `<input required>` message will always be before your custom message)
 
-### dirty
+Custom validators also support multi-value fields, but in this case an `id` must be set on each field to provide
+uniqueness (such as an index value)
 
-A store that updates when fields are marked as dirty - contains an `Object` with key/value of `name` and `Boolean`,
-fields where the user triggers a `blur` event, and the value has been changed from the original value.
+### Example
+
+```sveltehtml
+
+<script>
+  import { formula } from 'svelte-formula';
+
+  const { form, validity } = formula({
+    validators: {
+      username: {
+        inCompanyDomain: (value: string) => value.includes('@ourdomain.com') ? null : 'Your username must contain an @ourdomain.com email'
+      },
+      invoiceIds: {
+        validInvoiceId: (values: string[]) => values.every(value => value.startsWith('INV-')) ? null : 'Your invoice IDs must start with INV-'
+      }
+    }
+  });
+</script>
+<form use:form>
+  <label for='signup-username'>Username</label>
+  <input type='email' name='username' id='signup-username' required minlength='8' />
+  <div hidden={$validity?.email?.valid}>{$validity?.email?.message}</div>
+
+  <input type='text' name='invoiceIds' id='1' />
+  <input type='text' name='invoiceIds' id='2' />
+  <input type='text' name='invoiceIds' id='3' />
+</form>
+
+```
+
+## Form Level Validation
+
+Form level validations can also be provided using `formValidators` - these validators are passed the entire set of
+values and allow for validation across different values (like password matching, or ensuring a selection is made in one
+field based on another form field condition)
+
+```sveltehtml
+
+<script>
+  import { formula } from 'svelte-formula';
+
+  const { form, formValidity } = formula({
+    formValidators: {
+      passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Your passwords must match'
+    }
+  })
+</script>
+<form use:form>
+  <input type='password' name='password' required minlength='8'>
+  <input type='password' name='passwordMatch' required minlength='8'>
+  <div hidden={!$formValidity?.passwordsMatch}>{$formValidity?.passwordsMatch}</div>
+</form>
+```
 
 ## Roadmap
 
@@ -126,6 +196,11 @@ fields where the user triggers a `blur` event, and the value has been changed fr
 - [ ] Support the Color input
 - [ ] Support the Date / Time / DateTime inputs
 - [ ] Support the File input
+
+### Validation
+
+- [x] Custom field-level validation via `formula` options
+- [x] Custom form-level validation via `formula` options
 
 ### Other Items
 

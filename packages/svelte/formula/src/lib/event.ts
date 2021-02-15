@@ -60,7 +60,7 @@ export function createValueHandler(
  * @param values
  * @param errors
  * @param isValid
- * @param customValidators?
+ * @param customValidators
  */
 export function createCheckHandler(
   values: Writable<Record<string, unknown>>,
@@ -121,31 +121,10 @@ export function createSelectHandler(
  * of the current value store to the submit store and then unsubscribes
  * @param formValues
  * @param submitValues
- * @param submitValidity
- * @param formValid,
- * @param customValidators
  */
 export function createSubmitHandler(
   formValues: Writable<Record<string, unknown>>,
   submitValues: Writable<Record<string, unknown>>,
-  submitValidity: Writable<Record<string, unknown>>,
-  formValid: Writable<boolean>,
-  customValidators?: ValidationRules,
 ) {
-  return (): void =>
-    formValues.subscribe((v) => {
-      if (customValidators) {
-        submitValidity.set({});
-        const validators = Object.entries(customValidators);
-        for (let i = 0; i < validators.length; i++) {
-          const [name, validator] = validators[i];
-          const invalid = validator(v);
-          if (invalid) {
-            submitValidity.update((state) => ({ ...state, [name]: invalid }));
-            formValid.set(false);
-          }
-        }
-      }
-      submitValues.set(v);
-    })();
+  return (): void => formValues.subscribe((v) => submitValues.set(v))();
 }
