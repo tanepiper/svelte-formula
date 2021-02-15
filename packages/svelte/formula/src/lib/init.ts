@@ -1,8 +1,8 @@
 import { Writable } from 'svelte/store';
 import { ExtractedFormInfo, FormEl, FormErrors, FormValues } from '../types/forms';
 import { extractCheckbox, extractData, extractRadio, extractSelect } from './extract';
-import { isMultiCheckbox } from './dom';
-import { checkboxMultiUpdate } from './checkbox';
+import { hasMultipleNames, isMultiCheckbox } from './fields';
+import { checkboxMultiUpdate, inputMultiUpdate } from './multi-value';
 
 /**
  * Initialise the value of the store with the details provided
@@ -60,7 +60,13 @@ export function createInitialValues(
     }
     details = extractCheckbox(el as HTMLInputElement, updateMultiple);
   } else {
-    details = extractData(el);
+    const name = el.getAttribute('name') as string;
+    const isMultiple = hasMultipleNames(name, allElements);
+    let updateMultiple;
+    if (isMultiple) {
+      updateMultiple = inputMultiUpdate(name);
+    }
+    details = extractData(el, updateMultiple);
   }
   initValues(details, values, errors, touched);
 }

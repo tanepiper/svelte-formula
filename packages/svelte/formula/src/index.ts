@@ -1,6 +1,7 @@
 import { createForm } from './lib/form';
 import { writable, Writable } from 'svelte/store';
 import { FormErrors, FormValues } from './types/forms';
+import { FormulaOptions } from './types/options';
 
 export { FormValues, FormErrors };
 
@@ -8,8 +9,10 @@ export { FormValues, FormErrors };
  * The `formula` function returns a form object that can be bound to any HTML
  * element that contains form inputs.  Once bound you can get the current values
  *
+ * @param options Optional options that the library supports, none of these options are
+ * required to use Formula
  */
-export function formula() {
+export function formula(options?: FormulaOptions) {
   const formValues = writable<FormValues>({});
   const submitValues = writable<FormValues>({});
   const touched = writable<Record<string, boolean>>({});

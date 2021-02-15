@@ -1,6 +1,6 @@
 import { FormEl, FormErrors, FormValues } from '../types/forms';
 import { Writable } from 'svelte/store';
-import { getAllFieldsWithValidity, isMultiCheckbox } from './dom';
+import { getAllFieldsWithValidity, hasMultipleNames, isMultiCheckbox } from './fields';
 import {
   createCheckHandler,
   createRadioHandler,
@@ -10,8 +10,9 @@ import {
 } from './event';
 import { createInitialValues } from './init';
 import { createTouchHandler } from './touch';
-import { checkboxMultiUpdate } from './checkbox';
+import { checkboxMultiUpdate, inputMultiUpdate } from './multi-value';
 import { createDirtyHandler } from './dirty';
+import { FormulaOptions } from '../types/options';
 
 export function createForm(
   values: Writable<FormValues>,
@@ -20,6 +21,7 @@ export function createForm(
   isValid: Writable<boolean>,
   touched: Writable<Record<string, boolean>>,
   dirty: Writable<Record<string, boolean>>,
+  options?: FormulaOptions,
 ) {
   return function form(node: HTMLElement) {
     const keyupHandlers = new Map<HTMLElement, any>();
@@ -54,7 +56,13 @@ export function createForm(
         el.addEventListener('change', handler);
         changeHandlers.set(el, handler);
       } else {
-        const handler = createValueHandler(values, errors, isValid);
+        const name = el.getAttribute('name') as string;
+        const isMultiple = hasMultipleNames(name, formElements);
+        let updateMultiple;
+        if (isMultiple) {
+          updateMultiple = inputMultiUpdate(name, options?.locale);
+        }
+        const handler = createValueHandler(values, errors, isValid, updateMultiple);
         el.addEventListener('keyup', handler);
         keyupHandlers.set(el, handler);
       }

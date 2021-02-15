@@ -17,11 +17,20 @@ This library uses HTML form attributes to do validation, and works with the loca
 To use Formula, create the directive and store values by calling the `formula()` method in the library, this returns
 the `form` action and the available stores.
 
+### Options
+
+While the library is zero-configuration it does support options which can be passed as an object to the `formula`
+constructor method.
+
+| Options | Type     | Description                                                 |
+| ------- | -------- | ----------------------------------------------------------- |
+| `local` | `string` | Optional locale for `id` sorting when using multiple values |
+
+### Example
+
 The `form` action can be used with any element and not just `<form>` elements - it checks for all child form elements
 that have a `name` attribute and return some kind of validity. If used with a form element it will provide values on
 submit, as well as the current value of the form.
-
-### Example
 
 ```sveltehtml
 
@@ -106,6 +115,7 @@ fields where the user triggers a `blur` event, and the value has been changed fr
 ### Field Type Support
 
 - [x] Support Basic Input fields (text, number, password, email, url) as text values
+  - [x] Support multiple named fields with unique `id` attributes, with an array of results sorted by ID alphabetically
   - [ ] Return correct value type for fields (return number as Number value)
 - [x] Support Select Fields
   - [x] Support Multiple Select Fields
