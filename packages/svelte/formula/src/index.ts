@@ -18,6 +18,7 @@ export function formula(options?: FormulaOptions) {
   const touched = writable<Record<string, boolean>>({});
   const dirty = writable<Record<string, boolean>>({});
   const validity = writable<FormErrors>({});
+  const submitValidity = writable<Record<string, unknown>>({});
   const formValid = writable<boolean>(false);
 
   return {
@@ -25,7 +26,7 @@ export function formula(options?: FormulaOptions) {
      * The form action, this is used with Sveltes `use` directive which attaches to any element
      * and handles internal form state creation
      */
-    form: createForm(formValues, submitValues, validity, formValid, touched, dirty, options),
+    form: createForm({ formValues, submitValues, submitValidity, validity, formValid, touched, dirty, options }),
     /**
      * The store with the current form values
      * @typedef Writable<FormValues>
@@ -36,6 +37,10 @@ export function formula(options?: FormulaOptions) {
      * @typedef Writable<FormValues>
      */
     submitValues,
+    /**
+     * Store containing form-level validity if providing custom validators for the entire form
+     */
+    submitValidity,
     /**
      * Store with the current touched state of elements
      * @typedef Writable<Record<string, boolean>>
