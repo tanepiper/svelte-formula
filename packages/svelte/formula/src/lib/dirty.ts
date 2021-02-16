@@ -17,7 +17,7 @@ export function createDirtyHandler(name: string, elements: FormEl[], stores: For
   stores.formValues.subscribe((v) => initialValue.set(name, v[name]))();
 
   function updateDirty(groupName: string) {
-    return (e: Event) => {
+    return () => {
       const startValue = initialValue.get(groupName);
       stores.formValues.subscribe((v) => {
         if (Array.isArray(v[groupName])) {
