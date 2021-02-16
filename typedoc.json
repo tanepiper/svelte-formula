@@ -1,5 +1,0 @@
-{
-  "tsconfig": "tsconfig.base.json",
-  "entryPoints": ["packages/svelte/formula/src/index.ts"],
-  "out": "docs"
-}
