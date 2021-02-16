@@ -133,12 +133,12 @@
             "assets": [
               {
                 "glob": "README.md",
-                "input": "packages/svelte/formula/.",
+                "input": ".",
                 "output": "."
               },
               {
                 "glob": "CHANGELOG.md",
-                "input": "packages/svelte/formula/.",
+                "input": ".",
                 "output": "."
               },
               {
