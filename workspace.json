@@ -9,12 +9,16 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["packages/svelte/formula/**/*.ts"]
+            "lintFilePatterns": [
+              "packages/svelte/formula/**/*.ts"
+            ]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/packages/svelte/formula"],
+          "outputs": [
+            "coverage/packages/svelte/formula"
+          ],
           "options": {
             "jestConfig": "packages/svelte/formula/jest.config.js",
             "passWithNoTests": true
@@ -37,7 +41,9 @@
             "tsConfig": "packages/svelte/formula/tsconfig.lib.json",
             "project": "packages/svelte/formula/package.json",
             "entryFile": "packages/svelte/formula/src/index.ts",
-            "external": ["svelte"],
+            "external": [
+              "svelte"
+            ],
             "babelConfig": "@nrwl/web/babel",
             "assets": [
               {
@@ -55,6 +61,102 @@
                 "input": "packages/svelte/formula/.",
                 "output": "."
               }
+            ]
+          }
+        }
+      }
+    },
+    "formula-app": {
+      "projectType": "application",
+      "root": "apps/formula-app",
+      "sourceRoot": "apps/formula-app/src",
+      "targets": {
+        "build": {
+          "executor": "@nxext/svelte:build",
+          "options": {
+            "outputPath": "dist/apps/formula-app",
+            "entryFile": "apps/formula-app/src/main.ts",
+            "tsConfig": "apps/formula-app/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "/*",
+                "input": "./public/**",
+                "output": "./"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "dev": false
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nxext/svelte:build",
+          "options": {
+            "outputPath": "dist/apps/formula-app",
+            "entryFile": "apps/formula-app/src/main.ts",
+            "tsConfig": "apps/formula-app/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "/*",
+                "input": "./public/**",
+                "output": "./"
+              }
+            ],
+            "watch": true,
+            "serve": true
+          },
+          "configurations": {
+            "production": {
+              "prod": true
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": "apps/formula-app/tsconfig.app.json",
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/formula-app/**/*"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/formula-app/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "formula-app-e2e": {
+      "root": "packages/formula-app-e2e",
+      "sourceRoot": "packages/formula-app-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "packages/formula-app-e2e/cypress.json",
+            "tsConfig": "packages/formula-app-e2e/tsconfig.e2e.json",
+            "devServerTarget": "formula-app:serve",
+            "baseUrl": "http://localhost:5000"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "formula-app:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "packages/formula-app-e2e/**/*.{js,ts}"
             ]
           }
         }
