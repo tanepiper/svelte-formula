@@ -6,17 +6,12 @@
 export type FormEl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
 /**
- * Possible values that can exist on out data
- */
-type ValueType = unknown | unknown[];
-
-/**
  * Internally extracted data from the form element, used to generate other store values
  * @internal
  */
 export interface ExtractedFormInfo {
   name: string;
-  value: ValueType;
+  value: unknown | unknown[];
   valid: boolean;
   message: string;
   errors: Record<string, boolean>;
@@ -47,7 +42,7 @@ export interface FormulaError {
 /**
  * Form Values
  */
-export type FormValues = Record<string, ValueType>;
+export type FormValues = Record<string, unknown | unknown[]>;
 
 /**
  * Form Errors

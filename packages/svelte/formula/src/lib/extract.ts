@@ -9,7 +9,7 @@ import { ValidationRules } from '../types/validation';
  * @param updateMultiple
  * @param customValidators
  */
-export function extractData(el: FormEl, updateMultiple?: any, customValidators?: ValidationRules): ExtractedFormInfo {
+export function extractData(el: FormEl, updateMultiple?: (id: string, value: unknown) => unknown[], customValidators?: ValidationRules): ExtractedFormInfo {
   const name = el.getAttribute('name') as string;
 
   let val;
@@ -37,7 +37,7 @@ export function extractData(el: FormEl, updateMultiple?: any, customValidators?:
  */
 export function extractCheckbox(
   el: HTMLInputElement,
-  updateMultiple?: any,
+  updateMultiple?: (checked: boolean, value: unknown) => unknown[],
   customValidators?: ValidationRules,
 ): ExtractedFormInfo {
   const name = el.getAttribute('name') as string;

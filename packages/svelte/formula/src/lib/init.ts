@@ -1,8 +1,9 @@
-import { Writable } from 'svelte/store';
-import { ExtractedFormInfo, FormEl, FormErrors, FormValues } from '../types/forms';
+import { writable, Writable } from 'svelte/store';
+import { ExtractedFormInfo, FormEl, FormErrors, FormulaError, FormValues } from '../types/forms';
 import { extractCheckbox, extractData, extractRadio, extractSelect } from './extract';
 import { hasMultipleNames, isMultiCheckbox } from './fields';
 import { checkboxMultiUpdate, inputMultiUpdate } from './multi-value';
+import { FormulaStores } from 'packages/svelte/formula/src/types/formula';
 
 /**
  * Initialise the value of the store with the details provided
@@ -69,4 +70,19 @@ export function createInitialValues(
     details = extractData(el, updateMultiple);
   }
   initValues(details, values, errors, touched);
+}
+
+/**
+ * Create the stores for the instance
+ */
+export function createStores(): FormulaStores {
+  return {
+    formValues: writable<FormValues>({}),
+    submitValues: writable<FormValues>({}),
+    touched: writable<Record<string, boolean>>({}),
+    dirty: writable<Record<string, boolean>>({}),
+    validity: writable<Record<string, FormulaError>>({}),
+    formValidity: writable<Record<string, string>>({}),
+    isFormValid: writable<boolean>(false)
+  }
 }
