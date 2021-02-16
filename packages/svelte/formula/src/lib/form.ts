@@ -1,115 +1,82 @@
-import { FormEl, FormErrors, FormValues } from '../types/forms';
-import { Writable } from 'svelte/store';
-import { getAllFieldsWithValidity, hasMultipleNames, isMultiCheckbox } from './fields';
-import {
-  createCheckHandler,
-  createFileHandler,
-  createRadioHandler,
-  createSelectHandler,
-  createSubmitHandler,
-  createValueHandler,
-} from './event';
-import { createInitialValues } from './init';
-import { createTouchHandler } from './touch';
-import { checkboxMultiUpdate, inputMultiUpdate } from './multi-value';
+import { getAllFieldsWithValidity } from './fields';
+import { createHandler, createSubmitHandler } from './event';
+import { getInitialValue } from './init';
+import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
 import { FormulaOptions } from '../types/options';
-import { checkFormValidity } from 'packages/svelte/formula/src/lib/errors';
+import { checkFormValidity } from './errors';
+import { FormulaStores } from '../types/formula';
 
-export function createForm({
-  formValues,
-  submitValues,
-  formValidity,
-  validity,
-  isFormValid,
-  touched,
-  dirty,
-  options,
-}: {
-  formValues: Writable<FormValues>;
-  submitValues: Writable<FormValues>;
-  formValidity: Writable<Record<string, string>>;
-  validity: Writable<FormErrors>;
-  isFormValid: Writable<boolean>;
-  touched: Writable<Record<string, boolean>>;
-  dirty: Writable<Record<string, boolean>>;
-  options?: FormulaOptions;
-}) {
+/**
+ * Creates the form action
+ * @param options
+ * @param stores
+ */
+export function createForm({ options, ...stores }: FormulaStores & { options?: FormulaOptions }) {
   return function form(node: HTMLElement) {
-    const keyupHandlers = new Map<HTMLElement, any>();
-    const changeHandlers = new Map<HTMLElement, any>();
+    /**
+     * Store for all keyup handlers than need removed when destroyed
+     */
+    const keyupHandlers = new Set<() => void>();
+    const changeHandlers = new Set<() => void>();
+    const touchHandlers = new Set<() => void>();
+    const dirtyHandlers = new Set<() => void>();
 
     let submitHandler = undefined;
 
     const formElements = getAllFieldsWithValidity(node);
 
-    formElements.forEach((el: FormEl) => {
-      // Create a single touch handler for each element, this is removed after it has first been focused
-      createTouchHandler(el, touched);
-      createInitialValues(el, formElements, formValues, validity, touched);
-      createDirtyHandler(el, dirty, formValues);
+    const groupedMap = [
+      ...formElements.reduce((entryMap, e) => {
+        const name = e.getAttribute('name');
+        return entryMap.set(name, [...(entryMap.get(name) || []), e]);
+      }, new Map()),
+    ];
 
-      const name = el.getAttribute('name') as string;
-
+    groupedMap.forEach(([name, elements]) => {
       const customValidations = options?.validators?.[name];
 
-      if (el instanceof HTMLSelectElement) {
-        const handler = createSelectHandler(formValues, validity, isFormValid, customValidations);
-        el.addEventListener('change', handler);
-        changeHandlers.set(el, handler);
-      } else if (el.type === 'radio') {
-        const handler = createRadioHandler(formValues, validity, isFormValid, customValidations);
-        el.addEventListener('change', handler);
-        changeHandlers.set(el, handler);
-      } else if (el.type === 'checkbox') {
-        const isMultiple = isMultiCheckbox(name, formElements);
-        let updateMultiple;
-        if (isMultiple) {
-          updateMultiple = checkboxMultiUpdate(name);
-        }
-        const handler = createCheckHandler(formValues, validity, isFormValid, updateMultiple, customValidations);
-        el.addEventListener('change', handler);
-        changeHandlers.set(el, handler);
-      } else if (el.type === 'file') {
-        const handler = createFileHandler(formValues, validity, isFormValid, customValidations);
-        el.addEventListener('change', handler);
-        changeHandlers.set(el, handler);
-      } else {
-        const isMultiple = hasMultipleNames(name, formElements);
-        let updateMultiple;
-        if (isMultiple) {
-          updateMultiple = inputMultiUpdate(name, options?.locale);
-        }
-        const handler = createValueHandler(formValues, validity, isFormValid, updateMultiple, customValidations);
-        if (['range', 'color', 'date', 'time', 'week'].includes(el.type)) {
-          el.addEventListener('change', handler);
-          changeHandlers.set(el, handler);
+      touchHandlers.add(createTouchHandlers(name, elements, stores));
+      getInitialValue(name, elements, stores, customValidations);
+      dirtyHandlers.add(createDirtyHandler(name, elements, stores));
+
+      elements.forEach((el) => {
+        if (el instanceof HTMLSelectElement) {
+          changeHandlers.add(createHandler(name, 'change', el, elements, stores, customValidations));
         } else {
-          el.addEventListener('keyup', handler);
-          keyupHandlers.set(el, handler);
+          switch (el.type) {
+            case 'radio':
+            case 'checkbox':
+            case 'file':
+            case 'range':
+            case 'color':
+            case 'date':
+            case 'time':
+            case 'week': {
+              changeHandlers.add(createHandler(name, 'change', el, elements, stores, customValidations));
+              break;
+            }
+            default:
+              keyupHandlers.add(createHandler(name, 'keyup', el, elements, stores, customValidations));
+          }
         }
-      }
+      });
     });
 
     let unsub = () => {};
     if (options?.formValidators) {
-      unsub = checkFormValidity(formValues, formValidity, isFormValid, options.formValidators);
+      unsub = checkFormValidity(stores, options.formValidators);
     }
 
     if (node instanceof HTMLFormElement) {
-      submitHandler = createSubmitHandler(formValues, submitValues);
+      submitHandler = createSubmitHandler(stores);
       node.addEventListener('submit', submitHandler);
     }
 
     return {
       destroy: () => {
         unsub();
-        [...keyupHandlers].forEach(([el, fn]) => {
-          el.removeEventListener('keyup', fn);
-        });
-        [...changeHandlers].forEach(([el, fn]) => {
-          el.removeEventListener('change', fn);
-        });
+        [...keyupHandlers, ...changeHandlers, ...touchHandlers, ...dirtyHandlers].forEach((fn) => fn());
         if (submitHandler) {
           node.removeEventListener('submit', submitHandler);
         }

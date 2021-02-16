@@ -1,0 +1,8 @@
+{
+  "name": "formula-app",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "svelte": ">= 3.0.0",
+    "svelte-formula": "*"
+  }
+}

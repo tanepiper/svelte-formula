@@ -23,10 +23,17 @@
     }
   },
   "projects": {
-    "svelte-formula": {
+    "docs-site": {
       "tags": []
     },
-    "docs-site": {
+    "formula-app": {
+      "tags": []
+    },
+    "formula-app-e2e": {
+      "tags": [],
+      "implicitDependencies": ["formula-app"]
+    },
+    "svelte-formula": {
       "tags": []
     }
   },

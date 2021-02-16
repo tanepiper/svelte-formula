@@ -1,0 +1,6 @@
+{
+  "extends": ["../../.eslintrc.json"],
+  "ignorePatterns": ["!**/*"],
+  "env": { "browser": true, "commonjs": true, "es6": true, "jest": true, "node": true },
+  "plugins": ["import", "jsx-a11y", "react", "react-hooks"]
+}
