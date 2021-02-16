@@ -15,6 +15,10 @@
       "options": { "cacheableOperations": ["build", "lint", "test", "e2e"] }
     }
   },
-  "projects": { "svelte-formula": { "tags": [] } },
+  "projects": {
+    "svelte-formula": { "tags": [] },
+    "formula-app": { "tags": [] },
+    "formula-app-e2e": { "tags": [], "implicitDependencies": ["formula-app"] }
+  },
   "workspaceLayout": { "appsDir": "packages", "libsDir": "packages" }
 }
