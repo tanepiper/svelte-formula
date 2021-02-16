@@ -6,8 +6,12 @@ module.exports = {
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.ico',
   organizationName: 'tanepiper', // Usually your GitHub org/user name.
-  projectName: 'svelte-plugins', // Usually your repo name.
+  projectName: 'svelte-formula', // Usually your repo name.
+  plugins: [require.resolve('docusaurus-plugin-fathom')],
   themeConfig: {
+    fathomAnalytics: {
+      siteId: 'NOVPWZMR',
+    },
     navbar: {
       title: 'Formula',
       logo: {
