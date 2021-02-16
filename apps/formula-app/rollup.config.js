@@ -12,10 +12,10 @@ module.exports = (config) => {
     ],
   };
   const updatedExternal = [...[external || []], 'svelte-formula'];
-  const result ={
+  const result = {
     ...rest,
     output: { ...updatedOutput },
     external: [...updatedExternal],
   };
-  return result
+  return result;
 };
