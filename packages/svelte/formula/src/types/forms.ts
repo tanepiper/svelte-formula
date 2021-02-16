@@ -10,7 +10,7 @@ export type FormEl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
  * @internal
  */
 export interface ExtractedFormInfo {
-  name: string;
+  name?: string;
   value: unknown | unknown[];
   valid: boolean;
   message: string;

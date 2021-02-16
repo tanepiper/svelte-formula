@@ -1,29 +1,30 @@
 import { FormEl } from '../types/forms';
-import { Writable } from 'svelte/store';
-
-const hasTouched = new Set<string>();
+import { FormulaStores } from '../types/formula';
 
 /**
- * Create a handler for an element for when it's focused, when it is called update the
- * touched store and unsubscribe immediately
- * @param el
- * @param touched
+ * Create a handler for adding and removing focus events on elements
+ * @param name
+ * @param elements
+ * @param stores
  */
-export function createTouchHandler(el: FormEl, touched: Writable<Record<string, boolean>>) {
-  const name = el.getAttribute('name');
+export function createTouchHandlers(name: string, elements: FormEl[], stores: FormulaStores) {
+  const elMap = new Map<FormEl, (event: Event) => void>();
+  stores.touched.update((state) => ({ ...state, [name]: false }));
 
-  /**
-   * Handle the update to the touched store then unsubscribe
-   * @private
-   * @param event
-   */
-  function updateTouched(event: MouseEvent) {
-    touched.update((state) => ({ ...state, [name]: true }));
-    el.removeEventListener('focus', updateTouched);
+  function updateTouched() {
+    return () => {
+      stores.touched.update((state) => ({ ...state, [name]: true }));
+      [...elMap].forEach(([el, handler]) => el.removeEventListener('focus', handler));
+    };
   }
 
-  if (!hasTouched.has(name)) {
-    el.addEventListener('focus', updateTouched);
-    hasTouched.add(name);
-  }
+  elements.forEach((el) => {
+    const handler = updateTouched();
+    el.addEventListener('focus', handler);
+    elMap.set(el, handler);
+  });
+
+  return () => {
+    [...elMap].forEach(([el, handler]) => el.removeEventListener('focus', handler));
+  };
 }

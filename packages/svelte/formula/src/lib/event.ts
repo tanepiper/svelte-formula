@@ -1,6 +1,6 @@
 import { ExtractedFormInfo, FormEl, FormulaError } from '../types/forms';
 import { extractCheckbox, extractData, extractFile, extractRadio, extractSelect } from './extract';
-import { ValidationRules } from '../types/validation';
+import { ValidationFn, ValidationRules } from '../types/validation';
 import { FormulaStores } from '../types/formula';
 
 /**
@@ -26,77 +26,61 @@ function valueUpdate(details: ExtractedFormInfo, stores: FormulaStores): void {
 }
 
 /**
- * Create a generic value event handler
+ * Create an event handler for the passed event and handle the value type
+ * @param name
+ * @param groupElements
  * @param stores
- * @param updateMultiple
  * @param customValidators
  */
-export function createValueHandler(
+function createEventHandler(
+  name: string,
+  groupElements: FormEl[],
   stores: FormulaStores,
-  updateMultiple?: (id: string, value: unknown) => unknown[],
-  customValidators?: ValidationRules,
-): (event: Event) => void {
+  customValidators?: Record<string, ValidationFn>,
+) {
   return (event: KeyboardEvent | MouseEvent) => {
     const el = (event.currentTarget || event.target) as FormEl;
-    const details = extractData(el, updateMultiple, customValidators);
-    valueUpdate(details, stores);
+
+    if (el instanceof HTMLSelectElement) {
+      valueUpdate(extractSelect(name, el as HTMLSelectElement, customValidators), stores);
+    } else {
+      switch (el.type) {
+        case 'checkbox': {
+          valueUpdate(
+            extractCheckbox(name, el as HTMLInputElement, groupElements as HTMLInputElement[], customValidators),
+            stores,
+          );
+          break;
+        }
+        case 'file': {
+          valueUpdate(extractFile(name, el as HTMLInputElement, customValidators), stores);
+          break;
+        }
+        case 'radio': {
+          valueUpdate(extractRadio(name, el as HTMLInputElement), stores);
+          break;
+        }
+        default: {
+          valueUpdate(extractData(name, el, groupElements, customValidators), stores);
+        }
+      }
+    }
   };
 }
 
-/**
- * Create a handler for checkbox elements
- * @param stores
- * @param updateMultiple,
- * @param customValidators
- */
-export function createCheckHandler(
+export function createHandler(
+  name: string,
+  eventName: string,
+  element: FormEl,
+  groupElements: FormEl[],
   stores: FormulaStores,
-  updateMultiple?: (checked: boolean, value: unknown) => unknown[],
   customValidators?: ValidationRules,
-): (event: Event) => void {
-  return (event: KeyboardEvent | MouseEvent) => {
-    const el = (event.currentTarget || event.target) as HTMLInputElement;
-    const details = extractCheckbox(el, updateMultiple, customValidators);
-    valueUpdate(details, stores);
-  };
-}
+): () => void {
+  const handler = createEventHandler(name, groupElements, stores, customValidators);
+  element.addEventListener(eventName, handler);
 
-/**
- * Create a handler for radio elements
- * @param stores
- * @param customValidators
- */
-export function createRadioHandler(stores: FormulaStores, customValidators?: ValidationRules): (event: Event) => void {
-  return (event: KeyboardEvent | MouseEvent) => {
-    const el = (event.currentTarget || event.target) as HTMLInputElement;
-    const details = extractRadio(el, customValidators);
-    valueUpdate(details, stores);
-  };
-}
-
-/**
- * Create a handler for select elements
- * @param stores
- * @param customValidators
- */
-export function createSelectHandler(stores: FormulaStores, customValidators?: ValidationRules): (event: Event) => void {
-  return (event: KeyboardEvent | MouseEvent) => {
-    const el = (event.currentTarget || event.target) as HTMLSelectElement;
-    const details = extractSelect(el, customValidators);
-    valueUpdate(details, stores);
-  };
-}
-
-/**
- * Create a handler for a file element
- * @param stores
- * @param customValidators
- */
-export function createFileHandler(stores: FormulaStores, customValidators?: ValidationRules): (event: Event) => void {
-  return (event: KeyboardEvent | MouseEvent) => {
-    const el = (event.currentTarget || event.target) as HTMLInputElement;
-    const details = extractFile(el, customValidators);
-    valueUpdate(details, stores);
+  return () => {
+    element.removeEventListener(eventName, handler);
   };
 }
 
