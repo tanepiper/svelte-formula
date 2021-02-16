@@ -1,5 +1,4 @@
-import { FormEl, FormErrors, FormValues } from '../types/forms';
-import { Writable } from 'svelte/store';
+import { FormEl } from '../types/forms';
 import { getAllFieldsWithValidity, hasMultipleNames, isMultiCheckbox } from './fields';
 import {
   createCheckHandler,
@@ -14,30 +13,21 @@ import { createTouchHandler } from './touch';
 import { checkboxMultiUpdate, inputMultiUpdate } from './multi-value';
 import { createDirtyHandler } from './dirty';
 import { FormulaOptions } from '../types/options';
-import { checkFormValidity } from 'packages/svelte/formula/src/lib/errors';
+import { checkFormValidity } from './errors';
+import { FormulaStores } from '../types/formula';
 
-export function createForm({
-  formValues,
-  submitValues,
-  formValidity,
-  validity,
-  isFormValid,
-  touched,
-  dirty,
-  options,
-}: {
-  formValues: Writable<FormValues>;
-  submitValues: Writable<FormValues>;
-  formValidity: Writable<Record<string, string>>;
-  validity: Writable<FormErrors>;
-  isFormValid: Writable<boolean>;
-  touched: Writable<Record<string, boolean>>;
-  dirty: Writable<Record<string, boolean>>;
-  options?: FormulaOptions;
-}) {
+/**
+ * Creates the form action
+ * @param options
+ * @param stores
+ */
+export function createForm({ options, ...stores }: FormulaStores & { options?: FormulaOptions }) {
   return function form(node: HTMLElement) {
-    const keyupHandlers = new Map<HTMLElement, any>();
-    const changeHandlers = new Map<HTMLElement, any>();
+    /**
+     * Store for all keyup handlers than need removed when destroyed
+     */
+    const keyupHandlers = new Map<HTMLElement, (event: Event) => void>();
+    const changeHandlers = new Map<HTMLElement, (event: Event) => void>();
 
     let submitHandler = undefined;
 
@@ -45,59 +35,77 @@ export function createForm({
 
     formElements.forEach((el: FormEl) => {
       // Create a single touch handler for each element, this is removed after it has first been focused
-      createTouchHandler(el, touched);
-      createInitialValues(el, formElements, formValues, validity, touched);
-      createDirtyHandler(el, dirty, formValues);
+      createTouchHandler(el, stores.touched);
+      createInitialValues(el, formElements, stores.formValues, stores.validity, stores.touched);
+      createDirtyHandler(el, stores.dirty, stores.formValues);
 
       const name = el.getAttribute('name') as string;
-
       const customValidations = options?.validators?.[name];
 
       if (el instanceof HTMLSelectElement) {
-        const handler = createSelectHandler(formValues, validity, isFormValid, customValidations);
-        el.addEventListener('change', handler);
-        changeHandlers.set(el, handler);
-      } else if (el.type === 'radio') {
-        const handler = createRadioHandler(formValues, validity, isFormValid, customValidations);
-        el.addEventListener('change', handler);
-        changeHandlers.set(el, handler);
-      } else if (el.type === 'checkbox') {
-        const isMultiple = isMultiCheckbox(name, formElements);
-        let updateMultiple;
-        if (isMultiple) {
-          updateMultiple = checkboxMultiUpdate(name);
-        }
-        const handler = createCheckHandler(formValues, validity, isFormValid, updateMultiple, customValidations);
-        el.addEventListener('change', handler);
-        changeHandlers.set(el, handler);
-      } else if (el.type === 'file') {
-        const handler = createFileHandler(formValues, validity, isFormValid, customValidations);
+        const handler = createSelectHandler(stores, customValidations);
         el.addEventListener('change', handler);
         changeHandlers.set(el, handler);
       } else {
-        const isMultiple = hasMultipleNames(name, formElements);
-        let updateMultiple;
-        if (isMultiple) {
-          updateMultiple = inputMultiUpdate(name, options?.locale);
-        }
-        const handler = createValueHandler(formValues, validity, isFormValid, updateMultiple, customValidations);
-        if (['range', 'color', 'date', 'time', 'week'].includes(el.type)) {
-          el.addEventListener('change', handler);
-          changeHandlers.set(el, handler);
-        } else {
-          el.addEventListener('keyup', handler);
-          keyupHandlers.set(el, handler);
+        switch (el.type) {
+          case 'radio': {
+            const handler = createRadioHandler(stores, customValidations);
+            el.addEventListener('change', handler);
+            changeHandlers.set(el, handler);
+            break;
+          }
+          case 'checkbox': {
+            const isMultiple = isMultiCheckbox(name, formElements);
+            let updateMultiple;
+            if (isMultiple) {
+              updateMultiple = checkboxMultiUpdate(name);
+            }
+            const handler = createCheckHandler(stores, updateMultiple, customValidations);
+            el.addEventListener('change', handler);
+            changeHandlers.set(el, handler);
+            break;
+          }
+          case 'file': {
+            const handler = createFileHandler(stores, customValidations);
+            el.addEventListener('change', handler);
+            changeHandlers.set(el, handler);
+            break;
+          }
+          case 'range':
+          case 'color':
+          case 'date':
+          case 'time':
+          case 'week': {
+            const isMultiple = hasMultipleNames(name, formElements);
+            let updateMultiple;
+            if (isMultiple) {
+              updateMultiple = inputMultiUpdate(name, options?.locale);
+            }
+            const handler = createValueHandler(stores, updateMultiple, customValidations);
+            el.addEventListener('change', handler);
+            changeHandlers.set(el, handler);
+            break;
+          }
+          default:
+            const isMultiple = hasMultipleNames(name, formElements);
+            let updateMultiple;
+            if (isMultiple) {
+              updateMultiple = inputMultiUpdate(name, options?.locale);
+            }
+            const handler = createValueHandler(stores, updateMultiple, customValidations);
+            el.addEventListener('keyup', handler);
+            keyupHandlers.set(el, handler);
         }
       }
     });
 
     let unsub = () => {};
     if (options?.formValidators) {
-      unsub = checkFormValidity(formValues, formValidity, isFormValid, options.formValidators);
+      unsub = checkFormValidity(stores, options.formValidators);
     }
 
     if (node instanceof HTMLFormElement) {
-      submitHandler = createSubmitHandler(formValues, submitValues);
+      submitHandler = createSubmitHandler(stores);
       node.addEventListener('submit', submitHandler);
     }
 
