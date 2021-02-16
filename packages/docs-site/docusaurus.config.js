@@ -1,7 +1,7 @@
 module.exports = {
   title: 'Formula',
   tagline: 'Reactive Forms for Svelte',
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://tanepiper.github.io/svelte-formula/',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.ico',
@@ -21,14 +21,19 @@ module.exports = {
           label: 'Docs',
           position: 'left',
         },
-        { to: 'blog', label: 'Blog', position: 'left' },
+        {
+          href: 'https://github.com/tanepiper/svelte-formula/blob/main/CHANGELOG.md',
+          label: 'Changelog',
+          position: 'left',
+        },
+
         {
           href: 'https://www.npmjs.com/package/svelte-formula',
           label: 'NPM',
           position: 'right',
         },
         {
-          href: 'https://github.com/tanepiper/svelte-plugins/tree/main/packages/svelte/formula',
+          href: 'https://github.com/tanepiper/svelte-formula',
           label: 'GitHub',
           position: 'right',
         },
@@ -47,7 +52,7 @@ module.exports = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          //editUrl: 'https://github.com/facebook/docusaurus/edit/master/website/',
+          //editUrl: 'https://github.com/tanepiper/svelte-formula/edit/master/packages/',
         },
         blog: {
           showReadingTime: true,

@@ -6,7 +6,13 @@ title: The Formula API
 sidebar_label: Formula API
 ---
 
+![The Svelte Formula Logo](https://raw.githubusercontent.com/tanepiper/svelte-plugins/main/packages/svelte/formula/logo.png)
+
 ## What is Formula?
+
+[![svelte-formula](https://img.shields.io/npm/v/svelte-formula?label=svelte-formula)](https://www.npmjs.com/package/svelte-formula)
+
+**This documentation is currently in development**
 
 Formula is a library for use with [Svelte](https://svelte.dev) that allows for **Zero Configuration** reactive forms.
 
