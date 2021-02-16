@@ -9,17 +9,25 @@ sidebar_label: Formula Options
 Formula is zero-configuration - Out-of-the-box - using standard HTML5 validation properties to build up its validation
 rules - however it is also possible to pass custom validation rules via the `formula()` options object.
 
-- `locale` - Sets the locale of the form - currently only used in field index sorting for multi-value fields
-- `validators` - An Object containing a key that is the field `name` to apply the validation to, the value is another
-  object that contains each named validation function. The result are made available in the `validity` store.
-- `formValidators` - An Object containing a key that is the name of the validation rule, and the function that returns
-  the validation result. The results are available in the `formValidity` store
+### `locale`
+
+Sets the locale of the form - currently only used in field index sorting for multi-value fields
+
+### `validators`
+
+An Object containing a key that is the field `name` to apply the validation to, the value is another object that
+contains each named validation function. The result are made available in the `validity` store.
+
+### `formValidators`
+
+An Object containing a key that is the name of the validation rule, and the function that returns the validation result.
+The results are available in the `formValidity` store
 
 When using custom `validators`
 
 ## Example
 
-```sveltehtml
+```jsx
 
 <script>
   import { formula } from 'svelte-formula';
