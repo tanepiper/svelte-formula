@@ -59,6 +59,25 @@
           }
         }
       }
+    },
+    "docs-site": {
+      "projectType": "application",
+      "root": "packages/docs-site",
+      "sourceRoot": "packages/docs-site/src",
+      "targets": {
+        "build": {
+          "executor": "@nx-plus/docusaurus:browser",
+          "options": {
+            "outputPath": "dist/packages/docs-site"
+          }
+        },
+        "serve": {
+          "executor": "@nx-plus/docusaurus:dev-server",
+          "options": {
+            "port": 3000
+          }
+        }
+      }
     }
   },
   "cli": {
