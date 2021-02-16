@@ -1,24 +1,17 @@
-import { Writable } from 'svelte/store';
-import { ExtractedFormInfo, FormEl, FormErrors, FormValues } from '../types/forms';
-import { extractCheckbox, extractData, extractRadio, extractSelect } from './extract';
-import { hasMultipleNames, isMultiCheckbox } from './fields';
-import { checkboxMultiUpdate, inputMultiUpdate } from './multi-value';
+import { writable } from 'svelte/store';
+import { ExtractedFormInfo, FormEl, FormulaError, FormValues } from '../types/forms';
+import { extractCheckbox, extractData, extractFile, extractRadio, extractSelect } from './extract';
+import { FormulaStores } from '../types/formula';
+import { ValidationFn } from '../types/validation';
 
 /**
  * Initialise the value of the store with the details provided
  * @param details
- * @param values
- * @param errors
- * @param touched
+ * @param stores
  */
-function initValues(
-  details: ExtractedFormInfo,
-  values: Writable<FormValues>,
-  errors: Writable<FormErrors>,
-  touched: Writable<Record<string, boolean>>,
-) {
-  values.update((state) => ({ ...state, [details.name]: details.value }));
-  errors.update((state) => ({
+function initValues(details: ExtractedFormInfo, stores: FormulaStores) {
+  stores.formValues.update((state) => ({ ...state, [details.name]: details.value }));
+  stores.validity.update((state) => ({
     ...state,
     [details.name]: {
       valid: details.valid,
@@ -27,46 +20,77 @@ function initValues(
       errors: details.errors,
     },
   }));
-  touched.update((state) => ({ ...state, [details.name]: false }));
 }
 
 /**
  * Create the initial value type for the current element, handling cases for multiple
  * values
+ * @param name
  * @param el
- * @param allElements
- * @param values
- * @param errors
- * @param touched
+ * @param groupElements
+ * @param stores
+ * @param customValidators
  */
 export function createInitialValues(
+  name: string,
   el: FormEl,
-  allElements: FormEl[],
-  values: Writable<FormValues>,
-  errors: Writable<FormErrors>,
-  touched: Writable<Record<string, boolean>>,
+  groupElements: FormEl[],
+  stores: FormulaStores,
+  customValidators: Record<string, ValidationFn>,
 ) {
-  let details: ExtractedFormInfo;
   if (el instanceof HTMLSelectElement) {
-    details = extractSelect(el);
-  } else if (el.type === 'radio') {
-    details = extractRadio(el as HTMLInputElement);
-  } else if (el.type === 'checkbox') {
-    const name = el.getAttribute('name') as string;
-    const isMultiple = isMultiCheckbox(name, allElements);
-    let updateMultiple;
-    if (isMultiple) {
-      updateMultiple = checkboxMultiUpdate(name);
-    }
-    details = extractCheckbox(el as HTMLInputElement, updateMultiple);
+    initValues(extractSelect(name, el as HTMLSelectElement, customValidators), stores);
   } else {
-    const name = el.getAttribute('name') as string;
-    const isMultiple = hasMultipleNames(name, allElements);
-    let updateMultiple;
-    if (isMultiple) {
-      updateMultiple = inputMultiUpdate(name);
+    switch (el.type) {
+      case 'checkbox': {
+        initValues(
+          extractCheckbox(name, el as HTMLInputElement, groupElements as HTMLInputElement[], customValidators),
+          stores,
+        );
+        break;
+      }
+      case 'file': {
+        initValues(extractFile(name, el as HTMLInputElement, customValidators), stores);
+        break;
+      }
+      case 'radio': {
+        initValues(extractRadio(name, el as HTMLInputElement), stores);
+        break;
+      }
+      default: {
+        initValues(extractData(name, el, groupElements, customValidators), stores);
+      }
     }
-    details = extractData(el, updateMultiple);
   }
-  initValues(details, values, errors, touched);
+}
+
+/**
+ * Get the initial value from the passed elements
+ * @param name
+ * @param elements
+ * @param stores
+ * @param validations
+ */
+export function getInitialValue(
+  name: string,
+  elements: FormEl[],
+  stores: FormulaStores,
+  validations: Record<string, ValidationFn>,
+) {
+  elements.forEach((el) => createInitialValues(name, el, elements, stores, validations));
+}
+
+/**
+ * Create the stores for the instance
+ */
+export function createStores(): FormulaStores {
+  return {
+    formValues: writable<FormValues>({}),
+    submitValues: writable<FormValues>({}),
+    touched: writable<Record<string, boolean>>({}),
+    dirty: writable<Record<string, boolean>>({}),
+    validity: writable<Record<string, FormulaError>>({}),
+    formValidity: writable<Record<string, string>>({}),
+    isFormValid: writable<boolean>(false),
+  };
 }

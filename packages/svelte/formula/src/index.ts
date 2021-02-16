@@ -1,9 +1,10 @@
 import { createForm } from './lib/form';
-import { writable, Writable } from 'svelte/store';
-import { FormErrors, FormValues } from './types/forms';
+import { FormulaError, FormValues } from './types/forms';
 import { FormulaOptions } from './types/options';
+import { Formula } from './types/formula';
+import { createStores } from './lib/init';
 
-export { FormValues, FormErrors };
+export { FormulaError, FormValues };
 
 /**
  * The `formula` function returns a form object that can be bound to any HTML
@@ -12,64 +13,14 @@ export { FormValues, FormErrors };
  * @param options Optional options that the library supports, none of these options are
  * required to use Formula
  */
-export function formula(options?: FormulaOptions) {
-  const formValues = writable<FormValues>({});
-  const submitValues = writable<FormValues>({});
-  const touched = writable<Record<string, boolean>>({});
-  const dirty = writable<Record<string, boolean>>({});
-  const validity = writable<FormErrors>({});
-  const formValidity = writable<Record<string, string>>({});
-  const isFormValid = writable<boolean>(false);
+export function formula(options?: FormulaOptions): Formula {
+  const stores = createStores();
 
   return {
-    /**
-     * The form action, this is used with Sveltes `use` directive which attaches to any element
-     * and handles internal form state creation
-     */
     form: createForm({
-      formValues,
-      submitValues,
-      formValidity,
-      validity,
-      isFormValid,
-      touched,
-      dirty,
+      ...stores,
       options,
     }),
-    /**
-     * The store with the current form values
-     * @typedef Writable<FormValues>
-     */
-    formValues,
-    /**
-     * The store with the form values at time of form submission
-     * @typedef Writable<FormValues>
-     */
-    submitValues,
-    /**
-     * Store containing form-level validity if providing custom validators for the entire form
-     * @typedef Writable<Record<string, string>>
-     */
-    formValidity,
-    /**
-     * Store with the current touched state of elements
-     * @typedef Writable<Record<string, boolean>>
-     */
-    touched,
-    /**
-     * Store with the current dirty state of elements
-     * @typedef Writable<Record<string, boolean>>
-     */
-    dirty,
-    /**
-     * The store with the current form errors
-     * @typedef Writable<FormErrors>
-     */
-    validity,
-    /**
-     * Store containing the current overall validity state of the form
-     * @typedef Writable<boolean>
-     */
-    isFormValid,
+    ...stores,
   };
 }

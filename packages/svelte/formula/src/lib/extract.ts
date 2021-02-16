@@ -5,21 +5,39 @@ import { ValidationRules } from '../types/validation';
 /**
  * Generic handle for extracting data from an `<input>` or `<textarea>` element that
  * doesn't have a special case
- * @param el
- * @param updateMultiple
+ * @param name
+ * @param element
+ * @param groupElements
  * @param customValidators
  */
-export function extractData(el: FormEl, updateMultiple?: any, customValidators?: ValidationRules): ExtractedFormInfo {
-  const name = el.getAttribute('name') as string;
+export function extractData(
+  name: string,
+  element: FormEl,
+  groupElements: FormEl[],
+  customValidators?: ValidationRules,
+): ExtractedFormInfo {
+  const validValue = element.value === '' || typeof element.value === 'undefined' ? '' : element.value;
+  let value: unknown | unknown[] =
+    groupElements.length > 1
+      ? groupElements
+          .map((v) => {
+            if (v.id === element.id) {
+              return validValue;
+            }
+            return v.value;
+          })
+          .filter((v) => v !== '')
+      : validValue;
 
-  let val;
-  if (['number', 'range'].includes(el.getAttribute('type'))) {
-    val = el.value === '' ? undefined : parseInt(el.value);
-  } else {
-    val = el.value;
+  if (['number', 'range'].includes(element.getAttribute('type'))) {
+    if (Array.isArray(value)) {
+      value = value.length > 0 ? value.map((v) => parseFloat(v)) : [];
+    } else {
+      value = value !== '' ? parseFloat(value as string) : null;
+    }
   }
-  const value = updateMultiple ? updateMultiple(el.id, val) : val;
-  const validity = checkValidity(el, value, customValidators);
+
+  const validity = checkValidity(element, value, customValidators);
 
   return {
     name,
@@ -31,18 +49,26 @@ export function extractData(el: FormEl, updateMultiple?: any, customValidators?:
 /**
  * Extract the data from an `<input type="checkbox"> element - this returns a boolean value
  * if a single checkbox.  If multiple checkboxes are detected it returns an array value
- * @param el
- * @param updateMultiple
+ * @param name
+ * @param element The element being checked
+ * @param elements All elements from the name group
  * @param customValidators
  */
 export function extractCheckbox(
-  el: HTMLInputElement,
-  updateMultiple?: any,
+  name: string,
+  element: HTMLInputElement,
+  elements: HTMLInputElement[],
   customValidators?: ValidationRules,
 ): ExtractedFormInfo {
-  const name = el.getAttribute('name') as string;
-  const value = updateMultiple ? updateMultiple(el.checked, el.value) : el.checked;
-  const validity = checkValidity(el, value, customValidators);
+  const value =
+    elements.length > 1
+      ? elements
+          .map((e) =>
+            e.id === element.id ? (element.checked && element.value) || null : (e.checked && e.value) || null,
+          )
+          .filter((v) => v !== null)
+      : element.checked;
+  const validity = checkValidity(element, value, customValidators);
   return {
     name,
     value,
@@ -54,11 +80,15 @@ export function extractCheckbox(
  * Extract the data from an `<input type="radio">` element, returning the value
  * only for checked items, this works both with initial values and when the user
  * selects a value
+ * @param name
  * @param el
  * @param customValidators
  */
-export function extractRadio(el: HTMLInputElement, customValidators?: ValidationRules): ExtractedFormInfo {
-  const name = el.getAttribute('name') as string;
+export function extractRadio(
+  name: string,
+  el: HTMLInputElement,
+  customValidators?: ValidationRules,
+): ExtractedFormInfo {
   const value = el.checked ? el.value : '';
   const validity = checkValidity(el, value, customValidators);
   return {
@@ -71,10 +101,15 @@ export function extractRadio(el: HTMLInputElement, customValidators?: Validation
 /**
  * Extract the data from a `<select>` element - here we can support single values
  * or if the field is multiple it will return an array of values
+ * @param name
  * @param el
  * @param customValidators
  */
-export function extractSelect(el: HTMLSelectElement, customValidators?: ValidationRules): ExtractedFormInfo {
+export function extractSelect(
+  name: string,
+  el: HTMLSelectElement,
+  customValidators?: ValidationRules,
+): ExtractedFormInfo {
   /**
    * As the `HTMLCollectionOf` is not iterable, we have to loop over it with
    * a for loop instead
@@ -90,7 +125,6 @@ export function extractSelect(el: HTMLSelectElement, customValidators?: Validati
     return value;
   }
 
-  const name = el.getAttribute('name') as string;
   const value = el.multiple ? getMultiValue(el.selectedOptions) : el.value;
   const validity = checkValidity(el, value, customValidators);
   return {
@@ -102,11 +136,11 @@ export function extractSelect(el: HTMLSelectElement, customValidators?: Validati
 
 /**
  * Extract data from the files
+ * @param name
  * @param el
  * @param customValidators
  */
-export function extractFile(el: HTMLInputElement, customValidators?: ValidationRules): ExtractedFormInfo {
-  const name = el.getAttribute('name') as string;
+export function extractFile(name: string, el: HTMLInputElement, customValidators?: ValidationRules): ExtractedFormInfo {
   const value = el.files;
   const validity = checkValidity(el, value, customValidators);
   return {

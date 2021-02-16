@@ -1,6 +1,6 @@
-import { Writable } from 'svelte/store';
-import { FormEl, FormValues } from '../types/forms';
+import { FormEl } from '../types/forms';
 import { ValidationRules } from '../types/validation';
+import { FormulaStores } from '../types/formula';
 
 /**
  * Extract the errors from the element validity - as it's not enumerable, it cannot be
@@ -22,26 +22,19 @@ export function extractErrors(el: FormEl): Record<string, boolean> {
 
 /**
  * Do form level validations
- * @param formValues
- * @param formValidity
- * @param isFormValid
+ * @param stores
  * @param customValidators
  */
-export function checkFormValidity(
-  formValues: Writable<FormValues>,
-  formValidity: Writable<Record<string, string>>,
-  isFormValid: Writable<boolean>,
-  customValidators: ValidationRules,
-) {
-  return formValues.subscribe((values) => {
-    formValidity.set({});
+export function checkFormValidity(stores: FormulaStores, customValidators: ValidationRules) {
+  return stores.formValues.subscribe((values) => {
+    stores.formValidity.set({});
     const validators = Object.entries(customValidators);
     for (let i = 0; i < validators.length; i++) {
       const [name, validator] = validators[i];
       const invalid = validator(values);
-      if (invalid) {
-        formValidity.update((state) => ({ ...state, [name]: invalid }));
-        isFormValid.set(false);
+      if (invalid !== null) {
+        stores.formValidity.update((state) => ({ ...state, [name]: invalid }));
+        stores.isFormValid.set(false);
       }
     }
   });
@@ -59,7 +52,7 @@ export function checkValidity(el: FormEl, value: unknown | unknown[], customVali
     message: el.validationMessage,
     errors: extractErrors(el),
   };
-  if (customValidators) {
+  if ((value !== '' || value !== null) && customValidators) {
     const validators = Object.entries(customValidators);
 
     for (let i = 0; i < validators.length; i++) {

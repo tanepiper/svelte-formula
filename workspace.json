@@ -1,6 +1,116 @@
 {
   "version": 2,
   "projects": {
+    "docs-site": {
+      "projectType": "application",
+      "root": "packages/docs-site",
+      "sourceRoot": "packages/docs-site/src",
+      "targets": {
+        "build": {
+          "executor": "@nx-plus/docusaurus:browser",
+          "options": {
+            "outputPath": "dist/packages/docs-site"
+          }
+        },
+        "serve": {
+          "executor": "@nx-plus/docusaurus:dev-server",
+          "options": {
+            "port": 3000
+          }
+        }
+      }
+    },
+    "formula-app": {
+      "projectType": "application",
+      "root": "apps/formula-app",
+      "sourceRoot": "apps/formula-app/src",
+      "targets": {
+        "build": {
+          "executor": "@nxext/svelte:build",
+          "options": {
+            "outputPath": "dist/apps/formula-app",
+            "entryFile": "apps/formula-app/src/main.ts",
+            "tsConfig": "apps/formula-app/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "/*",
+                "input": "./public/**",
+                "output": "./"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "dev": false
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nxext/svelte:build",
+          "options": {
+            "outputPath": "dist/apps/formula-app",
+            "entryFile": "apps/formula-app/src/main.ts",
+            "tsConfig": "apps/formula-app/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "/*",
+                "input": "./public/**",
+                "output": "./"
+              }
+            ],
+            "watch": true,
+            "serve": true
+          },
+          "configurations": {
+            "production": {
+              "prod": true
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": "apps/formula-app/tsconfig.app.json",
+            "exclude": ["**/node_modules/**", "!apps/formula-app/**/*"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/formula-app/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "formula-app-e2e": {
+      "root": "packages/formula-app-e2e",
+      "sourceRoot": "packages/formula-app-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "packages/formula-app-e2e/cypress.json",
+            "tsConfig": "packages/formula-app-e2e/tsconfig.e2e.json",
+            "devServerTarget": "formula-app:serve",
+            "baseUrl": "http://localhost:5000"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "formula-app:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["packages/formula-app-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
     "svelte-formula": {
       "root": "packages/svelte/formula",
       "sourceRoot": "packages/svelte/formula/src",
@@ -42,12 +152,12 @@
             "assets": [
               {
                 "glob": "README.md",
-                "input": "packages/svelte/formula/.",
+                "input": ".",
                 "output": "."
               },
               {
                 "glob": "CHANGELOG.md",
-                "input": "packages/svelte/formula/.",
+                "input": ".",
                 "output": "."
               },
               {
@@ -56,25 +166,6 @@
                 "output": "."
               }
             ]
-          }
-        }
-      }
-    },
-    "docs-site": {
-      "projectType": "application",
-      "root": "packages/docs-site",
-      "sourceRoot": "packages/docs-site/src",
-      "targets": {
-        "build": {
-          "executor": "@nx-plus/docusaurus:browser",
-          "options": {
-            "outputPath": "dist/packages/docs-site"
-          }
-        },
-        "serve": {
-          "executor": "@nx-plus/docusaurus:dev-server",
-          "options": {
-            "port": 3000
           }
         }
       }
