@@ -38,3 +38,7 @@ testem.log
 .DS_Store
 Thumbs.db
 /docs/
+
+# Generated Docusaurus files
+.docusaurus/
+.cache-loader/

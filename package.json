@@ -27,6 +27,11 @@
   },
   "private": true,
   "dependencies": {
+    "@docusaurus/core": "^2.0.0-alpha.61",
+    "@docusaurus/preset-classic": "^2.0.0-alpha.61",
+    "clsx": "^1.1.1",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
     "svelte": "^3.32.3"
   },
   "devDependencies": {
@@ -39,6 +44,7 @@
     "@nrwl/tao": "11.2.12",
     "@nrwl/web": "^11.2.12",
     "@nrwl/workspace": "11.2.12",
+    "@nx-plus/docusaurus": "^10.4.0",
     "@types/jest": "26.0.8",
     "@types/node": "12.12.38",
     "@typescript-eslint/eslint-plugin": "4.3.0",
