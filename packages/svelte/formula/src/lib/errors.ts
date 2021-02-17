@@ -30,47 +30,24 @@ function extractErrors(el: FormEl, custom?: Record<string, boolean>): Record<str
 }
 
 /**
- * Check for custom messages contained in data attributes, or within the passed options
- * @param name
- * @param errors
- * @param el
- * @param messages
+ * Get the result of any custom validations available on the fields.
+ * @param value
+ * @param validations
  */
-function checkForCustomMessage(
-  name: string,
-  errors: Record<string, boolean>,
-  el: FormEl,
-  messages: Record<string, string>,
-): string {
-  return '';
-  // Object.keys(errors).reduce((message, errorKey) => {
-  //   if (dataSet[errorKey]) {
-  //     return dataSet[errorKey];
-  //   } else if (customMessages[errorKey]) {
-  //     return customMessages[errorKey];
-  //   }
-  //     }, '');
-}
-
 function getCustomValidations(
-  name: string,
   value: unknown | unknown[],
   validations: Record<string, ValidationFn> = {},
 ): [Record<string, string>, Record<string, boolean>] {
   let messages: Record<string, string> = {};
   let errors: Record<string, boolean> = {};
 
-  if ((value !== '' || value !== null) && validations && validations[name]) {
-    const customValidators = Object.entries(validations[name]);
-    for (let i = 0; i < customValidators.length; i++) {
-      const [name, validator] = customValidators[i];
-      const message = validator(value);
-      if (message !== null) {
-        messages[name] = message;
-        errors[name] = true;
-      }
+  Object.entries(validations).forEach(([key, validation]) => {
+    const message = validation(value);
+    if (message !== null) {
+      messages[key] = message;
+      errors[key] = true;
     }
-  }
+  });
   return [messages, errors];
 }
 
@@ -137,7 +114,7 @@ export function createValidationChecker(inputGroup: string, options?: FormulaOpt
     // Check for any custom messages in the options or dataset
     const customMessages = { ...options?.messages?.[inputGroup], ...el.dataset };
     // Check for any custom validations
-    const [messages, customErrors] = getCustomValidations(inputGroup, elValue, options?.validators?.[inputGroup]);
+    const [messages, customErrors] = getCustomValidations(elValue, options?.validators?.[inputGroup]);
 
     const errors = extractErrors(el, customErrors);
     const errorKeys = Object.keys(errors);
@@ -149,7 +126,7 @@ export function createValidationChecker(inputGroup: string, options?: FormulaOpt
       // Check for custom messages
     } else {
       if (customMessages[errorKeys[0]]) {
-        el.setCustomValidity(errorKeys[0]);
+        el.setCustomValidity(customMessages[errorKeys[0]]);
       }
     }
     // Recheck validity and show any messages
