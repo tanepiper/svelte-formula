@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { createDirtyHandler } from 'packages/svelte/formula/src/lib/dirty';
+import { createDirtyHandler } from './dirty';
 
 describe('Formula Dirty Check', () => {
   const storeMock: any = {
