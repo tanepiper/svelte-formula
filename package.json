@@ -25,7 +25,8 @@
     "start": "nx serve",
     "test": "nx test",
     "update": "nx migrate latest",
-    "workspace-generator": "nx workspace-generator"
+    "workspace-generator": "nx workspace-generator",
+    "docs": "nx build docs-site"
   },
   "private": true,
   "dependencies": {
