@@ -166,4 +166,102 @@ describe('Formula Event Handlers', () => {
       })();
     });
   });
+
+  describe('Text Fields', () => {
+    let el;
+    let destroyHandler;
+
+    beforeEach(() => {
+      el = document.createElement('input');
+      el.id = 'test1';
+      el.type = 'text';
+      el.setAttribute('name', 'testing');
+      document.body.appendChild(el);
+    });
+
+    afterEach(() => {
+      document.body.removeChild(el);
+      destroyHandler();
+    });
+
+    it('should create a handler for a single text boxes', () => {
+      destroyHandler = createHandler('testing', 'keyup', el, [el], storeMock, {});
+
+      el.value = 'A';
+      el.dispatchEvent(new KeyboardEvent('keyup', { key: 'A' }));
+      storeMock.formValues.subscribe((value) => {
+        expect(value).toStrictEqual({ testing: 'A' });
+      })();
+    });
+
+    it('should create a handler for a multiple text boxes', () => {
+      const el2 = document.createElement('input');
+      el2.id = 'test2';
+      el2.type = 'text';
+      el2.setAttribute('name', 'testing');
+      document.body.appendChild(el2);
+
+      destroyHandler = createHandler('testing', 'keyup', el, [el, el2], storeMock, {});
+      const secondHandler = createHandler('testing', 'keyup', el2, [el, el2], storeMock, {});
+
+      el.value = 'A';
+      el.dispatchEvent(new KeyboardEvent('keyup', { key: 'A' }));
+      el2.value = 'B';
+      el2.dispatchEvent(new KeyboardEvent('keyup', { key: 'B' }));
+      storeMock.formValues.subscribe((value) => {
+        expect(value).toStrictEqual({ testing: ['A', 'B'] });
+      })();
+      secondHandler();
+      document.body.removeChild(el2);
+    });
+  });
+
+  describe('Number Fields', () => {
+    let el;
+    let destroyHandler;
+
+    beforeEach(() => {
+      el = document.createElement('input');
+      el.id = 'test1';
+      el.type = 'number';
+      el.setAttribute('name', 'testing');
+      document.body.appendChild(el);
+    });
+
+    afterEach(() => {
+      document.body.removeChild(el);
+      destroyHandler();
+    });
+
+    it('should create a handler for a single number boxes', () => {
+      destroyHandler = createHandler('testing', 'keyup', el, [el], storeMock, {});
+
+      el.value = '5';
+      el.dispatchEvent(new KeyboardEvent('keyup', { key: '5' }));
+      storeMock.formValues.subscribe((value) => {
+        expect(value).toStrictEqual({ testing: 5 });
+      })();
+    });
+
+    it('should create a handler for a multiple number boxes', () => {
+      const el2 = document.createElement('input');
+      el2.id = 'test2';
+      el2.type = 'number';
+      el2.setAttribute('name', 'testing');
+      document.body.appendChild(el2);
+
+      destroyHandler = createHandler('testing', 'keyup', el, [el, el2], storeMock, {});
+      const secondHandler = createHandler('testing', 'keyup', el2, [el, el2], storeMock, {});
+
+      el.value = '1';
+      el.dispatchEvent(new KeyboardEvent('keyup', { key: '1' }));
+      el2.value = '2';
+      el2.dispatchEvent(new KeyboardEvent('keyup', { key: '2' }));
+      storeMock.formValues.subscribe((value) => {
+        expect(value).toStrictEqual({ testing: [1, 2] });
+      })();
+      secondHandler();
+      document.body.removeChild(el2);
+    });
+  });
 });
