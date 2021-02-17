@@ -1,4 +1,4 @@
-import { createFormValidator, createValidationChecker } from 'packages/svelte/formula/src/lib/errors';
+import { createFormValidator, createValidationChecker } from './errors';
 import { writable } from 'svelte/store';
 
 describe('Formula Field Validation', () => {
