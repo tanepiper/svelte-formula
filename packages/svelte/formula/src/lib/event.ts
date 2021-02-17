@@ -21,7 +21,7 @@ function valueUpdate(details: FormulaField, stores: FormulaStores): void {
       ...state,
       [details.name]: {
         valid: details.valid,
-        invalid: !details.valid,
+        invalid: details.invalid,
         errors: details.errors,
         message: details.message,
       },

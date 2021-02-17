@@ -6,33 +6,6 @@
 export type FormEl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
 /**
- * Internally extracted data from the form element, used to generate other store values
- * @internal
- */
-export interface FormulaField {
-  /**
-   * The name of the field being handled
-   */
-  name?: string;
-  /**
-   * The current value or values of the field
-   */
-  value: unknown | unknown[];
-  /**
-   * If the field is valid
-   */
-  valid: boolean;
-  /**
-   * Any messages on the field from validation errors
-   */
-  message: string;
-  /**
-   * Any errors from validations from HTML or custom validation
-   */
-  errors: Record<string, boolean>;
-}
-
-/**
  * An error state for an form input
  */
 export interface FormulaError {
@@ -52,6 +25,21 @@ export interface FormulaError {
    * The errors from the {@link https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation|Contraint Validation API}
    */
   errors: Record<string, boolean>;
+}
+
+/**
+ * Internally extracted data from the form element, used to generate other store values
+ * @internal
+ */
+export interface FormulaField extends FormulaError {
+  /**
+   * The name of the field being handled
+   */
+  name: string;
+  /**
+   * The current value or values of the field
+   */
+  value: unknown | unknown[];
 }
 
 /**

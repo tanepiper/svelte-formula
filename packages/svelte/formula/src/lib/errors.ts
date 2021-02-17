@@ -1,4 +1,4 @@
-import { FormEl } from '../types/forms';
+import { FormEl, FormulaError } from '../types/forms';
 import { ValidationRule } from '../types/validation';
 import { FormulaStores } from '../types/formula';
 import { FormulaOptions } from '../types/options';
@@ -34,11 +34,11 @@ function checkForCustomMessage(
   errors: Record<string, boolean>,
   el: FormEl,
   options?: FormulaOptions,
-): string | undefined {
+): string {
   let { messages } = options;
   const customMessages = (messages && messages[name]) || {};
 
-  let message;
+  let message = '';
   const dataSet = el.dataset;
   Object.keys(dataSet).forEach((key) => {
     if (errors[key]) {
@@ -78,19 +78,35 @@ export function createFormValidator(stores: FormulaStores, customValidators: Val
 }
 
 /**
- * Check the validity of a field and against custom validators
- * @param name
- * @param options
+ * Create a validation checker for an element group - when an element has been updated.  If there are no options
+ * just return the element validity. If there are options, check with custom validators if thet exist,
+ * and also check for custom messages
+ *
+ * @private
+ *
+ * @param name The group name for the validator
+ * @param options The passed formula options
+ *
+ * @returns Function that is called each time an element is updated which returns field validity state
  */
 export function createValidationChecker(name: string, options?: FormulaOptions) {
   /**
-   * Method called each time we want to do validity
+   * Method called each time a field is updated
+   *
+   * @private
+   *
+   * @param el The element to check
+   * @param value The group value from the store
+   *
+   * @returns A Formula Error object
    */
-  return (el: FormEl, value: unknown | unknown[]) => {
+  return (el: FormEl, groupValue: unknown | unknown[]): FormulaError => {
     el.setCustomValidity('');
     if (!options) {
+      const valid = el.checkValidity();
       return {
-        valid: el.checkValidity(),
+        valid,
+        invalid: !valid,
         message: el.validationMessage,
         errors: extractErrors(el),
       };
@@ -99,11 +115,11 @@ export function createValidationChecker(name: string, options?: FormulaOptions) 
     const customErrors: Record<string, boolean> = {};
 
     // Handle custom validation
-    if ((value !== '' || value !== null) && validators && validators[name]) {
+    if ((groupValue !== '' || groupValue !== null) && validators && validators[name]) {
       const customValidators = Object.entries(validators[name]);
       for (let i = 0; i < customValidators.length; i++) {
         const [name, validator] = customValidators[i];
-        const message = validator(value);
+        const message = validator(groupValue);
         if (message !== null) {
           if (!el.validationMessage) {
             el.setCustomValidity(message);
@@ -117,8 +133,10 @@ export function createValidationChecker(name: string, options?: FormulaOptions) 
     const errors = extractErrors(el, customErrors);
     let message = checkForCustomMessage(name, errors, el, options);
 
+    const valid = el.checkValidity();
     return {
-      valid: el.checkValidity(),
+      valid,
+      invalid: !valid,
       message: message || el.validationMessage,
       errors,
     };

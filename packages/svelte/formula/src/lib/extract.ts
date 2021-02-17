@@ -44,7 +44,7 @@ export function createFieldExtract(name: string, elementGroup: FormEl[], options
  */
 export function createCheckboxExtract(name: string, elementGroup: FormEl[], options: FormulaOptions) {
   const validator = createValidationChecker(name, options);
-  return (element: HTMLInputElement) => {
+  return (element: HTMLInputElement): FormulaField => {
     const value =
       elementGroup.length > 1
         ? elementGroup
@@ -68,7 +68,7 @@ export function createCheckboxExtract(name: string, elementGroup: FormEl[], opti
  */
 export function createRadioExtract(name: string, options: FormulaOptions) {
   const validator = createValidationChecker(name, options);
-  return (element: HTMLInputElement) => {
+  return (element: HTMLInputElement): FormulaField => {
     const value = element.checked ? element.value : '';
     return {
       name,
@@ -101,7 +101,7 @@ export function createSelectExtract(name: string, options: FormulaOptions) {
     return value;
   }
 
-  return (element: HTMLSelectElement) => {
+  return (element: HTMLSelectElement): FormulaField => {
     const value = element.multiple ? getMultiValue(element.selectedOptions) : element.value;
     return {
       name,
@@ -118,7 +118,7 @@ export function createSelectExtract(name: string, options: FormulaOptions) {
  */
 export function createFileExtract(name: string, options: FormulaOptions) {
   const validator = createValidationChecker(name, options);
-  return (element: HTMLInputElement) => {
+  return (element: HTMLInputElement): FormulaField => {
     const value = element.files;
     return {
       name,
