@@ -34,15 +34,13 @@ export function createForm({ options, ...stores }: FormulaStores & { options?: F
     ];
 
     groupedMap.forEach(([name, elements]) => {
-      const customValidations = options?.validators?.[name];
-
       touchHandlers.add(createTouchHandlers(name, elements, stores));
-      getInitialValue(name, elements, stores, customValidations);
+      getInitialValue(name, elements, stores, options);
       dirtyHandlers.add(createDirtyHandler(name, elements, stores));
 
       elements.forEach((el) => {
         if (el instanceof HTMLSelectElement) {
-          changeHandlers.add(createHandler(name, 'change', el, elements, stores, customValidations));
+          changeHandlers.add(createHandler(name, 'change', el, elements, stores, options));
         } else {
           switch (el.type) {
             case 'radio':
@@ -53,11 +51,11 @@ export function createForm({ options, ...stores }: FormulaStores & { options?: F
             case 'date':
             case 'time':
             case 'week': {
-              changeHandlers.add(createHandler(name, 'change', el, elements, stores, customValidations));
+              changeHandlers.add(createHandler(name, 'change', el, elements, stores, options));
               break;
             }
             default:
-              keyupHandlers.add(createHandler(name, 'keyup', el, elements, stores, customValidations));
+              keyupHandlers.add(createHandler(name, 'keyup', el, elements, stores, options));
           }
         }
       });

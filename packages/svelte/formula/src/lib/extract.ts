@@ -1,115 +1,91 @@
-import { ExtractedFormInfo, FormEl } from '../types/forms';
+import { FormEl, FormulaField } from '../types/forms';
 import { checkValidity } from './errors';
-import { ValidationRules } from '../types/validation';
+import { FormulaOptions } from 'packages/svelte/formula/src/types/options';
 
 /**
- * Generic handle for extracting data from an `<input>` or `<textarea>` element that
- * doesn't have a special case
+ * Create a data handler for any type of input field
  * @param name
- * @param element
- * @param groupElements
- * @param customValidators
+ * @param elementGroup
+ * @param options
  */
-export function extractData(
-  name: string,
-  element: FormEl,
-  groupElements: FormEl[],
-  customValidators?: ValidationRules,
-): ExtractedFormInfo {
-  const validValue = element.value === '' || typeof element.value === 'undefined' ? '' : element.value;
-  let value: unknown | unknown[] =
-    groupElements.length > 1
-      ? groupElements
-          .map((v) => {
-            if (v.id === element.id) {
-              return validValue;
-            }
-            return v.value;
-          })
-          .filter((v) => v !== '')
-      : validValue;
+export function createFieldExtract(name: string, elementGroup: FormEl[], options: FormulaOptions) {
+  const validator = checkValidity(name, options);
 
-  if (['number', 'range'].includes(element.getAttribute('type'))) {
-    if (Array.isArray(value)) {
-      value = value.length > 0 ? value.map((v) => parseFloat(v)) : [];
-    } else {
-      value = value !== '' ? parseFloat(value as string) : null;
+  return (element: HTMLInputElement): FormulaField => {
+    const validValue =
+      element.value === '' || element.value === null || typeof element.value === 'undefined' ? '' : element.value;
+    let value: unknown | unknown[] =
+      elementGroup.length > 1
+        ? elementGroup.map((v) => (v.id === element.id ? validValue : v.value)).filter((v) => v !== '')
+        : validValue;
+
+    // Parse number values
+    if (['number', 'range'].includes(element.getAttribute('type'))) {
+      if (Array.isArray(value)) {
+        value = value.length > 0 ? value.map((v) => parseFloat(v)) : [];
+      } else {
+        value = value !== '' ? parseFloat(value as string) : null;
+      }
     }
-  }
 
-  const validity = checkValidity(element, value, customValidators);
-
-  return {
-    name,
-    value,
-    ...validity,
+    return {
+      name,
+      value,
+      ...validator(element, value),
+    };
   };
 }
 
 /**
- * Extract the data from an `<input type="checkbox"> element - this returns a boolean value
- * if a single checkbox.  If multiple checkboxes are detected it returns an array value
+ * Create a data handler for checkbox fields
  * @param name
- * @param element The element being checked
- * @param elements All elements from the name group
- * @param customValidators
+ * @param elementGroup
+ * @param options
  */
-export function extractCheckbox(
-  name: string,
-  element: HTMLInputElement,
-  elements: HTMLInputElement[],
-  customValidators?: ValidationRules,
-): ExtractedFormInfo {
-  const value =
-    elements.length > 1
-      ? elements
-          .map((e) =>
-            e.id === element.id ? (element.checked && element.value) || null : (e.checked && e.value) || null,
-          )
-          .filter((v) => v !== null)
-      : element.checked;
-  const validity = checkValidity(element, value, customValidators);
-  return {
-    name,
-    value,
-    ...validity,
+export function createCheckboxExtract(name: string, elementGroup: FormEl[], options: FormulaOptions) {
+  const validator = checkValidity(name, options);
+  return (element: HTMLInputElement) => {
+    const value =
+      elementGroup.length > 1
+        ? elementGroup
+            .map((e: HTMLInputElement) =>
+              e.id === element.id ? (element.checked && element.value) || null : (e.checked && e.value) || null,
+            )
+            .filter((v) => v !== null)
+        : element.checked;
+    return {
+      name,
+      value,
+      ...validator(element, value),
+    };
   };
 }
 
 /**
- * Extract the data from an `<input type="radio">` element, returning the value
- * only for checked items, this works both with initial values and when the user
- * selects a value
+ * Create a data handler for radio groups
  * @param name
- * @param el
- * @param customValidators
+ * @param options
  */
-export function extractRadio(
-  name: string,
-  el: HTMLInputElement,
-  customValidators?: ValidationRules,
-): ExtractedFormInfo {
-  const value = el.checked ? el.value : '';
-  const validity = checkValidity(el, value, customValidators);
-  return {
-    name,
-    value,
-    ...validity,
+export function createRadioExtract(name: string, options: FormulaOptions) {
+  const validator = checkValidity(name, options);
+  return (element: HTMLInputElement) => {
+    const value = element.checked ? element.value : '';
+    return {
+      name,
+      value,
+      ...validator(element, value),
+    };
   };
 }
 
 /**
- * Extract the data from a `<select>` element - here we can support single values
- * or if the field is multiple it will return an array of values
+ * Create a data handler for select fields
  * @param name
- * @param el
- * @param customValidators
+ * @param options
  */
-export function extractSelect(
-  name: string,
-  el: HTMLSelectElement,
-  customValidators?: ValidationRules,
-): ExtractedFormInfo {
+export function createSelectExtract(name: string, options: FormulaOptions) {
+  const validator = checkValidity(name, options);
+
   /**
    * As the `HTMLCollectionOf` is not iterable, we have to loop over it with
    * a for loop instead
@@ -125,27 +101,29 @@ export function extractSelect(
     return value;
   }
 
-  const value = el.multiple ? getMultiValue(el.selectedOptions) : el.value;
-  const validity = checkValidity(el, value, customValidators);
-  return {
-    name,
-    value,
-    ...validity,
+  return (element: HTMLSelectElement) => {
+    const value = element.multiple ? getMultiValue(element.selectedOptions) : element.value;
+    return {
+      name,
+      value,
+      ...validator(element, value),
+    };
   };
 }
 
 /**
- * Extract data from the files
+ * Create a data handler for form fields
  * @param name
- * @param el
- * @param customValidators
+ * @param options
  */
-export function extractFile(name: string, el: HTMLInputElement, customValidators?: ValidationRules): ExtractedFormInfo {
-  const value = el.files;
-  const validity = checkValidity(el, value, customValidators);
-  return {
-    name,
-    value,
-    ...validity,
+export function createFileExtract(name: string, options: FormulaOptions) {
+  const validator = checkValidity(name, options);
+  return (element: HTMLInputElement) => {
+    const value = element.files;
+    return {
+      name,
+      value,
+      ...validator(element, value),
+    };
   };
 }

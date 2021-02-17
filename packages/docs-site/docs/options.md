@@ -11,17 +11,23 @@ rules - however it is also possible to pass custom validation rules via the `for
 
 ### `locale`
 
-Sets the locale of the form - currently only used in field index sorting for multi-value fields
+Sets the locale of the form - currently not used
+
+### `messages`
+
+Used for localisation and custom messages, this is a `Object` containing a key that is the field `name` to apply the
+messages to. The value is another `Object` that contains the key for each error (e.g. `valueMissing`) and the value is
+the replacement string.
 
 ### `validators`
 
-An Object containing a key that is the field `name` to apply the validation to, the value is another object that
+An `Object` containing a key that is the field `name` to apply the validation to, the value is another object that
 contains each named validation function. The result are made available in the `validity` store.
 
 ### `formValidators`
 
-An Object containing a key that is the name of the validation rule, and the function that returns the validation result.
-The results are available in the `formValidity` store
+An `Object` containing a key that is the name of the validation rule, and the function that returns the validation
+result. The results are available in the `formValidity` store
 
 When using custom `validators`
 
@@ -36,7 +42,12 @@ When using custom `validators`
   export let minPasswordStength = 85;
 
   const { form, validity, formValidity } = formula({
-    locale: 'de',
+    locale: 'en',
+    messages: {
+      postcode: {
+        valueMissing: 'You must enter a valid postcode'
+      }
+    }
     validators: {
       // Can provide multiple methods where the value can be checked
       username: {

@@ -24,7 +24,5 @@ export function createTouchHandlers(name: string, elements: FormEl[], stores: Fo
     elMap.set(el, handler);
   });
 
-  return () => {
-    [...elMap].forEach(([el, handler]) => el.removeEventListener('focus', handler));
-  };
+  return () => [...elMap].forEach(([el, handler]) => el.removeEventListener('focus', handler));
 }

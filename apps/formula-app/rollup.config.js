@@ -1,5 +1,4 @@
 module.exports = (config) => {
-  console.log('called');
   const { output, external, ...rest } = config;
 
   const updatedOutput = {

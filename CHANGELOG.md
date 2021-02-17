@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] 2021-02-17
+
+### Added
+
+- New [Documentation Site](https://tanepiper.github.io/svelte-formula/) (still WIP)
+- Added `messages` option to FormulaOptions, this is a key/value `Object` for setting custom validation messages per
+  error:
+
+  ```sveltehtml
+  <script>
+  import { formula } from 'svelte-formula'
+  const { form } = formula({
+    messages: {
+      valueMissing: 'Debes ingresar un nombre de usuario'
+    }
+  })
+  </script>
+  ```
+
+- Add support for validation messages via HTML `data-*` attributes - these will always take presidency over items in
+  the `messages` object if both exist. The format of the name should be a hyphen before any characters that are
+  uppercase (e.g `valueMissing` becomes `data-value-missing`)
+
+  ```html
+  <input type="text" name="postcode" required data-value-missing="Bitte geben Sie Ihre Postleitzahl ein" />
+  ```
+
+### Changed
+
+- More internal performance improvements
+
 ## [0.4.0] 2021-02-16
 
 ### Changed

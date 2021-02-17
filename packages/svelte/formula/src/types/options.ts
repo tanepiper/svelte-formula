@@ -1,20 +1,24 @@
-import { CustomValidationRules, ValidationRules } from './validation';
+import { CustomValidationMessages, ValidationRules, ValidationRule } from './validation';
 
 /**
  * Optional settings for Formula
  */
 export interface FormulaOptions {
   /**
-   * Override locale for sorting
+   * Locale for i18n - currently not used
    */
   locale?: string;
   /**
+   * Customised validity messages for each field error type
+   */
+  messages?: CustomValidationMessages;
+  /**
    * Custom Validators for fields
    */
-  validators?: CustomValidationRules;
+  validators?: ValidationRules;
 
   /**
    * Validation rules for the entire form
    */
-  formValidators?: ValidationRules;
+  formValidators?: ValidationRule;
 }

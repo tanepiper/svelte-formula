@@ -9,11 +9,26 @@ export type FormEl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
  * Internally extracted data from the form element, used to generate other store values
  * @internal
  */
-export interface ExtractedFormInfo {
+export interface FormulaField {
+  /**
+   * The name of the field being handled
+   */
   name?: string;
+  /**
+   * The current value or values of the field
+   */
   value: unknown | unknown[];
+  /**
+   * If the field is valid
+   */
   valid: boolean;
+  /**
+   * Any messages on the field from validation errors
+   */
   message: string;
+  /**
+   * Any errors from validations from HTML or custom validation
+   */
   errors: Record<string, boolean>;
 }
 
