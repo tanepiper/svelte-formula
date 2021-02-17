@@ -21,7 +21,7 @@ Emits when a user changes a field value then blurs
 
 #### Example
 
-```jsx
+```svelte
 <script>
   import {formula} from 'svelte-formula';
   const {form, dirty} = formula();
@@ -46,7 +46,7 @@ Emits when a user changes a value, then custom `formValidators` have been passed
 
 #### Example
 
-```jsx
+```svelte
 <script>
   import {formula} from 'svelte-formula';
   const {form, formValidity} = formula({
@@ -78,7 +78,7 @@ Emits when a user changes a value anywhere in the form
 
 #### Example
 
-```jsx
+```svelte
 <script>
   import {formula} from 'svelte-formula';
   const {form, formValues} = formula();
@@ -110,7 +110,7 @@ When form validity changes
 
 #### Example
 
-```jsx
+```svelte
 <script>
   import {formula} from 'svelte-formula';
   const {form, isFormValid} = formula();
@@ -138,7 +138,7 @@ Emits when a user submits a `<form>` element
 
 #### Example
 
-```jsx
+```svelte
 <script>
   import {formula} from 'svelte-formula';
   const {form, submitValues} = formula();
@@ -173,7 +173,7 @@ Emits when a user focuses on a field
 
 #### Example
 
-```jsx
+```svelte
 <script>
   import {formula} from 'svelte-formula';
   const {form, touched} = formula();
@@ -204,7 +204,7 @@ Emits when a user changes a value anywhere in the form
 
 #### Example
 
-```jsx
+```svelte
 <script>
   import {formula} from 'svelte-formula';
   const {form, validity} = formula();

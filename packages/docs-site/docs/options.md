@@ -27,7 +27,7 @@ When using custom `validators`
 
 ## Example
 
-```jsx
+```svelte
 
 <script>
   import { formula } from 'svelte-formula';
