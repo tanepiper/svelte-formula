@@ -21,7 +21,7 @@ sidebar_label: 'Input: Text'
 
 #### Example
 
-```jsx
+```svelte
 <script>
   import { formula } from 'svelte-formula';
   const { form, touched, validity } = formula();
@@ -49,7 +49,7 @@ sidebar_label: 'Input: Text'
 
 #### Example
 
-```jsx
+```svelte
 <script>
   import { formula } from 'svelte-formula';
   const { form, touched, validity } = formula();

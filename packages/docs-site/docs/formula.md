@@ -31,7 +31,7 @@ and across the form
 To create a reactive form, you need to bind the `form` action to any element using the [use](http://svelte.dev)
 directive in Svelte, you can then access several form states via the exported stores:
 
-```jsx
+```svelte
 <script>
   import { formula } from 'svelte-formula';
   const { form, formValues, touched, validity, isFormValid } = formula();
