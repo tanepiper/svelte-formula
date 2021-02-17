@@ -4,7 +4,7 @@ import { getInitialValue } from './init';
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
 import { FormulaOptions } from '../types/options';
-import { checkFormValidity } from './errors';
+import { createFormValidator } from './errors';
 import { FormulaStores } from '../types/formula';
 
 /**
@@ -63,7 +63,7 @@ export function createForm({ options, ...stores }: FormulaStores & { options?: F
 
     let unsub = () => {};
     if (options?.formValidators) {
-      unsub = checkFormValidity(stores, options.formValidators);
+      unsub = createFormValidator(stores, options.formValidators);
     }
 
     if (node instanceof HTMLFormElement) {
