@@ -30,6 +30,7 @@ export function createDirtyHandler(name: string, elements: FormEl[], stores: For
           }
         } else if (v[groupName] !== startValue) {
           stores.dirty.update((state) => ({ ...state, [groupName]: true }));
+          [...handlers].forEach(([el, handler]) => el.removeEventListener('blur', handler));
         }
       })();
     };
@@ -41,7 +42,5 @@ export function createDirtyHandler(name: string, elements: FormEl[], stores: For
     handlers.set(el, handler);
   });
 
-  return () => {
-    [...handlers].forEach(([el, handler]) => el.removeEventListener('blur', handler));
-  };
+  return () => [...handlers].forEach(([el, handler]) => el.removeEventListener('blur', handler));
 }

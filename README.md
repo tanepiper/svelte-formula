@@ -4,6 +4,8 @@
 
 [![svelte-formula](https://img.shields.io/npm/v/svelte-formula?label=svelte-formula)](https://www.npmjs.com/package/svelte-formula)
 
+[Documentation](https://tanepiper.github.io/svelte-formula/)
+
 Formula is a zero-configuration reactive form library for Svelte, currently in early development.
 
 This library uses HTML form attributes to do validation, and works with the localised message from the browser.
@@ -22,11 +24,12 @@ the `form` action and the available stores.
 While the library is zero-configuration it does support options which can be passed as an object to the `formula`
 constructor method.
 
-| Options          | Type     | Description                                                 |
-| ---------------- | -------- | ----------------------------------------------------------- |
-| `locale`         | `String` | Optional locale for `id` sorting when using multiple values |
-| `validators`     | `Object` | An object containing custom validators for fields           |
-| `formValidators` | `Object` | An object containing custom validators for the form         |
+| Options          | Type     | Description                                                                                                   |
+| ---------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `locale`         | `String` | Optional locale for `id` sorting when using multiple values                                                   |
+| `messages`       | `Object` | An object containing a key for each named field and an object containing key/value text with replacement text |
+| `validators`     | `Object` | An object containing custom validators for fields                                                             |
+| `formValidators` | `Object` | An object containing custom validators for the form                                                           |
 
 ### Example
 
@@ -82,8 +85,8 @@ element
 
 ### formValidity
 
-A store that contains a key/value `Object` of errors on the form when using `formValidators` - unlike `validity` this only
-contains a key and string value that is any message from the validator.
+A store that contains a key/value `Object` of errors on the form when using `formValidators` - unlike `validity` this
+only contains a key and string value that is any message from the validator.
 
 ### isFormValid
 
@@ -126,6 +129,18 @@ precedence over custom validations (e.g. `<input required>` message will always 
 Custom validators also support multi-value fields, but in this case an `id` must be set on each field to provide
 uniqueness (such as an index value)
 
+### Custom Validation Text & Localisation
+
+It's possible to provide custom localisation or text for error messages, they can be provided two ways:
+
+- In the `formula` constructor pass a `messages` object. They key should be the `name` of the field. The value is
+  an `Object` containing the key of the error the message is for, and the value the replacement string.
+
+- In the HTML add a `data-*` property for the value, separating any camel case values with a hyphen (e.g. `valueMissing`
+  becomes `data-value-missing`)
+
+In order of precedence, the data value will always come before the constructor options
+
 ### Example
 
 ```sveltehtml
@@ -134,6 +149,11 @@ uniqueness (such as an index value)
   import { formula } from 'svelte-formula';
 
   const { form, validity } = formula({
+    messages: {
+      username: {
+        valueMissing: 'You really should put an email address in'
+      }
+    },
     validators: {
       username: {
         inCompanyDomain: (value: string) => value.includes('@ourdomain.com') ? null : 'Your username must contain an @ourdomain.com email'
@@ -146,7 +166,8 @@ uniqueness (such as an index value)
 </script>
 <form use:form>
   <label for='signup-username'>Username</label>
-  <input type='email' name='username' id='signup-username' required minlength='8' />
+  <input type='email' name='username' id='signup-username' required minlength='8'
+         data-value-missing='This error message will appear before the one in the options' />
   <div hidden={$validity?.email?.valid}>{$validity?.email?.message}</div>
 
   <input type='text' name='invoiceIds' id='1' />
@@ -201,10 +222,11 @@ field based on another form field condition)
 
 - [x] Custom field-level validation via `formula` options
 - [x] Custom form-level validation via `formula` options
+- [x] Support for localised messages for validation errors
 
 ### Other Items
 
-- [ ] Add Unit Tests
-- [ ] Add full documentation
+- [ ] Add Unit Tests - IN PROGRESS
+- [ ] Add full documentation - IN PROGRESS
 
 Icon made by [Eucalyp](https://creativemarket.com/eucalyp) from [flaticon.com](https://www.flaticon.com)

@@ -1,13 +1,15 @@
 import { FormEl } from '../types/forms';
-import { ValidationRules } from '../types/validation';
+import { ValidationRule } from '../types/validation';
 import { FormulaStores } from '../types/formula';
+import { FormulaOptions } from '../types/options';
 
 /**
  * Extract the errors from the element validity - as it's not enumerable, it cannot be
  * destructured and we need to loop over the keys manually
  * @param el
+ * @param custom
  */
-export function extractErrors(el: FormEl): Record<string, boolean> {
+export function extractErrors(el: FormEl, custom?: Record<string, boolean>): Record<string, boolean> {
   const output: any = {};
   for (let key in el.validity) {
     if (key !== 'valid') {
@@ -17,7 +19,7 @@ export function extractErrors(el: FormEl): Record<string, boolean> {
       }
     }
   }
-  return output;
+  return { ...output, ...custom };
 }
 
 /**
@@ -25,7 +27,7 @@ export function extractErrors(el: FormEl): Record<string, boolean> {
  * @param stores
  * @param customValidators
  */
-export function checkFormValidity(stores: FormulaStores, customValidators: ValidationRules) {
+export function checkFormValidity(stores: FormulaStores, customValidators: ValidationRule) {
   return stores.formValues.subscribe((values) => {
     stores.formValidity.set({});
     const validators = Object.entries(customValidators);
@@ -40,35 +42,76 @@ export function checkFormValidity(stores: FormulaStores, customValidators: Valid
   });
 }
 
+function checkForCustomMessage(
+  name: string,
+  errors: Record<string, boolean>,
+  el: FormEl,
+  options?: FormulaOptions,
+): string | undefined {
+  let { messages } = options;
+  const customMessages = (messages && messages[name]) || {};
+
+  let message;
+  const dataSet = el.dataset;
+  Object.keys(dataSet).forEach((key) => {
+    if (errors[key]) {
+      message = dataSet[key];
+    }
+  });
+  if (!message) {
+    Object.keys(customMessages).forEach((key) => {
+      if (errors[key]) {
+        message = customMessages[key];
+      }
+    });
+  }
+  return message;
+}
+
 /**
  * Check the validity of a field and against custom validators
- * @param el
- * @param value
- * @param customValidators
+ * @param name
+ * @param options
  */
-export function checkValidity(el: FormEl, value: unknown | unknown[], customValidators?: ValidationRules) {
-  const result = {
-    valid: el.checkValidity(),
-    message: el.validationMessage,
-    errors: extractErrors(el),
-  };
-  if ((value !== '' || value !== null) && customValidators) {
-    const validators = Object.entries(customValidators);
+export function checkValidity(name: string, options?: FormulaOptions) {
+  /**
+   * Method called each time we want to do validity
+   */
+  return (el: FormEl, value: unknown | unknown[]) => {
+    el.setCustomValidity('');
+    if (!options) {
+      return {
+        valid: el.checkValidity(),
+        message: el.validationMessage,
+        errors: extractErrors(el),
+      };
+    }
+    const { validators } = options;
+    const customErrors: Record<string, boolean> = {};
 
-    for (let i = 0; i < validators.length; i++) {
-      const [name, validator] = validators[i];
-      const message = validator(value);
-      if (message === null) {
-        continue;
-      }
-      if (result.valid === true) {
-        result.valid = false;
-        result.message = message;
-        result.errors[name] = true;
-      } else {
-        result.errors[name] = true;
+    // Handle custom validation
+    if ((value !== '' || value !== null) && validators && validators[name]) {
+      const customValidators = Object.entries(validators[name]);
+      for (let i = 0; i < customValidators.length; i++) {
+        const [name, validator] = customValidators[i];
+        const message = validator(value);
+        if (message !== null) {
+          if (!el.validationMessage) {
+            el.setCustomValidity(message);
+          }
+          customErrors[name] = true;
+        }
       }
     }
-  }
-  return result;
+
+    // Check for any custom messages
+    const errors = extractErrors(el, customErrors);
+    let message = checkForCustomMessage(name, errors, el, options);
+
+    return {
+      valid: el.checkValidity(),
+      message: message || el.validationMessage,
+      errors,
+    };
+  };
 }

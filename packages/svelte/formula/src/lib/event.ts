@@ -1,14 +1,21 @@
-import { ExtractedFormInfo, FormEl, FormulaError } from '../types/forms';
-import { extractCheckbox, extractData, extractFile, extractRadio, extractSelect } from './extract';
-import { ValidationFn, ValidationRules } from '../types/validation';
+import { FormEl, FormulaError, FormulaField } from '../types/forms';
+import {
+  createCheckboxExtract,
+  createFieldExtract,
+  createFileExtract,
+  createRadioExtract,
+  createSelectExtract,
+} from './extract';
+import { ValidationRule } from '../types/validation';
 import { FormulaStores } from '../types/formula';
+import { FormulaOptions } from 'packages/svelte/formula/src/types/options';
 
 /**
  * Update the value and error stores, also update form validity
  * @param details
  * @param stores
  */
-function valueUpdate(details: ExtractedFormInfo, stores: FormulaStores): void {
+function valueUpdate(details: FormulaField, stores: FormulaStores): void {
   stores.formValues.update((state) => ({ ...state, [details.name]: details.value }));
   stores.validity.update((state) => {
     const result = {
@@ -26,57 +33,54 @@ function valueUpdate(details: ExtractedFormInfo, stores: FormulaStores): void {
 }
 
 /**
- * Create an event handler for the passed event and handle the value type
- * @param name
- * @param groupElements
+ * Creates an event handler for the passed element with it's data handler
+ * @param extractor
  * @param stores
- * @param customValidators
  */
-function createEventHandler(
-  name: string,
-  groupElements: FormEl[],
-  stores: FormulaStores,
-  customValidators?: Record<string, ValidationFn>,
-) {
-  return (event: KeyboardEvent | MouseEvent) => {
+function createHandlerForData(extractor: any, stores: FormulaStores) {
+  return (event: Event) => {
     const el = (event.currentTarget || event.target) as FormEl;
-
-    if (el instanceof HTMLSelectElement) {
-      valueUpdate(extractSelect(name, el as HTMLSelectElement, customValidators), stores);
-    } else {
-      switch (el.type) {
-        case 'checkbox': {
-          valueUpdate(
-            extractCheckbox(name, el as HTMLInputElement, groupElements as HTMLInputElement[], customValidators),
-            stores,
-          );
-          break;
-        }
-        case 'file': {
-          valueUpdate(extractFile(name, el as HTMLInputElement, customValidators), stores);
-          break;
-        }
-        case 'radio': {
-          valueUpdate(extractRadio(name, el as HTMLInputElement), stores);
-          break;
-        }
-        default: {
-          valueUpdate(extractData(name, el, groupElements, customValidators), stores);
-        }
-      }
-    }
+    valueUpdate(extractor(el), stores);
   };
 }
 
+/**
+ * Create a handler for the passed element
+ * @param name
+ * @param eventName
+ * @param element
+ * @param groupElements
+ * @param stores
+ * @param options
+ */
 export function createHandler(
   name: string,
   eventName: string,
   element: FormEl,
   groupElements: FormEl[],
   stores: FormulaStores,
-  customValidators?: ValidationRules,
+  options: FormulaOptions,
 ): () => void {
-  const handler = createEventHandler(name, groupElements, stores, customValidators);
+  let extract;
+
+  if (element instanceof HTMLSelectElement) {
+    extract = createSelectExtract(name, options);
+  } else {
+    switch (element.type) {
+      case 'checkbox':
+        extract = createCheckboxExtract(name, groupElements, options);
+        break;
+      case 'radio':
+        extract = createRadioExtract(name, options);
+        break;
+      case 'file':
+        extract = createFileExtract(name, options);
+        break;
+      default:
+        extract = createFieldExtract(name, groupElements, options);
+    }
+  }
+  const handler = createHandlerForData(extract, stores);
   element.addEventListener(eventName, handler);
 
   return () => {

@@ -1,18 +1,21 @@
 <script>
   import {formula} from '../../../dist/packages/svelte/formula'
 
-  const validators = {
-    username: {
-      inDomain: (value) => value.includes('@svelte.dev') ? null : 'You can only sign up with a @svelte.dev email'
-    }
-  }
-
   const formValidators = {
     passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Passwords Must Match'
   }
 
   const {form, formValues, submitValues, formValidity, validity, touched, dirty, isFormValid} = formula({
-    validators,
+    messages: {
+      username: {
+        valueMissing: 'You really must fill in this field'
+      }
+    },
+    validators: {
+      username: {
+        inDomain: (value) => value.includes('@svelte.dev') ? null : 'You can only sign up with a @svelte.dev email'
+      }
+    },
     formValidators,
   });
 
@@ -45,6 +48,7 @@
   <div class='form-field'>
     <label for='username'>Username</label>
     <input type='email' id='username' name='username' required
+           data-value-missing='There is a value missing'
            class:error={$touched?.username && $validity?.username?.invalid}/>
     <div hidden={$validity?.username?.valid}>{$validity?.username?.message}</div>
   </div>
