@@ -6,9 +6,8 @@ import {
   createRadioExtract,
   createSelectExtract,
 } from './extract';
-import { ValidationRule } from '../types/validation';
 import { FormulaStores } from '../types/formula';
-import { FormulaOptions } from 'packages/svelte/formula/src/types/options';
+import { FormulaOptions } from '../types/options';
 
 /**
  * Update the value and error stores, also update form validity
