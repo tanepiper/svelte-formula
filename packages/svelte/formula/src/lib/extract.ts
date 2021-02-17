@@ -1,6 +1,6 @@
 import { FormEl, FormulaField } from '../types/forms';
 import { createValidationChecker } from './errors';
-import { FormulaOptions } from 'packages/svelte/formula/src/types/options';
+import { FormulaOptions } from '../types/options';
 
 /**
  * Create a data handler for any type of input field
