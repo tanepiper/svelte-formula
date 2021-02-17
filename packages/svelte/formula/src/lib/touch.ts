@@ -13,20 +13,20 @@ import { FormulaStores } from '../types/formula';
  *
  * @returns Function that when called will remove all focus handlers from the elements, if not removed by user action
  */
-export function createTouchHandlers(name: string, elements: FormEl[], stores: FormulaStores) {
+export function createTouchHandlers(name: string, elements: FormEl[], stores: FormulaStores): () => void {
   /**
    * Internal map of element focus handlers
    */
-  const elMap = new Map<FormEl, (event: Event) => void>();
+  const elementHandlers = new Map<FormEl, (event: Event) => void>();
 
   /**
    * Method to call when handlers should be destroyed, clean up handlers then remove the handlers
    */
   const destroy = () => {
-    for (let [el, handler] of elMap) {
+    for (let [el, handler] of elementHandlers) {
       el.removeEventListener('focus', handler);
     }
-    elMap.clear();
+    elementHandlers.clear();
   };
 
   // Set the current touched state to false
@@ -45,7 +45,7 @@ export function createTouchHandlers(name: string, elements: FormEl[], stores: Fo
   for (let el of elements) {
     const handler = createElementHandler();
     el.addEventListener('focus', handler);
-    elMap.set(el, handler);
+    elementHandlers.set(el, handler);
   }
 
   return destroy;
