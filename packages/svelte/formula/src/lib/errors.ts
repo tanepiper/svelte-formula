@@ -9,7 +9,7 @@ import { FormulaOptions } from '../types/options';
  * @param el
  * @param custom
  */
-export function extractErrors(el: FormEl, custom?: Record<string, boolean>): Record<string, boolean> {
+function extractErrors(el: FormEl, custom?: Record<string, boolean>): Record<string, boolean> {
   const output: any = {};
   for (let key in el.validity) {
     if (key !== 'valid') {
@@ -23,25 +23,12 @@ export function extractErrors(el: FormEl, custom?: Record<string, boolean>): Rec
 }
 
 /**
- * Do form level validations
- * @param stores
- * @param customValidators
+ * Check for custom messages contained in data attributes, or within the passed options
+ * @param name
+ * @param errors
+ * @param el
+ * @param options
  */
-export function checkFormValidity(stores: FormulaStores, customValidators: ValidationRule) {
-  return stores.formValues.subscribe((values) => {
-    stores.formValidity.set({});
-    const validators = Object.entries(customValidators);
-    for (let i = 0; i < validators.length; i++) {
-      const [name, validator] = validators[i];
-      const invalid = validator(values);
-      if (invalid !== null) {
-        stores.formValidity.update((state) => ({ ...state, [name]: invalid }));
-        stores.isFormValid.set(false);
-      }
-    }
-  });
-}
-
 function checkForCustomMessage(
   name: string,
   errors: Record<string, boolean>,
@@ -69,11 +56,33 @@ function checkForCustomMessage(
 }
 
 /**
+ * Do form level validations
+ * @param stores
+ * @param customValidators
+ */
+export function createFormValidator(stores: FormulaStores, customValidators: ValidationRule) {
+  const sub = stores.formValues.subscribe((values) => {
+    stores.formValidity.set({});
+    const validators = Object.entries(customValidators);
+    for (let i = 0; i < validators.length; i++) {
+      const [name, validator] = validators[i];
+      const invalid = validator(values);
+      if (invalid !== null) {
+        stores.formValidity.update((state) => ({ ...state, [name]: invalid }));
+        stores.isFormValid.set(false);
+      }
+    }
+  });
+
+  return () => sub();
+}
+
+/**
  * Check the validity of a field and against custom validators
  * @param name
  * @param options
  */
-export function checkValidity(name: string, options?: FormulaOptions) {
+export function createValidationChecker(name: string, options?: FormulaOptions) {
   /**
    * Method called each time we want to do validity
    */

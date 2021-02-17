@@ -1,5 +1,5 @@
 import { FormEl, FormulaField } from '../types/forms';
-import { checkValidity } from './errors';
+import { createValidationChecker } from './errors';
 import { FormulaOptions } from 'packages/svelte/formula/src/types/options';
 
 /**
@@ -9,7 +9,7 @@ import { FormulaOptions } from 'packages/svelte/formula/src/types/options';
  * @param options
  */
 export function createFieldExtract(name: string, elementGroup: FormEl[], options: FormulaOptions) {
-  const validator = checkValidity(name, options);
+  const validator = createValidationChecker(name, options);
 
   return (element: HTMLInputElement): FormulaField => {
     const validValue =
@@ -43,7 +43,7 @@ export function createFieldExtract(name: string, elementGroup: FormEl[], options
  * @param options
  */
 export function createCheckboxExtract(name: string, elementGroup: FormEl[], options: FormulaOptions) {
-  const validator = checkValidity(name, options);
+  const validator = createValidationChecker(name, options);
   return (element: HTMLInputElement) => {
     const value =
       elementGroup.length > 1
@@ -67,7 +67,7 @@ export function createCheckboxExtract(name: string, elementGroup: FormEl[], opti
  * @param options
  */
 export function createRadioExtract(name: string, options: FormulaOptions) {
-  const validator = checkValidity(name, options);
+  const validator = createValidationChecker(name, options);
   return (element: HTMLInputElement) => {
     const value = element.checked ? element.value : '';
     return {
@@ -84,7 +84,7 @@ export function createRadioExtract(name: string, options: FormulaOptions) {
  * @param options
  */
 export function createSelectExtract(name: string, options: FormulaOptions) {
-  const validator = checkValidity(name, options);
+  const validator = createValidationChecker(name, options);
 
   /**
    * As the `HTMLCollectionOf` is not iterable, we have to loop over it with
@@ -117,7 +117,7 @@ export function createSelectExtract(name: string, options: FormulaOptions) {
  * @param options
  */
 export function createFileExtract(name: string, options: FormulaOptions) {
-  const validator = checkValidity(name, options);
+  const validator = createValidationChecker(name, options);
   return (element: HTMLInputElement) => {
     const value = element.files;
     return {
