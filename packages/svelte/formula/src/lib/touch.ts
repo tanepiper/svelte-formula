@@ -42,8 +42,7 @@ export function createTouchHandlers(name: string, elements: FormEl[], stores: Fo
     };
   }
 
-  for (let i = 0; i < elements.length; i++) {
-    const el = elements[i];
+  for (let el of elements) {
     const handler = createElementHandler();
     el.addEventListener('focus', handler);
     elMap.set(el, handler);
