@@ -15,17 +15,14 @@ import { FormulaOptions } from '../types/options';
  * @param stores
  */
 function valueUpdate(details: FormulaField, stores: FormulaStores): void {
-  stores.formValues.update((state) => ({ ...state, [details.name]: details.value }));
+  const { name, value, ...validity } = details;
+  stores.formValues.update((state) => ({ ...state, [name]: value }));
   stores.validity.update((state) => {
     const result = {
       ...state,
-      [details.name]: {
-        valid: details.valid,
-        invalid: details.invalid,
-        errors: details.errors,
-        message: details.message,
-      },
+      [name]: validity,
     };
+    console.log('result', result)
     stores.isFormValid.set(Object.values(result).every((v: FormulaError) => v.valid));
     return result;
   });

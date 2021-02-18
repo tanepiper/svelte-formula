@@ -16,11 +16,15 @@ export { FormulaError, FormValues };
 export function formula(options?: FormulaOptions): Formula {
   const stores = createStores();
 
+  const [form, update, destroy] = createForm({
+    ...stores,
+    options,
+  });
+
   return {
-    form: createForm({
-      ...stores,
-      options,
-    }),
+    form,
+    update,
+    destroy,
     ...stores,
   };
 }

@@ -12,8 +12,7 @@ export function createFieldExtract(name: string, elementGroup: FormEl[], options
   const validator = createValidationChecker(name, options);
 
   return (element: HTMLInputElement): FormulaField => {
-    const validValue =
-      element.value === '' || element.value === null || typeof element.value === 'undefined' ? '' : element.value;
+    const validValue = typeof element.value !== 'number' && !Boolean(element.value) ? '' : element.value;
     let value: unknown | unknown[] =
       elementGroup.length > 1
         ? elementGroup.map((v) => (v.id === element.id ? validValue : v.value)).filter((v) => v !== '')

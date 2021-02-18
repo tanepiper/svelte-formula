@@ -1,5 +1,6 @@
 import { Writable } from 'svelte/store';
 import { FormulaError, FormValues } from './forms';
+import { FormulaOptions } from 'packages/svelte/formula/src/types/options';
 
 /**
  * The stores available in Formula
@@ -44,4 +45,12 @@ export interface Formula extends FormulaStores {
    * @param node
    */
   form: (node: HTMLElement) => { destroy: () => void };
+  /**
+   * Update
+   */
+  update: (updatedOpts: FormulaOptions) => void;
+  /**
+   * Destroy
+   */
+  destroy: () => void;
 }
