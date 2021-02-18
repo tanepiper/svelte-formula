@@ -19,19 +19,13 @@ const features = [
   {
     title: <>Fully Reactive</>,
     imageUrl: 'img/undraw_apps.svg',
-    description: (
-      <>
-        Supercharge your applications with fully reactive forms, and powerful custom validators.
-      </>
-    ),
+    description: <>Build powerful reactive data-driven applications with custom validation, enrichment and messages</>,
   },
   {
-    title: <>Powered by Svelte</>,
+    title: <>Built for Svelte</>,
     imageUrl: 'img/svelte-logo.svg',
     description: (
-      <>
-        Built with Svelte in mind - supports Svelte Actions and Stores.
-      </>
+      <>Easy to install Action and Subscriptions that just work with your application without getting in the way</>
     ),
   },
 ];
@@ -43,10 +37,10 @@ function Feature({ imageUrl, title, description }) {
       {imgUrl && (
         <div className="text--center">
           <img className={styles.featureImage} src={imgUrl} alt={title} />
+          <h3>{title}</h3>
+          <p>{description}</p>
         </div>
       )}
-      <h3>{title}</h3>
-      <p>{description}</p>
     </div>
   );
 }
@@ -58,6 +52,7 @@ function Home() {
     <Layout title={`${siteConfig.title} - ${siteConfig.tagline}`} description={`${siteConfig.tagline}`}>
       <header className={clsx('hero hero--primary', styles.heroBanner)}>
         <div className="container">
+          <img src={useBaseUrl('/img/logo_256.png')} alt="The Svelte Formula Logo" />
           <h1 className="hero__title">{siteConfig.title}</h1>
           <p className="hero__subtitle">{siteConfig.tagline}</p>
           <div className={styles.buttons}>

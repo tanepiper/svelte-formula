@@ -1,0 +1,29 @@
+---
+id: stores-form-valid
+
+title: isFormValid
+
+sidebar_label: isFormValid
+---
+
+## Description
+
+This store emits a single boolean value any time the form validity changes. The state is checked on every value change,
+and if there are no invalid fields it's set to `true`, otherwise `false` (which is the default).
+
+## Example
+
+```svelte
+<script>
+  import { formula } from 'svelte-formula';
+  const { form, isFormValid } = formula();
+</script>
+<form use:form>
+  <label for='password'>Password</label>
+  <input type='password' required id='password' name='password' />
+  <label for='passwordMatch'>Password Match</label>
+  <input type='password' required id='passwordMatch' name='passwordMatch' />
+
+  <button disabled={!$isFormValid}>Submit</button>
+</form>
+```

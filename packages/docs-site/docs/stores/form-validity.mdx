@@ -1,0 +1,37 @@
+---
+id: stores-form-validity
+
+title: formValidity
+
+sidebar_label: formValidity
+---
+
+## Description
+
+This store provides the overall form status when using custom form validations, provided in the `formValidation` options object. If none are provided this store will not update.
+
+The store contains a `Object` that can contains the key of any validations that have failed, and a string value of the error message.
+
+Every time there is a value update the store is reset and any custom validations called, they should return `null` for a valid result,
+or a string for an invalid result, which can be used to display error messages.
+
+## Example
+
+```svelte
+<script>
+  import { formula } from 'svelte-formula';
+  const { form, formValidity } = formula({
+    formValidation: {
+        passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Your passwords must match'
+    }
+  });
+</script>
+<form use:form>
+  <label for='password'>Password</label>
+  <input type='password' required id='password' name='password' />
+  <label for='passwordMatch'>Password Match</label>
+  <input type='password' required id='passwordMatch' name='passwordMatch' />
+
+  <div hidden={$!formValidity?.passwordsMatch}>{$formValidity?.passwordsMatch}</div>
+</form>
+```

@@ -1,0 +1,30 @@
+---
+id: stores-dirty
+
+title: dirty
+
+sidebar_label: dirty
+---
+
+## Description
+
+This store provides the dirty status of a field, or group of fields under a single `name` property.
+
+On form creation every form field is assigned a `blur` handler, and it reads the current value of the field. The dirty status for the group `name` is also set to `false`.
+
+When the user exits the field with a `blur` event the value is checked, and if changed the store is updated to reflect the `name` as `true`.
+All of the `blur` handlers for the group and then immediately removed, so this group will no longer update the status.
+
+## Example
+
+```svelte
+<script>
+  import { formula } from 'svelte-formula';
+  const { form, dirty } = formula();
+</script>
+<form use:form>
+  <label for='text-input'>Text Input</label>
+  <input type='text' required id='text-input' name='textvalue' />
+  <span hidden={!$dirty?.textvalue}>The value of this field has been changed</span>
+</form>
+```

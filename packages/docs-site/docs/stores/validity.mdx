@@ -1,0 +1,34 @@
+---
+id: stores-validity
+
+title: validity
+
+sidebar_label: validity
+---
+
+## Description
+
+This store emits on every value change the validity of every `name` group. The value is an object that contains the `name` and
+an `Object` that contains the following properties:
+
+- `valid` - If the field is valid
+- `invalid` - If the field is invalid
+- `message` - If the form is invalid, the message to display.
+- `errors` - An object with the keys of the current errors applied to the field (the value is `true`)
+
+The `message` will always be the first one to match, HTML5 errors first (e.g HTML required comes before HTML minlength)
+then custom errors from `validators`. The `errors` object may contain more than one key for errors that apply.
+
+## Example
+
+```svelte
+<script>
+  import {formula} from 'svelte-formula';
+  const {form, validity} = formula();
+</script>
+<form use:form>
+  <label for='text-input'>Text Input</label>
+  <input type='text' required id='text-input' name='textvalue' class:error={$validity?.textvalue?.invalid}/>
+  <span hidden={$validity?.textvalue?.valid}>{$validity?.textvalue?.message}</span>
+</form>
+```

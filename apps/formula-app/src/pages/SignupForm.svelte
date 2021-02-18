@@ -5,11 +5,12 @@
     passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Your passwords do not match',
   };
 
-  const { form, validity, formValidity, touched, isFormValid, updateForm, destroyForm, enrichment } = formula({
+  const { form, validity, formValidity, formValues, touched, isFormValid, updateForm, destroyForm, enrichment } = formula({
     formValidators,
   });
 
   $: console.log($validity);
+  $: console.log($formValues);
   $: console.log($enrichment);
 
   $: usernameInvalid = ($touched?.username && $validity?.username?.invalid) && $validity?.username?.message;
@@ -19,7 +20,7 @@
   function addValidation() {
 
     const global = formulaStores.get('signup');
-    console.log(global)
+    console.log(global);
 
     const options = {
       enrich: {
@@ -85,8 +86,10 @@
 
     <div class='form-group'>
       <label for='password'>Password</label>
-      <input type='password' name='password' id='password' minlength='8' required class:error={passwordInvalid} />
-      <meter value={$enrichment?.password?.passwordScore || 0} min='0' max='100' low='33' high='66' optimum='80'></meter>
+      <input type='password' name='password' id='password' minlength='8' required class:error={passwordInvalid}
+             value='dasdasd' />
+      <meter value={$enrichment?.password?.passwordScore || 0} min='0' max='100' low='33' high='66'
+             optimum='80'></meter>
       <span hidden={!passwordInvalid}>{passwordInvalid}</span>
     </div>
 
@@ -95,6 +98,18 @@
       <input type='password' name='passwordMatch' id='passwordMatch' minlength='8' required
              class:error={passwordMatchInvalid} />
       <span hidden={!passwordMatchInvalid}>{passwordMatchInvalid}</span>
+    </div>
+
+    <div class='form-group'>
+      <input type='radio' name='radio' id='radio1' value='1' checked />
+      <input type='radio' name='radio' id='radio2' value='2' />
+      <input type='radio' name='radio' id='radio3' value='3' />
+    </div>
+
+    <div class='form-group'>
+      <input type='checkbox' name='checkbox' id='checkbox1' value='1' checked />
+      <input type='checkbox' name='checkbox' id='checkbox2' value='2' checked />
+      <input type='checkbox' name='checkbox' id='checkbox3' value='3' />
     </div>
 
     <div>

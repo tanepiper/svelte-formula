@@ -1,6 +1,6 @@
 import { getAllFieldsWithValidity } from './fields';
 import { createHandler, createSubmitHandler } from './event';
-import { getInitialValue } from './init';
+import { getInitialValue, initialValues } from './init';
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
 import { FormulaOptions } from '../types/options';
@@ -15,7 +15,8 @@ import { FormEl } from 'packages/svelte/formula/src/types/forms';
  * @param globalStore
  */
 export function createForm(
-  { options, ...stores }: FormulaStores & { options?: FormulaOptions },
+  stores: FormulaStores,
+  options: FormulaOptions,
   globalStore: Map<string, FormulaStores>,
 ): {
   create: (node: HTMLElement) => { destroy: () => void };
@@ -42,18 +43,19 @@ export function createForm(
     const formElements = getAllFieldsWithValidity(node);
 
     // Group elements by name
-    const groupedMap = [
+    const groupedMap: [string, FormEl[]][] = [
       ...formElements.reduce((entryMap, e) => {
         const name = e.getAttribute('name');
         return entryMap.set(name, [...(entryMap.get(name) || []), e]);
       }, new Map()),
     ];
 
+    initialValues(groupedMap, stores, innerOpt);
+
     // Loop over each group and setup up their initial touch and dirty handlers,
     // also get initial values
     groupedMap.forEach(([name, elements]) => {
       touchHandlers.add(createTouchHandlers(name, elements, stores));
-      getInitialValue(name, elements, stores, innerOpt);
       dirtyHandlers.add(createDirtyHandler(name, elements, stores));
 
       // Loop over each element and hook in it's handler
@@ -104,7 +106,7 @@ export function createForm(
    * Method called when updating or destoying the form, this removes all existing handlers
    * and cleans up
    */
-  function destroy() {
+  function cleanupSubscriptions() {
     unsub();
     [...keyupHandlers, ...changeHandlers].forEach(([el, fn]) => {
       el.setCustomValidity('');
@@ -122,12 +124,24 @@ export function createForm(
     create: (node: HTMLElement) => {
       currentNode = node;
       bindElements(node, options);
-      return { destroy };
+      return {
+        destroy: () => {
+          cleanupSubscriptions();
+          if (currentNode.id) {
+            globalStore.delete(name);
+          }
+        },
+      };
     },
     update: (updatedOpts: FormulaOptions) => {
-      destroy();
+      cleanupSubscriptions();
       bindElements(currentNode, updatedOpts);
     },
-    destroy,
+    destroy: () => {
+      cleanupSubscriptions();
+      if (currentNode.id) {
+        globalStore.delete(name);
+      }
+    },
   };
 }

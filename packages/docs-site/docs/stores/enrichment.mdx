@@ -1,0 +1,34 @@
+---
+id: stores-enrichment
+
+title: enrichment
+
+sidebar_label: enrichment
+---
+
+## Description
+
+This store provides the results of any method passed to the `enrich` object for a group `name`. Each group contains a key and value based on the available methods.
+
+It emits on every value change, where the value group has available methods
+
+## Example
+
+```svelte
+<script>
+  import { formula } from 'svelte-formula';
+  import {passwordScore} from '../libs/password'
+
+  const { form, enrichment } = formula({
+    enrich: {
+      password: {
+        passwordStrength: (value) => passwordScore(value)
+      }
+    }
+  })
+</script>
+
+<label for='password'>Password</label>
+<input type='password' id='password' name='password' />
+<meter value={$enrichment?.password?.passwordStrength || 0} min='0' max='100' low='33' high='66' optimum='80' />
+```
