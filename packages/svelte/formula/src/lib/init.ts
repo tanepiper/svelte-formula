@@ -10,6 +10,7 @@ import {
 import { FormulaStores } from '../types/formula';
 import { FormulaOptions } from '../types/options';
 import { valueUpdate } from './event';
+import { createEnrichField } from 'packages/svelte/formula/src/lib/enrichment';
 
 /**
  * Get the initial value from the passed elements
@@ -43,7 +44,11 @@ export function getInitialValue(name: string, elements: FormEl[], stores: Formul
         }
       }
     }
-    valueUpdate(handler(el), stores);
+    let enrich;
+    if (options?.enrich?.[name]) {
+      enrich = createEnrichField(name, options, stores);
+    }
+    valueUpdate(handler(el), stores, enrich);
   }
 }
 
@@ -59,5 +64,6 @@ export function createStores(): FormulaStores {
     validity: writable<Record<string, FormulaError>>({}),
     formValidity: writable<Record<string, string>>({}),
     isFormValid: writable<boolean>(false),
+    enrichment: writable<Record<string, Record<string, unknown>>>({}),
   };
 }

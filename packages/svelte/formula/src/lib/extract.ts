@@ -26,7 +26,6 @@ export function createFieldExtract(name: string, elementGroup: FormEl[], options
         value = value !== '' ? parseFloat(value as string) : null;
       }
     }
-
     return {
       name,
       value,

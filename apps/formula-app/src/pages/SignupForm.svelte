@@ -1,23 +1,56 @@
 <script>
-  import { formula } from '../../../../dist/packages/svelte/formula';
+  import { formula, formulaStores } from '../../../../dist/packages/svelte/formula';
 
   const formValidators = {
     passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Your passwords do not match',
   };
 
-  const { form, validity, formValidity, touched, isFormValid, updateForm, destroyForm } = formula({
+  const { form, validity, formValidity, touched, isFormValid, updateForm, destroyForm, enrichment } = formula({
     formValidators,
   });
 
-  $: console.log($validity)
-  $: console.log($isFormValid)
+  $: console.log($validity);
+  $: console.log($enrichment);
 
   $: usernameInvalid = ($touched?.username && $validity?.username?.invalid) && $validity?.username?.message;
   $: passwordInvalid = ($touched?.password && $validity?.password?.invalid) && $validity?.password?.message;
   $: passwordMatchInvalid = ($touched?.passwordMatch && $validity?.passwordMatch?.invalid) && $validity?.passwordMatch?.message;
 
   function addValidation() {
+
+    const global = formulaStores.get('signup');
+    console.log(global)
+
     const options = {
+      enrich: {
+        password: {
+          passwordScore: (value) => {
+            let score = 0;
+            if (value.length > 8) {
+              score += 20;
+            }
+            if (value.match(/[A-Z].{2,3}/g)) {
+              score += 10;
+            }
+            if (value.match(/[A-Z].{4,}/g)) {
+              score += 18;
+            }
+            if (value.match(/[a-z].{2,3}/g)) {
+              score += 10;
+            }
+            if (value.match(/[a-z].{4,}/g)) {
+              score += 18;
+            }
+            if (value.match(/[0-9!"£$%^&*()].{2,3}/g)) {
+              score += 10;
+            }
+            if (value.match(/[0-9!"£$%^&*()].{2,3}/g)) {
+              score += 18;
+            }
+            return score;
+          },
+        },
+      },
       formValidators,
       validators: {
         username: {
@@ -43,7 +76,7 @@
       {val}
     {/each}
   </div>
-  <form class='signup' use:form>
+  <form class='signup' use:form id='signup'>
     <div class='form-group'>
       <label for='username'>User Name</label>
       <input type='email' name='username' id='username' required class:error={usernameInvalid} />
@@ -53,6 +86,7 @@
     <div class='form-group'>
       <label for='password'>Password</label>
       <input type='password' name='password' id='password' minlength='8' required class:error={passwordInvalid} />
+      <meter value={$enrichment?.password?.passwordScore || 0} min='0' max='100' low='33' high='66' optimum='80'></meter>
       <span hidden={!passwordInvalid}>{passwordInvalid}</span>
     </div>
 
