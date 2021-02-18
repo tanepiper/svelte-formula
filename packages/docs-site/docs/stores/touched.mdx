@@ -1,0 +1,30 @@
+---
+id: stores-touched
+
+title: touched
+
+sidebar_label: touched
+---
+
+## Description
+
+This store provides the touched status of a field, or group of fields under a single `name` property.
+
+On form creation every form field is assigned a `focus` handler. The touched status for the group `name` is also set to `false`.
+
+When the user clicks or tabs on to the field the store is updated to reflect the `name` as `true`.
+All of the `focus` handlers for the group and then immediately removed, so this group will no longer update the status.
+
+## Example
+
+```svelte
+<script>
+  import { formula } from 'svelte-formula';
+  const { form, touched } = formula();
+</script>
+<form use:form>
+  <label for='text-input'>Text Input</label>
+  <input type='text' required id='text-input' name='textvalue' />
+  <span hidden={!touched?.textvalue}>This field has been activted by the user</span>
+</form>
+```

@@ -1,5 +1,5 @@
 <script>
-  import {formula} from '../../../dist/packages/svelte/formula'
+  import {formula} from '../../../../dist/packages/svelte/formula'
 
   const formValidators = {
     passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Passwords Must Match'

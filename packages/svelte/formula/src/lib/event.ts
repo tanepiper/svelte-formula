@@ -19,7 +19,7 @@ import { createEnrichField } from './enrichment';
 export function valueUpdate(
   details: FormulaField,
   stores: FormulaStores,
-  enrich?: (value: unknown | unknown[]) => void,
+  enrich?: (value: unknown | unknown[]) => Record<string, unknown>,
 ): void {
   const { name, value, ...validity } = details;
   stores.formValues.update((state) => ({ ...state, [name]: value }));
@@ -29,7 +29,9 @@ export function valueUpdate(
       [name]: validity,
     };
     stores.isFormValid.set(Object.values(result).every((v: FormulaError) => v.valid));
-    if (enrich) enrich(value);
+    if (enrich) {
+      stores.enrichment.set({ [name]: enrich(value) });
+    }
     return result;
   });
 }
@@ -43,7 +45,7 @@ export function valueUpdate(
 function createHandlerForData(
   extractor: (el: FormEl) => FormulaField,
   stores: FormulaStores,
-  enrich?: (value: unknown | unknown[]) => void,
+  enrich?: (value: unknown | unknown[]) => Record<string, unknown>,
 ) {
   return (event: Event) => {
     const el = (event.currentTarget || event.target) as FormEl;
@@ -90,7 +92,7 @@ export function createHandler(
 
   let enrich;
   if (options?.enrich?.[name]) {
-    enrich = createEnrichField(name, options, stores);
+    enrich = createEnrichField(name, options);
   }
 
   const handler = createHandlerForData(extract, stores, enrich);

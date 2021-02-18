@@ -27,13 +27,7 @@ export function formula(options?: FormulaOptions): Formula {
   // Create a store object for this instance, if there is an `id` on the element the stores will be added to formulaStores
   const stores = createStores();
 
-  const { create, update, destroy } = createForm(
-    {
-      ...stores,
-      options,
-    },
-    formulaStores,
-  );
+  const { create, update, destroy } = createForm(stores, options, formulaStores);
 
   return {
     form: create,
