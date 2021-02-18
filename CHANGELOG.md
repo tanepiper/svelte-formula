@@ -7,6 +7,45 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Formula now returns an `updateForm` method that takes an updated `FormulaOptions` object - this function destroys all
+  existing handlers on the forms and rebinds them with the new options - this allows for dynamically adding and removing
+  of validations and messages
+
+  ```sveltehtml
+  <script>
+  import { formula } from 'svelte-formula';
+
+  const formValidators = {
+    passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Your passwords do not match',
+  };
+
+  const { form, updateForm } = formula({
+    formValidators,
+  });
+
+  function addDomainValidation() {
+    const options = {
+      formValidators,
+      validators: {
+        username: {
+          inDomain: (value) => value.includes('@svete.codes') ? null : 'You in the svelte codes?',
+        },
+      },
+    };
+    updateForm(options);
+  }
+
+  function removeDomainValidation() {
+    updateForm({ formValidators });
+  }
+  </script>
+  ```
+
+- Formula now returns a `destoryForm` method that allows the form to be destroyed early - when using the `use` directive
+  this is called automatically on component destroy, but this allows for early form unbinding.
+
 ### Changed
 
 - More internal refactoring

@@ -17,13 +17,10 @@ import { FormulaOptions } from '../types/options';
  * @returns An object containing keys for validity errors, set to true
  */
 function extractErrors(el: FormEl, custom?: Record<string, boolean>): Record<string, boolean> {
-  const output: any = {};
-  for (let key in el.validity) {
-    if (key !== 'valid') {
-      // Skip the `valid` key so we only return errors
-      if ((el.validity as any)[key]) {
-        output[key] = (el.validity as any)[key];
-      }
+  const output: Record<string, boolean> = {};
+  for (const key in el.validity) {
+    if (key !== 'valid' && el.validity[key]) {
+      output[key] = el.validity[key];
     }
   }
   return { ...output, ...custom };
@@ -38,8 +35,8 @@ function getCustomValidations(
   value: unknown | unknown[],
   validations: Record<string, ValidationFn> = {},
 ): [Record<string, string>, Record<string, boolean>] {
-  let messages: Record<string, string> = {};
-  let errors: Record<string, boolean> = {};
+  const messages: Record<string, string> = {};
+  const errors: Record<string, boolean> = {};
 
   Object.entries(validations).forEach(([key, validation]) => {
     const message = validation(value);

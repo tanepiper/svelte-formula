@@ -23,7 +23,7 @@ export function createTouchHandlers(name: string, elements: FormEl[], stores: Fo
    * Method to call when handlers should be destroyed, clean up handlers then remove the handlers
    */
   const destroy = () => {
-    for (let [el, handler] of elementHandlers) {
+    for (const [el, handler] of elementHandlers) {
       el.removeEventListener('focus', handler);
     }
     elementHandlers.clear();
@@ -42,7 +42,7 @@ export function createTouchHandlers(name: string, elements: FormEl[], stores: Fo
     };
   }
 
-  for (let el of elements) {
+  for (const el of elements) {
     const handler = createElementHandler();
     el.addEventListener('focus', handler);
     elementHandlers.set(el, handler);

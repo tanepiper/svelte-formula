@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { FormEl, FormulaError, FormulaField, FormValues } from '../types/forms';
+import { FormEl, FormulaError, FormValues } from '../types/forms';
 import {
   createCheckboxExtract,
   createFieldExtract,
@@ -9,24 +9,7 @@ import {
 } from './extract';
 import { FormulaStores } from '../types/formula';
 import { FormulaOptions } from '../types/options';
-
-/**
- * Initialise the value of the store with the details provided
- * @param details
- * @param stores
- */
-function initValues(details: FormulaField, stores: FormulaStores) {
-  stores.formValues.update((state) => ({ ...state, [details.name]: details.value }));
-  stores.validity.update((state) => ({
-    ...state,
-    [details.name]: {
-      valid: details.valid,
-      invalid: !details.valid,
-      message: details.message,
-      errors: details.errors,
-    },
-  }));
-}
+import { valueUpdate } from './event';
 
 /**
  * Get the initial value from the passed elements
@@ -60,7 +43,7 @@ export function getInitialValue(name: string, elements: FormEl[], stores: Formul
         }
       }
     }
-    initValues(handler(el), stores);
+    valueUpdate(handler(el), stores);
   }
 }
 
