@@ -34,10 +34,11 @@
     "@docusaurus/preset-classic": "^2.0.0-alpha.61",
     "clsx": "^1.1.1",
     "docusaurus-plugin-fathom": "^1.1.0",
+    "prism-svelte": "^0.4.7",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "svelte": "^3.32.3",
-    "prism-svelte": "^0.4.7"
+    "svelte-spa-router": "^3.1.0"
   },
   "devDependencies": {
     "@nrwl/cli": "11.2.12",

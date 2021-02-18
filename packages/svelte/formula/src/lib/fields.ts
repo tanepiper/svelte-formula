@@ -8,7 +8,7 @@ import { FormEl } from '../types/forms';
  * @internal
  * @param rootEl
  */
-export function getAllFieldsWithValidity(rootEl: HTMLElement) {
+export function getAllFieldsWithValidity(rootEl: HTMLElement): FormEl[] {
   const nodeList = rootEl.querySelectorAll('*[name]') as NodeListOf<HTMLElement>;
   return Array.from(nodeList).filter((el) => (el as any).checkValidity) as FormEl[];
 }
