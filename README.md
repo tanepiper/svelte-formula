@@ -4,7 +4,8 @@
 
 [![svelte-formula](https://img.shields.io/npm/v/svelte-formula?label=svelte-formula)](https://www.npmjs.com/package/svelte-formula)
 
-[Documentation](https://formula.svelte.codes)
+* [Documentation](https://formula.svelte.codes)
+* [Changelog](https://github.com/tanepiper/svelte-formula/blob/main/CHANGELOG.md)
 
 Formula is a library for [Svelte](https://svelte.dev) with features for creating **Zero Configuration** reactive forms
 and fully data-driven applications.
