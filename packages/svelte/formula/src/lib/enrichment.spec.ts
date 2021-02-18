@@ -1,10 +1,7 @@
-import { createEnrichField } from 'packages/svelte/formula/src/lib/enrichment';
-import { createStores } from 'packages/svelte/formula/src/lib/init';
+import { createEnrichField } from './enrichment';
 
 describe('Formula Enrichment', () => {
   let enrich;
-
-  const stores = createStores();
 
   beforeEach(() => {
     enrich = createEnrichField('testing', {
