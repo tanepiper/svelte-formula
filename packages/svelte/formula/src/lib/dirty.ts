@@ -25,7 +25,7 @@ export function createDirtyHandler(name: string, elements: FormEl[], stores: For
   const initialValues = new Map<string, unknown | unknown[]>();
 
   const destroy = () => {
-    for (let [el, handler] of elementHandlers) {
+    for (const [el, handler] of elementHandlers) {
       el.removeEventListener('blur', handler);
     }
     elementHandlers.clear();
@@ -57,7 +57,7 @@ export function createDirtyHandler(name: string, elements: FormEl[], stores: For
     };
   }
 
-  for (let el of elements) {
+  for (const el of elements) {
     const handler = createElementHandler(name);
     el.addEventListener('blur', handler);
     elementHandlers.set(el, handler);

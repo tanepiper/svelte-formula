@@ -12,19 +12,22 @@ export { FormulaError, FormValues };
  *
  * @param options Optional options that the library supports, none of these options are
  * required to use Formula
+ *
+ * @returns Formula object containing the current form, function to update or destroy
+ * the form and all the stores available for the form
  */
 export function formula(options?: FormulaOptions): Formula {
   const stores = createStores();
 
-  const [form, update, destroy] = createForm({
+  const { create, update, destroy } = createForm({
     ...stores,
     options,
   });
 
   return {
-    form,
-    update,
-    destroy,
+    form: create,
+    updateForm: update,
+    destroyForm: destroy,
     ...stores,
   };
 }

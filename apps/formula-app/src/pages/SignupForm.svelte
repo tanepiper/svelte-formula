@@ -5,7 +5,7 @@
     passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Your passwords do not match',
   };
 
-  const { form, validity, formValidity, touched, isFormValid, update, destroy } = formula({
+  const { form, validity, formValidity, touched, isFormValid, updateForm, destroyForm } = formula({
     formValidators,
   });
 
@@ -16,7 +16,7 @@
   $: passwordInvalid = ($touched?.password && $validity?.password?.invalid) && $validity?.password?.message;
   $: passwordMatchInvalid = ($touched?.passwordMatch && $validity?.passwordMatch?.invalid) && $validity?.passwordMatch?.message;
 
-  function updateForm() {
+  function addValidation() {
     const options = {
       formValidators,
       validators: {
@@ -25,16 +25,17 @@
         },
       },
     };
-    update(options);
+    updateForm(options);
   }
 
   function removeValidation() {
-    update({ formValidators });
+    updateForm({ formValidators });
   }
 
 </script>
 <h2>Signup Form Example</h2>
 <p>A simple signup form example</p>
+{$isFormValid}
 
 <div class='container signup-container'>
   <div hidden={$isFormValid}>
@@ -64,9 +65,9 @@
 
     <div>
       <button type='submit' disabled={!$isFormValid}>Login</button>
-      <button type='button' on:click={updateForm}>Add</button>
+      <button type='button' on:click={addValidation}>Add</button>
       <button type='button' on:click={removeValidation}>Remove</button>
-      <button type='button' on:click={() => destroy()}>Destroy</button>
+      <button type='button' on:click={() => destroyForm()}>Destroy</button>
     </div>
   </form>
 </div>

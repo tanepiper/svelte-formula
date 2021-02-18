@@ -14,7 +14,7 @@ import { FormulaOptions } from '../types/options';
  * @param details
  * @param stores
  */
-function valueUpdate(details: FormulaField, stores: FormulaStores): void {
+export function valueUpdate(details: FormulaField, stores: FormulaStores): void {
   const { name, value, ...validity } = details;
   stores.formValues.update((state) => ({ ...state, [name]: value }));
   stores.validity.update((state) => {
@@ -22,7 +22,6 @@ function valueUpdate(details: FormulaField, stores: FormulaStores): void {
       ...state,
       [name]: validity,
     };
-    console.log('result', result)
     stores.isFormValid.set(Object.values(result).every((v: FormulaError) => v.valid));
     return result;
   });
@@ -33,7 +32,7 @@ function valueUpdate(details: FormulaField, stores: FormulaStores): void {
  * @param extractor
  * @param stores
  */
-function createHandlerForData(extractor: any, stores: FormulaStores) {
+function createHandlerForData(extractor: (el: FormEl) => FormulaField, stores: FormulaStores) {
   return (event: Event) => {
     const el = (event.currentTarget || event.target) as FormEl;
     valueUpdate(extractor(el), stores);

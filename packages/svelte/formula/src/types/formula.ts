@@ -48,9 +48,9 @@ export interface Formula extends FormulaStores {
   /**
    * Update
    */
-  update: (updatedOpts: FormulaOptions) => void;
+  updateForm: (updatedOpts: FormulaOptions) => void;
   /**
    * Destroy
    */
-  destroy: () => void;
+  destroyForm: () => void;
 }

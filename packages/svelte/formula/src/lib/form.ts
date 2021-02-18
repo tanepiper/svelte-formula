@@ -16,11 +16,11 @@ import { FormEl } from 'packages/svelte/formula/src/types/forms';
 export function createForm({
   options,
   ...stores
-}: FormulaStores & { options?: FormulaOptions }): [
-  (node: HTMLElement) => { destroy: () => void },
-  (updatedOpts: FormulaOptions) => void,
-  () => void,
-] {
+}: FormulaStores & { options?: FormulaOptions }): {
+  create: (node: HTMLElement) => { destroy: () => void };
+  update: (updatedOpts: FormulaOptions) => void;
+  destroy: () => void;
+} {
   /**
    * Store for all keyup handlers than need removed when destroyed
    */
@@ -30,7 +30,7 @@ export function createForm({
   const dirtyHandlers = new Set<() => void>();
 
   let submitHandler = undefined;
-  let unsub = () => {};
+  let unsub = () => {}; // eslint-disable-line
 
   /**
    * Internal method to do binding of te action element
@@ -40,6 +40,7 @@ export function createForm({
   function bindElements(node: HTMLElement, innerOpt: FormulaOptions) {
     const formElements = getAllFieldsWithValidity(node);
 
+    // Group elements by name
     const groupedMap = [
       ...formElements.reduce((entryMap, e) => {
         const name = e.getAttribute('name');
@@ -47,11 +48,14 @@ export function createForm({
       }, new Map()),
     ];
 
+    // Loop over each group and setup up their initial touch and dirty handlers,
+    // also get initial values
     groupedMap.forEach(([name, elements]) => {
       touchHandlers.add(createTouchHandlers(name, elements, stores));
       getInitialValue(name, elements, stores, innerOpt);
       dirtyHandlers.add(createDirtyHandler(name, elements, stores));
 
+      // Loop over each element and hook in it's handler
       elements.forEach((el) => {
         if (el instanceof HTMLSelectElement) {
           changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
@@ -75,53 +79,49 @@ export function createForm({
       });
     });
 
+    // If form validator options are passed, create a subscription to it
     if (innerOpt?.formValidators) {
       unsub = createFormValidator(stores, innerOpt.formValidators);
     }
 
+    // If the HTML element attached is a form, also listen for the submit event
     if (node instanceof HTMLFormElement) {
       submitHandler = createSubmitHandler(stores);
       node.addEventListener('submit', submitHandler);
     }
   }
 
+  // Keep a instance of the passed node around
   let currentNode;
 
-  const destroy = () => {
-    for (let [key, store] of Object.entries(stores)) {
-      if (key === 'isFormValid') {
-        store.set(false);
-      } else {
-        store.set({});
-      }
-    }
+  /**
+   * Method called when updating or destoying the form, this removes all existing handlers
+   * and cleans up
+   */
+  function destroy() {
     unsub();
     [...keyupHandlers, ...changeHandlers].forEach(([el, fn]) => {
       el.setCustomValidity('');
       fn();
     });
     [...touchHandlers, ...dirtyHandlers].forEach((fn) => fn());
-    keyupHandlers.clear();
-    changeHandlers.clear();
-    touchHandlers.clear();
-    dirtyHandlers.clear();
+    [keyupHandlers, changeHandlers, touchHandlers, dirtyHandlers].forEach((h) => h.clear());
 
     if (submitHandler) {
       currentNode.removeEventListener('submit', submitHandler);
     }
-  };
+  }
 
-  return [
-    (node: HTMLElement) => {
+  return {
+    create: (node: HTMLElement) => {
       currentNode = node;
       bindElements(node, options);
       return { destroy };
     },
-    (updatedOpts: FormulaOptions) => {
-      console.log(currentNode, updatedOpts);
+    update: (updatedOpts: FormulaOptions) => {
       destroy();
       bindElements(currentNode, updatedOpts);
     },
     destroy,
-  ];
+  };
 }
