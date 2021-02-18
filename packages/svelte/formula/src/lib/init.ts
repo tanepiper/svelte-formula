@@ -1,4 +1,4 @@
-import { Writable, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { FormEl, FormulaError, FormulaField, FormValues } from '../types/forms';
 import {
   createCheckboxExtract,
@@ -9,8 +9,7 @@ import {
 } from './extract';
 import { FormulaStores } from '../types/formula';
 import { FormulaOptions } from '../types/options';
-import { valueUpdate } from './event';
-import { createEnrichField } from 'packages/svelte/formula/src/lib/enrichment';
+import { createEnrichField } from './enrichment';
 
 /**
  * Get the initial value from the passed elements
