@@ -14,41 +14,62 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   of validations and messages
 
   ```sveltehtml
-  <script>
-  import { formula } from 'svelte-formula';
+    <script>
+    import { formula } from 'svelte-formula';
 
-  const formValidators = {
-    passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Your passwords do not match',
-  };
-
-  const { form, updateForm } = formula({
-    formValidators,
-  });
-
-  function addDomainValidation() {
-    const options = {
-      formValidators,
-      validators: {
-        username: {
-          inDomain: (value) => value.includes('@svete.codes') ? null : 'You in the svelte codes?',
-        },
-      },
+    const formValidators = {
+      passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Your passwords do not match',
     };
-    updateForm(options);
-  }
 
-  function removeDomainValidation() {
-    updateForm({ formValidators });
-  }
-  </script>
+    const { form, updateForm } = formula({
+      formValidators,
+    });
+
+    function addDomainValidation() {
+      const options = {
+        formValidators,
+        validators: {
+          username: {
+            inDomain: (value) => value.includes('@svete.codes') ? null : 'You in the svelte codes?',
+          },
+        },
+      };
+      updateForm(options);
+    }
+
+    function removeDomainValidation() {
+      updateForm({ formValidators });
+    }
+    </script>
   ```
 
 - Formula now returns a `destoryForm` method that allows the form to be destroyed early - when using the `use` directive
   this is called automatically on component destroy, but this allows for early form unbinding.
 
-### Changed
+- New `enrich` option added to `FormulaOptions` and a new `enrichment` store. Enrichment allow methods to be added to
+  fields to return computed values (e.g. password score) that can be used to drive other parts of the UI
 
-- More internal refactoring
+  ```sveltehtml
+    <script>
+      import { formula } from 'svelte-formula';
+      import {passwordScore} from '../libs/password'
+      const { form, enrichment } = formula({
+        enrich: {
+          password: {
+            passwordStrength: (value) => passwordScore(value)
+          }
+        }
+      })
+    </script>
+
+  <label for='password'>Password</label>
+  <input type='password' id='password' name='password' />
+  <meter value={$enrichment?.password?.passwordStrength || 0} min='0' max='100' low='33' high='66' optimum='80' />
+  ```
+
+- New `globalStore` Map object - if Formula is used with an element with an `id` property, the instances stores will be
+  added to the global store and can be accessed via `globalStore.get(name)` - allowing sharing of data across multiple
+  forms.
 
 ## [0.5.1] 2021-02-17
 

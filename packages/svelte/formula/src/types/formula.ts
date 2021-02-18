@@ -34,6 +34,10 @@ export interface FormulaStores {
    * A store containing a boolean value if the form is overall valid
    */
   isFormValid: Writable<boolean>;
+  /**
+   * A store containing additional field enrichment
+   */
+  enrichment: Writable<Record<string, Record<string, unknown>>>;
 }
 
 /**

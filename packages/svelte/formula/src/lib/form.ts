@@ -12,11 +12,12 @@ import { FormEl } from 'packages/svelte/formula/src/types/forms';
  * Creates the form action
  * @param options
  * @param stores
+ * @param globalStore
  */
-export function createForm({
-  options,
-  ...stores
-}: FormulaStores & { options?: FormulaOptions }): {
+export function createForm(
+  { options, ...stores }: FormulaStores & { options?: FormulaOptions },
+  globalStore: Map<string, FormulaStores>,
+): {
   create: (node: HTMLElement) => { destroy: () => void };
   update: (updatedOpts: FormulaOptions) => void;
   destroy: () => void;
@@ -82,6 +83,11 @@ export function createForm({
     // If form validator options are passed, create a subscription to it
     if (innerOpt?.formValidators) {
       unsub = createFormValidator(stores, innerOpt.formValidators);
+    }
+
+    // If the field has a global store, set the ID
+    if (node.id) {
+      globalStore.set(node.id, stores);
     }
 
     // If the HTML element attached is a form, also listen for the submit event
