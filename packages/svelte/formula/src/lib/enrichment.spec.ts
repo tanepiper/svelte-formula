@@ -7,23 +7,17 @@ describe('Formula Enrichment', () => {
   const stores = createStores();
 
   beforeEach(() => {
-    enrich = createEnrichField(
-      'testing',
-      {
-        enrich: {
-          testing: {
-            getLength: (value: string) => value.length,
-          },
+    enrich = createEnrichField('testing', {
+      enrich: {
+        testing: {
+          getLength: (value: string) => value.length,
         },
       },
-      stores,
-    );
+    });
   });
 
   it('should update the enrich store', () => {
-    enrich('hello');
-    stores.enrichment.subscribe((value) => {
-      expect(value).toStrictEqual({ testing: { getLength: 5 } });
-    })();
+    const result = enrich('hello');
+    expect(result).toStrictEqual({ getLength: 5 });
   });
 });

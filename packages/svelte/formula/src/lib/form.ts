@@ -1,12 +1,12 @@
 import { getAllFieldsWithValidity } from './fields';
 import { createHandler, createSubmitHandler } from './event';
-import { getInitialValue, initialValues } from './init';
+import { initialValues } from './init';
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
 import { FormulaOptions } from '../types/options';
 import { createFormValidator } from './errors';
 import { FormulaStores } from '../types/formula';
-import { FormEl } from 'packages/svelte/formula/src/types/forms';
+import { FormEl } from '../types/forms';
 
 /**
  * Creates the form action
