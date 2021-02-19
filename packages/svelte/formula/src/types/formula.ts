@@ -1,6 +1,6 @@
 import { Writable } from 'svelte/store';
 import { FormulaError, FormValues } from './forms';
-import { FormulaOptions } from 'packages/svelte/formula/src/types/options';
+import { FormulaOptions } from './options';
 
 /**
  * The stores available in Formula
@@ -14,6 +14,10 @@ export interface FormulaStores {
    * A store containing the values at the time of `<form>` submission
    */
   submitValues: Writable<FormValues>;
+  /**
+   * A store containing the initial values
+   */
+  initialValues: Writable<FormValues>;
   /**
    * A store containing the touched status of each named field
    */
@@ -34,6 +38,10 @@ export interface FormulaStores {
    * A store containing a boolean value if the form is overall valid
    */
   isFormValid: Writable<boolean>;
+  /**
+   * Observable value if the form state is ready to be used
+   */
+  isFormReady: Writable<boolean>;
   /**
    * A store containing additional field enrichment
    */
@@ -57,4 +65,8 @@ export interface Formula extends FormulaStores {
    * Destroy
    */
   destroyForm: () => void;
+  /**
+   * Resets the form to the initial value
+   */
+  resetForm: () => void;
 }

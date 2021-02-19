@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] 2021-02-19
+
+### Added
+
+- `defaultValues` option that allows default values to be set on fields - supports single and multi-value properties -
+  these values are only applied if there is no value already bound to the field.
+
+  ```sveltehtml
+  <script>
+    import {formula} from 'svelte-formula';
+    const { form } = formula({
+      defaultValues: {
+        textField: 'Initial Value',
+        numberField: 42,
+        checkBox: true,
+        multiValue: ['option1', 'option3']
+      }
+    })
+  </script>
+  ```
+
+- Added `isFormReady` store - Formula stores are created immediately when using the `formula` method, previously they
+  were always empty objects filled with keys from parsing the form. This meant early binding would cause an error and
+  forced the use of `?.` operators in the templates. This store can now be used as `{#if $isFormReady}`, reducing the
+  need for the number of conditionals in templates
+
+- `initialValues` store that contains the values at form initialisation, this is generated from merging any initial
+  element values merged with any potential default values
+
+- `formReset` function that when called will reset the form to the pristine state at setup time
+
 ## [0.6.0] 2021-02-18
 
 ### Added

@@ -55,6 +55,9 @@ function Home() {
           <img src={useBaseUrl('/img/logo_256.png')} alt="The Svelte Formula Logo" />
           <h1 className="hero__title">{siteConfig.title}</h1>
           <p className="hero__subtitle">{siteConfig.tagline}</p>
+          <p>
+            <code>npm i svelte-formula</code>
+          </p>
           <div className={styles.buttons}>
             <Link
               className={clsx('button button--outline button--secondary button--lg', styles.getStarted)}

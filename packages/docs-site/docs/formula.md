@@ -24,8 +24,15 @@ length.
 All the form values, states and enrichment are available through the instance [stores](stores/stores.md) (which are just
 Svelte stores!)
 
-All you need is a element container with the Svelte [use](https://svelte.dev/docs#use_action) directive and form input
-fields with their `name` property set.
+## Installation
+
+Formula is available on NPM, with the source available on GitHub. To install in your project type:
+
+> `npm i svelte-formula`
+
+To use in your project all you need is an element container binding the form with
+Svelte [use](https://svelte.dev/docs#use_action)
+directive, and form input fields with their `name` property set.
 
 ```svelte
   <script>
@@ -53,7 +60,7 @@ While you don't need any configuration to get started, Formula does provide a se
 powerful [configuration options](options.md) for any form instance, providing custom field and form validations, custom
 errors messages and custom enrichments which allow you to return additional calculated data.
 
-## Full Example
+### Signup Form Example
 
 ```svelte
 <script>

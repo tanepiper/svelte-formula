@@ -9,6 +9,29 @@ sidebar_label: Formula Options
 Formula is zero-configuration - Out-of-the-box - using standard HTML5 validation properties to build up its validation
 rules - however it is also possible to pass custom validation rules via the `formula()` options object.
 
+## `defaultValues`
+
+The `defaultValues` option allows an initial set of values to be passed to the form.
+
+Form values can also be set with defaults using `<input bind:value={myValue}>`, if no value it set it will fall back to
+this value. If there is no value, then it will be an empty string or array value.
+
+```svelte
+<script>
+  import { formula } from 'svelte-forms';
+
+  const { form } = formula({
+    defaultValues: {
+      content: 'Hello World!'
+    }
+  })
+</script>
+
+<div use:form>
+  <textarea name='content'></textarea>
+</div>
+```
+
 ## `enrich`
 
 The `enrich` object is used to pass methods to the Formula instance that allow the generation of computed values for

@@ -1,11 +1,5 @@
 import { FormEl, FormulaError, FormulaField } from '../types/forms';
-import {
-  createCheckboxExtract,
-  createFieldExtract,
-  createFileExtract,
-  createRadioExtract,
-  createSelectExtract,
-} from './extract';
+import { createFieldExtract } from './extract';
 import { FormulaStores } from '../types/formula';
 import { FormulaOptions } from '../types/options';
 import { createEnrichField } from './enrichment';
@@ -70,26 +64,7 @@ export function createHandler(
   stores: FormulaStores,
   options: FormulaOptions,
 ): () => void {
-  let extract;
-
-  if (element instanceof HTMLSelectElement) {
-    extract = createSelectExtract(name, options);
-  } else {
-    switch (element.type) {
-      case 'checkbox':
-        extract = createCheckboxExtract(name, groupElements, options);
-        break;
-      case 'radio':
-        extract = createRadioExtract(name, options);
-        break;
-      case 'file':
-        extract = createFileExtract(name, options);
-        break;
-      default:
-        extract = createFieldExtract(name, groupElements, options);
-    }
-  }
-
+  const extract = createFieldExtract(name, groupElements, options, stores);
   let enrich;
   if (options?.enrich?.[name]) {
     enrich = createEnrichField(name, options);

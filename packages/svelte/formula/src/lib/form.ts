@@ -1,6 +1,6 @@
 import { getAllFieldsWithValidity } from './fields';
 import { createHandler, createSubmitHandler } from './event';
-import { initialValues } from './init';
+import { createReset, getInitialFormValues } from './init';
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
 import { FormulaOptions } from '../types/options';
@@ -22,6 +22,7 @@ export function createForm(
   create: (node: HTMLElement) => { destroy: () => void };
   update: (updatedOpts: FormulaOptions) => void;
   destroy: () => void;
+  reset: () => void;
 } {
   /**
    * Store for all keyup handlers than need removed when destroyed
@@ -32,7 +33,8 @@ export function createForm(
   const dirtyHandlers = new Set<() => void>();
 
   let submitHandler = undefined;
-  let unsub = () => {}; // eslint-disable-line
+  let unsub; // eslint-disable-line
+  let innerReset;
 
   /**
    * Internal method to do binding of te action element
@@ -50,7 +52,8 @@ export function createForm(
       }, new Map()),
     ];
 
-    initialValues(groupedMap, stores, innerOpt);
+    getInitialFormValues(groupedMap, stores, innerOpt);
+    innerReset = createReset(groupedMap, stores, innerOpt);
 
     // Loop over each group and setup up their initial touch and dirty handlers,
     // also get initial values
@@ -97,6 +100,7 @@ export function createForm(
       submitHandler = createSubmitHandler(stores);
       node.addEventListener('submit', submitHandler);
     }
+    stores.isFormReady.set(true);
   }
 
   // Keep a instance of the passed node around
@@ -134,14 +138,17 @@ export function createForm(
       };
     },
     update: (updatedOpts: FormulaOptions) => {
+      stores.isFormReady.set(false);
       cleanupSubscriptions();
       bindElements(currentNode, updatedOpts);
     },
     destroy: () => {
+      stores.isFormReady.set(false);
       cleanupSubscriptions();
       if (currentNode.id) {
         globalStore.delete(name);
       }
     },
+    reset: () => innerReset(),
   };
 }

@@ -2,6 +2,15 @@ import { FormEl } from '../types/forms';
 import { FormulaStores } from '../types/formula';
 
 /**
+ * Check if two arrays match
+ * @param array1
+ * @param array2
+ */
+function matchingArrays(array1: unknown[], array2: unknown[]) {
+  return array1.every((e) => array2.includes(e));
+}
+
+/**
  * Creates the handler for a group of elements for the dirty event on the group name, once an
  * element in the group has been changed, all element blur handlers will be removed
  *
@@ -42,10 +51,7 @@ export function createDirtyHandler(name: string, elements: FormEl[], stores: For
       // Take the current form values and check if the user has changed it
       stores.formValues.subscribe((v) => {
         if (Array.isArray(v[groupName])) {
-          const newVal = new Set(v[groupName] as unknown[]);
-          const existing = new Set(startValue as unknown[]);
-          const same = [...newVal].every((e) => [...existing].includes(e));
-          if (!same) {
+          if (!matchingArrays(v[groupName] as unknown[], startValue as unknown[])) {
             stores.dirty.update((state) => ({ ...state, [groupName]: true }));
             destroy();
           }
