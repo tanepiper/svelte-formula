@@ -32,9 +32,9 @@ export function createForm(
   const touchHandlers = new Set<() => void>();
   const dirtyHandlers = new Set<() => void>();
 
-  let initialOptions = options;
+  const initialOptions = options;
   let submitHandler = undefined;
-  let unsub; // eslint-disable-line
+  let unsub;
   let innerReset;
   let groupedMap: [string, FormEl[]][] = [];
 
@@ -113,7 +113,7 @@ export function createForm(
    * and cleans up
    */
   function cleanupSubscriptions() {
-    unsub();
+    unsub && unsub();
     [...keyupHandlers, ...changeHandlers].forEach(([el, fn]) => {
       el.setCustomValidity('');
       fn();

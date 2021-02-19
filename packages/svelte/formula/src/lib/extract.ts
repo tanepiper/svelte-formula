@@ -43,6 +43,10 @@ function setElementValue(element: FormEl, value: unknown | unknown[], isMultiVal
         const el = element.options[i];
         el.selected = (value as unknown[]).includes(el.value);
       }
+    } else if (element.type === 'checkbox') {
+      elementGroup.forEach((el) => {
+        (el as HTMLInputElement).checked = value === el.value;
+      });
     } else if (element.type === 'radio') {
       elementGroup.forEach((el) => {
         (el as HTMLInputElement).checked = value === el.value;
@@ -74,7 +78,7 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
               .map((v) => (v.id === element.id ? parseFloat(element.value) : parseFloat(v.value)))
               .filter((v) => !isNaN(v))
           : (() => {
-              let val = parseFloat(element.value);
+              const val = parseFloat(element.value);
               return !isNaN(val) ? val : null;
             })();
         break;
