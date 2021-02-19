@@ -44,32 +44,6 @@ fields with their `name` property set.
 
 Visit the [documentation](https://formula.svelte.codes) for more details API instructions.
 
-## Roadmap
-
-### Field Type Support
-
-- [x] Support Basic Input fields (text, number, password, email, url) as text values
-  - [x] Support multiple named fields with unique `id` attributes, with an array of results sorted by ID alphabetically
-  - [x] Return correct value type for fields (return number as Number value)
-- [x] Support Select Fields
-  - [x] Support Multiple Select Fields
-- [x] Support Radio Fields
-- [x] Support Checkbox Fields
-  - [x] Support Multiple Checkbox Fields
-- [x] Support the Range input
-- [x] Support the Color input
-- [x] Support the Date / Time inputs
-- [x] Support the File input
-
-### Validation
-
-- [x] Custom field-level validation via `formula` options
-- [x] Custom form-level validation via `formula` options
-- [x] Support for localised messages for validation errors
-
-### Other Items
-
-- [ ] Add Unit Tests - IN PROGRESS
-- [ ] Add full documentation - IN PROGRESS
+<br />
 
 Icon made by [Eucalyp](https://creativemarket.com/eucalyp) from [flaticon.com](https://www.flaticon.com)
