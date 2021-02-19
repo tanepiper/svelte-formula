@@ -49,7 +49,6 @@ function setElementValue(element: FormEl, value: unknown | unknown[], isMultiVal
       });
     } else if (element.type === 'file') {
       (element as HTMLInputElement).files = value instanceof FileList ? value : null;
-      console.log(value);
     } else {
       element.value = value as string;
     }

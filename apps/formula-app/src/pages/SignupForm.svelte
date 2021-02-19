@@ -93,16 +93,20 @@
 
 
 <div class='container signup-container'>
+  {$touched.username}
   <div hidden={$isFormValid}>
     {#each Object.entries($formValidity) as [key, val]}
+      {val}
+    {/each}
+    {#each Object.entries($validity.username) as [key, val]}
       {val}
     {/each}
   </div>
   <form class='signup' use:form id='signup'>
     <div class='form-group'>
       <label for='username'>User Name</label>
-      <input type='email' name='username' id='username' required class:error={usernameInvalid} />
-      <span hidden={!usernameInvalid}>{usernameInvalid}</span>
+      <input type='email' name='username' id='username' required class:error={$touched.username && $validity.username.invalid} />
+      <span hidden={!$touched.username && $validity.username.invalid}>{$validity.username.message}</span>
     </div>
 
     <div class='form-group'>

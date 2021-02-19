@@ -32,9 +32,11 @@ export function createForm(
   const touchHandlers = new Set<() => void>();
   const dirtyHandlers = new Set<() => void>();
 
+  let initialOptions = options;
   let submitHandler = undefined;
   let unsub; // eslint-disable-line
   let innerReset;
+  let groupedMap: [string, FormEl[]][] = [];
 
   /**
    * Internal method to do binding of te action element
@@ -45,7 +47,7 @@ export function createForm(
     const formElements = getAllFieldsWithValidity(node);
 
     // Group elements by name
-    const groupedMap: [string, FormEl[]][] = [
+    groupedMap = [
       ...formElements.reduce((entryMap, e) => {
         const name = e.getAttribute('name');
         return entryMap.set(name, [...(entryMap.get(name) || []), e]);
@@ -137,10 +139,10 @@ export function createForm(
         },
       };
     },
-    update: (updatedOpts: FormulaOptions) => {
+    update: (updatedOpts?: FormulaOptions) => {
       stores.isFormReady.set(false);
       cleanupSubscriptions();
-      bindElements(currentNode, updatedOpts);
+      bindElements(currentNode, updatedOpts || initialOptions);
     },
     destroy: () => {
       stores.isFormReady.set(false);
@@ -149,6 +151,14 @@ export function createForm(
         globalStore.delete(name);
       }
     },
-    reset: () => innerReset(),
+    reset: () => {
+      innerReset();
+      [...touchHandlers, ...dirtyHandlers].forEach((fn) => fn());
+      groupedMap.forEach(([name, elements]) => {
+        touchHandlers.add(createTouchHandlers(name, elements, stores));
+        dirtyHandlers.add(createDirtyHandler(name, elements, stores));
+      });
+      bindElements(currentNode, initialOptions);
+    },
   };
 }
