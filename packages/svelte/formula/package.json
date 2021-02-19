@@ -1,12 +1,14 @@
 {
   "name": "svelte-formula",
   "description": "Reactive Forms for Svelte",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "keywords": [
     "svelte",
     "sveltejs",
     "forms",
-    "reactive"
+    "reactive",
+    "data",
+    "validation"
   ],
   "license": "MIT",
   "author": {

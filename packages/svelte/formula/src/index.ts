@@ -2,7 +2,7 @@ import { createForm } from './lib/form';
 import { FormulaError, FormValues } from './types/forms';
 import { FormulaOptions } from './types/options';
 import { Formula, FormulaStores } from './types/formula';
-import { createStores } from './lib/init';
+import { createStores } from './lib/stores';
 
 export { FormulaError, FormValues, FormulaStores };
 
@@ -25,14 +25,15 @@ export const formulaStores = new Map<string, FormulaStores>();
  */
 export function formula(options?: FormulaOptions): Formula {
   // Create a store object for this instance, if there is an `id` on the element the stores will be added to formulaStores
-  const stores = createStores();
+  const stores = createStores(options);
 
-  const { create, update, destroy } = createForm(stores, options, formulaStores);
+  const { create, update, destroy, reset } = createForm(stores, options, formulaStores);
 
   return {
     form: create,
     updateForm: update,
     destroyForm: destroy,
+    resetForm: reset,
     ...stores,
   };
 }

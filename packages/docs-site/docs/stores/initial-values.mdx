@@ -1,0 +1,40 @@
+---
+id: stores-initial-values
+
+title: initialValues
+
+sidebar_label: initialValues
+---
+
+## Description
+
+This store contains all the form values at the time the form was initialised - this may include `defaultValues` and any values
+bound on the form at configuration. This store will never change during the lifecycle of the form The values are an `Object` with the
+key per group `name` and it's value.
+
+The value can be a single value, or an array or values depending on there being fields with the same `name` (e.g. multiple checkboxes), or a `<select>` element
+with the `multiple` attribute.
+
+## Example
+
+```svelte
+<script>
+  import {formula} from 'svelte-formula';
+  const {form, $formValues, initialValues, formReset } = formula();
+
+  $: initialTotal = (initialValues?.value1 || 0) + (initialValues?.value2 || 0)
+  $: total = ($formValues?.value1 || 0) + ($formValues?.value2 || 0)
+});
+</script>
+<form use:form>
+  <label for='value-1'>Value 1</label>
+  <input type='number' required id='value-1' name='value1' />
+  <label for='value-2'>Value 2</label>
+  <input type='number' required id='value-2' name='value2' />
+
+  <div>{$initialTotal?.value1} + {$initialTotal?.value2} = {initialTotal}</div>
+  <div>{$formValues?.value1} + {$formValues?.value2} = {total}</div>
+
+  <button on:click!preventDefault={() => formReset}>Reset</button>
+</form>
+```

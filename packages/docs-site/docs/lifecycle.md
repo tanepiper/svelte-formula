@@ -57,7 +57,34 @@ using `update` all existing handlers will be removed and rebound.
 </form>
 ```
 
+## Reset
+
+The `resetForm` can be called at any time during the life of the form, it will reset the form to it's initial state after
+`defaultValues` and element values have been applied, also `touched` and `dirty` stores are reset.
+
+```svelte
+<script>
+  import {formula} from 'svelte-formula';
+  const {form, $formValues, initialValues, formReset } = formula();
+
+  $: initialTotal = (initialValues?.value1 || 0) + (initialValues?.value2 || 0)
+  $: total = ($formValues?.value1 || 0) + ($formValues?.value2 || 0)
+});
+</script>
+<form use:form>
+  <label for='value-1'>Value 1</label>
+  <input type='number' required id='value-1' name='value1' />
+  <label for='value-2'>Value 2</label>
+  <input type='number' required id='value-2' name='value2' />
+
+  <div>{$initialTotal?.value1} + {$initialTotal?.value2} = {initialTotal}</div>
+  <div>{$formValues?.value1} + {$formValues?.value2} = {total}</div>
+
+  <button on:click!preventDefault={() => formReset}>Reset</button>
+</form>
+```
+
 ## Destroy
 
-The `destroy` method allows the form to be destroyed early, which removes all handlers and removes the stores from the
+The `destroyForm` method allows the form to be destroyed early, which removes all handlers and removes the stores from the
 global store.
