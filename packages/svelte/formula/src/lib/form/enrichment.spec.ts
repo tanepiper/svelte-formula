@@ -1,4 +1,4 @@
-import { createEnrichField } from './enrichment';
+import { createEnrichField } from 'packages/svelte/formula/src/lib/form/enrichment';
 
 describe('Formula Enrichment', () => {
   let enrich;

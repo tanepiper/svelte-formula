@@ -1,4 +1,4 @@
-import { FormulaOptions } from '../types/options';
+import { FormulaOptions } from '../../types';
 
 /**
  * Create an enrichment object for the field

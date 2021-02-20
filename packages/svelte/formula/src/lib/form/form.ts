@@ -3,10 +3,8 @@ import { createHandler, createSubmitHandler } from './event';
 import { createReset, getInitialFormValues } from './init';
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
-import { FormulaOptions } from '../types/options';
 import { createFormValidator } from './errors';
-import { FormulaStores } from '../types/formula';
-import { FormEl } from '../types/forms';
+import { FormEl, FormulaOptions, FormulaStores } from '../../types';
 
 /**
  * Creates the form action
@@ -18,6 +16,7 @@ export function createForm(
   stores: FormulaStores,
   options: FormulaOptions,
   globalStore: Map<string, FormulaStores>,
+  isGroup?: boolean
 ): {
   create: (node: HTMLElement) => { destroy: () => void };
   update: (updatedOpts: FormulaOptions) => void;
@@ -32,7 +31,7 @@ export function createForm(
   const touchHandlers = new Set<() => void>();
   const dirtyHandlers = new Set<() => void>();
 
-  const initialOptions = options;
+  let currentOptions = options;
   let submitHandler = undefined;
   let unsub;
   let innerReset;
@@ -44,7 +43,7 @@ export function createForm(
    * @param innerOpt
    */
   function bindElements(node: HTMLElement, innerOpt: FormulaOptions) {
-    const formElements = getAllFieldsWithValidity(node);
+    const formElements = getAllFieldsWithValidity(node, isGroup);
 
     // Group elements by name
     groupedMap = [
@@ -54,19 +53,20 @@ export function createForm(
       }, new Map()),
     ];
 
-    getInitialFormValues(groupedMap, stores, innerOpt);
-    innerReset = createReset(groupedMap, stores, innerOpt);
+    getInitialFormValues(groupedMap, stores, innerOpt, isGroup);
+    innerReset = createReset(groupedMap, stores, innerOpt, isGroup);
 
     // Loop over each group and setup up their initial touch and dirty handlers,
     // also get initial values
     groupedMap.forEach(([name, elements]) => {
+
       touchHandlers.add(createTouchHandlers(name, elements, stores));
       dirtyHandlers.add(createDirtyHandler(name, elements, stores));
 
       // Loop over each element and hook in it's handler
       elements.forEach((el) => {
         if (el instanceof HTMLSelectElement) {
-          changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
+          changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt, isGroup));
         } else {
           switch (el.type) {
             case 'radio':
@@ -77,11 +77,11 @@ export function createForm(
             case 'date':
             case 'time':
             case 'week': {
-              changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
+              changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt, isGroup));
               break;
             }
             default:
-              keyupHandlers.set(el, createHandler(name, 'keyup', el, elements, stores, innerOpt));
+              keyupHandlers.set(el, createHandler(name, 'keyup', el, elements, stores, innerOpt, isGroup));
           }
         }
       });
@@ -142,7 +142,12 @@ export function createForm(
     update: (updatedOpts?: FormulaOptions) => {
       stores.isFormReady.set(false);
       cleanupSubscriptions();
-      bindElements(currentNode, updatedOpts || initialOptions);
+      if (updatedOpts) {
+        currentOptions = updatedOpts;
+      }
+      setTimeout(() => {
+        bindElements(currentNode, currentOptions);
+      }, 0);
     },
     destroy: () => {
       stores.isFormReady.set(false);
@@ -158,7 +163,7 @@ export function createForm(
         touchHandlers.add(createTouchHandlers(name, elements, stores));
         dirtyHandlers.add(createDirtyHandler(name, elements, stores));
       });
-      bindElements(currentNode, initialOptions);
+      bindElements(currentNode, currentOptions);
     },
   };
 }

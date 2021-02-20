@@ -29,7 +29,7 @@ When using like this, on component destruction the form will automatically unbin
 
 ## Update
 
-Any Formula instance can be updated using the `update` method, which accepts a new `FormulaOptions` object. When
+Any Formula instance can be updated using the `updateForm` method, which accepts a new `FormulaOptions` object. When
 using `update` all existing handlers will be removed and rebound.
 
 ```svelte
@@ -37,11 +37,11 @@ using `update` all existing handlers will be removed and rebound.
   import { formula } from 'svelte-formula';
   import { getMessges } from './libs/lang'
 
-  const { form, update } = formula();
+  const { form, updateForm } = formula();
 
   function switchLanguage(lang) {
     const messages = getMessges(lang);
-    update({ messages });
+    updateForm({ messages });
   }
 
 </script>

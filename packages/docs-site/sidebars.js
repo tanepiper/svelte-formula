@@ -1,6 +1,7 @@
 module.exports = {
   someSidebar: {
     Formula: ['formula', 'options', 'lifecycle'],
+    'Data Groups': ['beaker'],
     Stores: [
       'stores/stores',
       'stores/stores-dirty',

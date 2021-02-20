@@ -1,5 +1,4 @@
-import { FormEl } from '../types/forms';
-import { FormulaStores } from '../types/formula';
+import { FormEl, FormulaStores } from '../../types';
 
 /**
  * Check if two arrays match

@@ -1,7 +1,5 @@
-import { FormEl, FormulaError, FormulaField } from '../types/forms';
+import { FormEl, FormulaError, FormulaField, FormulaOptions, FormulaStores } from '../../types';
 import { createFieldExtract } from './extract';
-import { FormulaStores } from '../types/formula';
-import { FormulaOptions } from '../types/options';
 import { createEnrichField } from './enrichment';
 
 /**
@@ -55,6 +53,7 @@ function createHandlerForData(
  * @param groupElements
  * @param stores
  * @param options
+ * @param isGroup
  */
 export function createHandler(
   name: string,
@@ -63,8 +62,9 @@ export function createHandler(
   groupElements: FormEl[],
   stores: FormulaStores,
   options: FormulaOptions,
+  isGroup?: boolean
 ): () => void {
-  const extract = createFieldExtract(name, groupElements, options, stores);
+  const extract = createFieldExtract(name, groupElements, options, stores, isGroup);
   let enrich;
   if (options?.enrich?.[name]) {
     enrich = createEnrichField(name, options);

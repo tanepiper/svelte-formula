@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { createTouchHandlers } from './touch';
+import { createTouchHandlers } from 'packages/svelte/formula/src/lib/form/touch';
 
 describe('Formula Touch Handler', () => {
   const storeMock: any = {

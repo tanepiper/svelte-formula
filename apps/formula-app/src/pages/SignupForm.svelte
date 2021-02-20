@@ -80,7 +80,6 @@
   }
 
   function resetFormData() {
-    console.log(resetForm, 'reset')
     resetForm();
   }
 
@@ -137,6 +136,10 @@
       <input type='checkbox' name='checkbox' id='checkbox1' value='1' />
       <input type='checkbox' name='checkbox' id='checkbox2' value='2' />
       <input type='checkbox' name='checkbox' id='checkbox3' value='3' />
+    </div>
+
+    <div class='form-group'>
+      <textarea name='foobar'></textarea>
     </div>
 
     <div>

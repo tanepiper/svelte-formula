@@ -1,7 +1,5 @@
-import { FormEl, FormulaField } from '../types/forms';
+import { FormEl, FormulaField, FormulaOptions, FormulaStores } from '../../types';
 import { createValidationChecker } from './errors';
-import { FormulaOptions } from '../types/options';
-import { FormulaStores } from 'svelte-formula';
 import { get } from 'svelte/store';
 
 /**
@@ -125,9 +123,10 @@ export function createFieldExtract(
   elementGroup: FormEl[],
   options: FormulaOptions,
   stores: FormulaStores,
+  isGroup?: boolean
 ) {
   const validator = createValidationChecker(name, options);
-  const isMultiValue =
+  const isMultiValue = isGroup ||
     (() => {
       if (elementGroup[0].type === 'radio') {
         return false;
