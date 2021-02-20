@@ -1,8 +1,8 @@
-import { createForm } from './lib/form';
-import { FormulaError, FormValues } from './types/forms';
-import { FormulaOptions } from './types/options';
-import { Formula, FormulaStores } from './types/formula';
-import { createStores } from './lib/stores';
+import { createForm } from 'packages/svelte/formula/src/lib/form/form';
+import { Formula, FormulaError, FormulaOptions, FormulaStores, FormValues } from './types';
+import { createFormStores } from 'packages/svelte/formula/src/lib/shared/stores';
+import { derived } from 'svelte/store';
+import { generateGroupArray } from 'packages/svelte/formula/src/lib/group/data';
 
 export { FormulaError, FormValues, FormulaStores };
 
@@ -25,7 +25,7 @@ export const formulaStores = new Map<string, FormulaStores>();
  */
 export function formula(options?: FormulaOptions): Formula {
   // Create a store object for this instance, if there is an `id` on the element the stores will be added to formulaStores
-  const stores = createStores(options);
+  const stores = createFormStores(options);
 
   const { create, update, destroy, reset } = createForm(stores, options, formulaStores);
 
@@ -35,5 +35,23 @@ export function formula(options?: FormulaOptions): Formula {
     destroyForm: destroy,
     resetForm: reset,
     ...stores,
+  };
+}
+
+/**
+ * The `beaker` function returns an object that allows for the creation of form groups within your main form
+ * The methos returns a group
+ * @param options
+ */
+export function beaker(options?: FormulaOptions): any {
+  const stores = createFormStores(options);
+  const { create, update, destroy, reset } = createForm(stores, options, formulaStores, true);
+  return {
+    group: create,
+    update: update,
+    destroy: destroy,
+    reset: reset,
+    stores,
+    data: derived(stores.formValues, generateGroupArray),
   };
 }

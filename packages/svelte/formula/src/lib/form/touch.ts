@@ -1,5 +1,4 @@
-import { FormEl } from '../types/forms';
-import { FormulaStores } from '../types/formula';
+import { FormEl, FormulaStores } from '../../types';
 
 /**
  * Creates the handler for a group of elements for the touch event on the group name, once an

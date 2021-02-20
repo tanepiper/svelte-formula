@@ -4,11 +4,13 @@
   import Home from './pages/Home.svelte'
   import LoginForm from './pages/SignupForm.svelte'
   import App2 from './pages/App2.svelte'
+  import Table from './pages/Table.svelte'
 
  const routes = {
    '/': Home,
    '/login-form': LoginForm,
-   '/app2': App2
+   '/app2': App2,
+   '/table': Table
  }
 </script>
 

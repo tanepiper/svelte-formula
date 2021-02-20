@@ -1,7 +1,4 @@
-import { FormEl, FormulaError } from '../types/forms';
-import { ValidationFn, ValidationRule } from '../types/validation';
-import { FormulaStores } from '../types/formula';
-import { FormulaOptions } from '../types/options';
+import { FormEl, FormulaError, ValidationFn, ValidationRule, FormulaStores, FormulaOptions } from '../../types';
 
 /**
  * The object returned by the {@link https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation|Contraints Validation API} cannot
