@@ -73,4 +73,17 @@ export interface Beaker extends BeakerStores {
    * Stores
    */
   stores: BeakerStores;
+  /**
+   * Initialise the store
+   * @param items
+   */
+  init: (items: Record<string, unknown>[]) => void;
+  /**
+   * Add Item
+   */
+  add: (item: Record<string, unknown>) => void;
+  /**
+   * Add Item
+   */
+  delete: (index: number) => void;
 }

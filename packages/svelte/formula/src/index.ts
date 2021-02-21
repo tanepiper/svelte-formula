@@ -53,5 +53,12 @@ export function beaker(options?: FormulaOptions): Beaker {
     reset: reset,
     stores,
     ...stores,
+    init: (items) => stores.formValues.set(items),
+    add: (item) => stores.formValues.update((state) => [...state, item]),
+    delete: (index) =>
+      stores.formValues.update((state) => {
+        state.splice(index, 1);
+        return state;
+      }),
   };
 }

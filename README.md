@@ -13,13 +13,16 @@ and fully data-driven applications.
 Out-of-the box it's designed to work with HTML5 forms. Configuring your forms validation is as easy as setting
 attributes, and doesn't get in the way of things like Accessibility.
 
+Formula also supports multi-row forms with [Beaker](https://formula.svelte.codes/docs/beaker), it's internal groups API
+for working with arrays of data.
+
 ## Install Instructions
 
 `npm i svelte-formula`
 
 ## Usage
 
-All you need is a element container with the Svelte [use](https://svelte.dev/docs#use_action) directive and form input
+All you need is an element container with the Svelte [use](https://svelte.dev/docs#use_action) directive and form input
 fields with their `name` property set.
 
 ```svelte
