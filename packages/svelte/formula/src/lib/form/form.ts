@@ -1,4 +1,4 @@
-import { getAllFieldsWithValidity, getGroupFields } from 'packages/svelte/formula/src/lib/shared/fields';
+import { getAllFieldsWithValidity, getGroupFields } from '../shared/fields';
 import { createHandler, createSubmitHandler } from './event';
 import { createReset, getInitialFormValues } from './init';
 import { createTouchHandlers } from './touch';

@@ -17,7 +17,7 @@ import { BeakerStores } from 'packages/svelte/formula/src/types/groups';
  */
 function createFirstState(options?: FormulaOptions, initialData?: Record<string, any>) {
   let initialValues = options?.defaultValues || {};
-  initialValues = {...initialValues, ...initialData};
+  initialValues = { ...initialValues, ...initialData };
   const initialKeys = Object.keys(initialValues);
 
   // Generate from default values any initial touched and dirty states

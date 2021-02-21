@@ -1,7 +1,6 @@
-import { BeakerStores } from 'packages/svelte/formula/src/types/groups';
-import { FormulaOptions } from 'packages/svelte/formula/src/types';
-import { createFormStores } from 'packages/svelte/formula/src/lib/shared/stores';
-import { createForm } from 'packages/svelte/formula/src/lib/form/form';
+import { BeakerStores, FormulaOptions } from '../../types';
+import { createFormStores } from '../shared/stores';
+import { createForm } from '../form/form';
 
 export function createGroup(
   stores: BeakerStores,

@@ -1,5 +1,6 @@
 import { Writable } from 'svelte/store';
-import { FormulaError, FormValues } from 'svelte-formula';
+import { FormulaError, FormulaStores, FormValues } from 'svelte-formula';
+import { FormulaOptions } from 'packages/svelte/formula/src/types/options';
 
 /**
  * The stores available in Beaker
@@ -45,4 +46,31 @@ export interface BeakerStores {
    * A store containing additional field enrichment
    */
   enrichment: Writable<Record<string, Record<string, unknown>>[]>;
+}
+
+/**
+ * The Formula interface with stores and form factory
+ */
+export interface Beaker extends BeakerStores {
+  /**
+   * The form object for use with the Svelte use directive
+   * @param node
+   */
+  form: (node: HTMLElement) => { destroy: () => void };
+  /**
+   * Update
+   */
+  updateForm: (updatedOpts?: FormulaOptions) => void;
+  /**
+   * Destroy
+   */
+  destroyForm: () => void;
+  /**
+   * Resets the form to the initial value
+   */
+  resetForm: () => void;
+  /**
+   * Stores
+   */
+  stores: FormulaStores;
 }
