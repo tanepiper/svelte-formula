@@ -1,4 +1,4 @@
-import { BeakerStores, FormulaOptions } from '../../types';
+import { BeakerStores, Form, FormulaOptions, FormValues } from '../../types';
 import { createFormStores } from '../shared/stores';
 import { createForm } from '../form/form';
 
@@ -8,24 +8,25 @@ import { createForm } from '../form/form';
  * @param options
  * @param beakerStores
  */
-export function createGroup(
-  stores: BeakerStores,
+export function createGroup<T extends FormValues>(
+  stores: BeakerStores<T>,
   options: FormulaOptions,
-  beakerStores: Map<string, BeakerStores>,
+  beakerStores: Map<string, BeakerStores<T>>,
 ): {
   create: (node: HTMLElement) => { destroy: () => void };
-  update: (updatedOpts: FormulaOptions) => void;
   destroy: () => void;
   reset: () => void;
+  forms: Set<Form<T>>;
 } {
   let groupId;
   let groupParentNode: HTMLElement;
   let globalObserver: MutationObserver;
 
-  const formSet = new Set<{ destroy: () => void }>();
+  const formSet = new Set<Form<T>>();
+  const instanceSet = new Set<{ destroy: () => void }>();
   const subscriptions = new Map<string, (() => {})[]>();
 
-  function resetGroup() {
+  function destroyGroup() {
     [...subscriptions].forEach(([key, subs]) => {
       if (key === 'isFormValid' || key === 'isFormReady') {
         stores[key].set(false);
@@ -35,24 +36,19 @@ export function createGroup(
       subs.forEach((sub) => sub());
     });
     subscriptions.clear();
-    formSet.forEach((form) => form.destroy());
+    instanceSet.forEach((instance) => instance.destroy());
     formSet.clear();
   }
 
   function groupHasChanged(rows: HTMLElement[]) {
-    resetGroup();
+    destroyGroup();
 
     rows.forEach((row, i) => {
-      let data = {};
-      if (row.dataset.bindData) {
-        try {
-          data = JSON.parse(row.dataset.bindData);
-        } catch {}
-      }
-
-      const formStore = createFormStores(options, data);
-      const form = createForm(formStore, options);
-      formSet.add(form.create(row as HTMLElement, true));
+      const formStore = createFormStores<T>(options);
+      const form = createForm<T>(formStore, options);
+      const instance = form.create(row as HTMLElement, true);
+      formSet.add(form);
+      instanceSet.add(instance);
 
       Object.entries(formStore).forEach(([key, store]) => {
         const unsub = store.subscribe((value) => {
@@ -106,23 +102,21 @@ export function createGroup(
           if (groupId) {
             beakerStores.delete(groupId);
           }
-          resetGroup();
+          destroyGroup();
           globalObserver.disconnect();
         },
       };
     },
-    update: (updatedOpts: FormulaOptions) => {},
+    reset: () => {
+      [...formSet].forEach((form) => form.reset());
+    },
     destroy: () => {
       if (groupId) {
         beakerStores.delete(groupId);
       }
-      resetGroup();
+      destroyGroup();
       globalObserver.disconnect();
     },
-    reset: () => {
-      resetGroup();
-      globalObserver.disconnect();
-      setupGroupContainer(groupParentNode);
-    },
+    forms: formSet,
   };
 }

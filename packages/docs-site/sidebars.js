@@ -1,7 +1,7 @@
 module.exports = {
   someSidebar: {
-    Formula: ['formula', 'options', 'lifecycle'],
-    Beaker: ['beaker'],
+    Formula: ['formula', 'options', 'lifecycle', 'enrich'],
+    Beaker: ['groups/beaker', 'groups/data'],
     Stores: [
       'stores/stores',
       'stores/stores-dirty',

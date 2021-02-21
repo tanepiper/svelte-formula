@@ -9,6 +9,14 @@ sidebar_label: Beaker API
 Beaker is Formula's API that helps with the creation of multi-row forms using lists of data (e.g. contact or product
 list).
 
+> **Beaker is still in active development - as such there may still be API changes**
+
+Under-the-hood it uses Formula to create a form from a row of data provided, and works well with Svelte's `{#each}`
+blocks to render the form component.
+
+When creating a group it's possible to set any existing data, and add and remove rows in the store using helper methods,
+and using the store to render the component HTML.
+
 ## Usage
 
 Like `formula` you import the `beaker` function. This function returns an object that is the entire group functionality.
@@ -22,12 +30,12 @@ const myGroup = beaker();
 To bind the group to a component pass `<myGroup>.group` to `use`, then inside the group provide an `{#each}` block that
 will contain the template for your group form.
 
-Stores are available via `<myGroup>.stores` object - the names are the same as the [Formula Stores](stores/stores.md) -
+Stores are available via `<myGroup>.stores` object - the names are the same as the [Formula Stores](../stores/stores.md) -
 the main difference is that the data is an Array of objects instead of a single object.
 
 ### Adding and Removing items
 
-Adding and removing items to the store is easy.
+Adding and removing items to the store is easy - there is a [data api](data.md) for handling data.
 
 You can initialise a group with `<myGroup>.init(items)` passing an array of items for your form group to be initialised
 with.

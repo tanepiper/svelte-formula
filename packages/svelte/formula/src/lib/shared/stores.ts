@@ -1,6 +1,5 @@
 import { writable } from 'svelte/store';
-import { FormulaError, FormulaOptions, FormulaStores, FormValues } from '../../types';
-import { BeakerStores } from 'packages/svelte/formula/src/types/groups';
+import { BeakerStores, FormulaError, FormulaOptions, FormulaStores, FormValues } from '../../types';
 
 /**
  * Function to create initial state values for the store using any passed default values, this is not the final initial
@@ -15,7 +14,7 @@ import { BeakerStores } from 'packages/svelte/formula/src/types/groups';
  * @param options Initial options to use
  * @param initialData
  */
-function createFirstState(options?: FormulaOptions, initialData?: Record<string, any>) {
+function createFirstState<T extends FormValues>(options?: FormulaOptions, initialData?: T) {
   let initialValues = options?.defaultValues || {};
   initialValues = { ...initialValues, ...initialData };
   const initialKeys = Object.keys(initialValues);
@@ -74,12 +73,12 @@ function createFirstState(options?: FormulaOptions, initialData?: Record<string,
  *
  * @returns An object containing the stores for the form instance
  */
-export function createFormStores(options?: FormulaOptions, initialData?: Record<string, unknown>): FormulaStores {
-  const initialStoreState = createFirstState(options, initialData);
+export function createFormStores<T extends FormValues>(options?: FormulaOptions, initialData?: T): FormulaStores<T> {
+  const initialStoreState = createFirstState<T>(options, initialData);
   return {
-    formValues: writable<FormValues>(initialStoreState.initialValues),
-    submitValues: writable<FormValues>({}),
-    initialValues: writable<FormValues>(initialStoreState.initialValues),
+    formValues: writable<T>(initialStoreState.initialValues as T),
+    submitValues: writable<T>({} as T),
+    initialValues: writable<T>(initialStoreState.initialValues as T),
     touched: writable<Record<string, boolean>>(initialStoreState.initialFieldState),
     dirty: writable<Record<string, boolean>>(initialStoreState.initialFieldState),
     validity: writable<Record<string, FormulaError>>(initialStoreState.initialValidity),
@@ -93,11 +92,11 @@ export function createFormStores(options?: FormulaOptions, initialData?: Record<
 /**
  * Create a group store which contains arrays of form store values
  */
-export function createGroupStores(options?: FormulaOptions): BeakerStores {
+export function createGroupStores<T extends FormValues>(options?: FormulaOptions): BeakerStores<T> {
   return {
-    formValues: writable<FormValues[]>([]),
-    submitValues: writable<FormValues[]>([]),
-    initialValues: writable<FormValues[]>([]),
+    formValues: writable<T[]>([]),
+    submitValues: writable<T[]>([]),
+    initialValues: writable<T[]>([]),
     touched: writable<Record<string, boolean>[]>([]),
     dirty: writable<Record<string, boolean>[]>([]),
     validity: writable<Record<string, FormulaError>[]>([]),
