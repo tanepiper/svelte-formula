@@ -15,9 +15,28 @@
     lastName: 'Piper',
     email: 'formula@svelte.codes',
     checkboxMulti: ['B', 'C'],
+    checkbox: true,
+    radio: 'C',
+    selectOne: '2',
+    selectMulti: ['1', '3']
   }, {
     firstName: 'Foo',
     lastName: 'McBarr',
+    email: 'formula@svelte.codes',
+    checkboxMulti: ['A', 'D'],
+    checkbox: true,
+    radio: 'A',
+    selectOne: '3',
+    selectMulti: ['1', '2']
+  }, {
+    firstName: 'Third',
+    lastName: 'Man',
+    email: 'formula1@svelte.codes',
+    checkboxMulti: ['A', 'C'],
+    checkbox: true,
+    radio: 'A',
+    selectOne: '1',
+    selectMulti: ['2', '3']
   }]);
 
   $: console.log('formValues', $formValues);
@@ -38,9 +57,9 @@
   }
 
   function onSubmit() {
-    const formData = get(formValues)
-    const groupData = get(contacts.formValues)
-    console.log(formData, groupData)
+    const formData = get(formValues);
+    const groupData = get(contacts.formValues);
+    console.log(formData, groupData);
   }
 
   const group = contacts.stores.formValues;
@@ -71,33 +90,37 @@
     </thead>
     <tbody use:contacts.group id='contacts'>
     {#each $rows as row, i}
-      <tr data-bind-data={JSON.stringify(row)}>
+      <tr>
         <td>
-          <input type='text' id='firstName-{i}' name='firstName' required />
+          <input type='text' id='firstName-{i}' name='firstName' required bind:value={row.firstName} />
         </td>
         <td>
-          <input type='text' id='lastName-{i}' name='lastName' />
+          <input type='text' id='lastName-{i}' name='lastName' bind:value={row.lastName}/>
         </td>
         <td>
-          <input type='text' id='email-{i}' name='email' />
+          <input type='text' id='email-{i}' name='email' bind:value={row.email}/>
         </td>
         <td>
-          <input type='checkbox' id='checkbox-{i}' name='checkbox' />
+          <input type='checkbox' id='checkbox-{i}' name='checkbox' bind:checked={row.checkbox} />
         </td>
         <td>
-          <input type='checkbox' id='checkbox-multi-{i}-1' name='checkboxMulti' value='A' />
-          <input type='checkbox' id='checkbox-multi-{i}-2' name='checkboxMulti' value='B' />
-          <input type='checkbox' id='checkbox-multi-{i}-3' name='checkboxMulti' value='C' />
-          <input type='checkbox' id='checkbox-multi-{i}-4' name='checkboxMulti' value='D' />
+          <input type='checkbox' id='checkbox-multi-{i}-1' name='checkboxMulti' value='A'
+                 bind:group={row.checkboxMulti} />
+          <input type='checkbox' id='checkbox-multi-{i}-2' name='checkboxMulti' value='B'
+                 bind:group={row.checkboxMulti} />
+          <input type='checkbox' id='checkbox-multi-{i}-3' name='checkboxMulti' value='C'
+                 bind:group={row.checkboxMulti} />
+          <input type='checkbox' id='checkbox-multi-{i}-4' name='checkboxMulti' value='D'
+                 bind:group={row.checkboxMulti} />
         </td>
         <td>
-          <input type='radio' id='radio-{i}-1' name='radio' value='A' />
-          <input type='radio' id='radio-{i}-2' name='radio' value='B' />
-          <input type='radio' id='radio-{i}-3' name='radio' value='C' />
-          <input type='radio' id='radio-{i}-4' name='radio' value='D' />
+          <input type='radio' id='radio-{i}-1' name='radio' value='A' bind:group={row.radio} />
+          <input type='radio' id='radio-{i}-2' name='radio' value='B' bind:group={row.radio} />
+          <input type='radio' id='radio-{i}-3' name='radio' value='C' bind:group={row.radio} />
+          <input type='radio' id='radio-{i}-4' name='radio' value='D' bind:group={row.radio} />
         </td>
         <td>
-          <select name='select-one'>
+          <select name='selectOne' bind:value={row.selectOne}>
             <option value='1'>1</option>
             <option value='2'>2</option>
             <option value='3'>3</option>
@@ -105,7 +128,7 @@
           </select>
         </td>
         <td>
-          <select name='select-multi' multiple>
+          <select name='selectMulti' multiple bind:value={row.selectMulti}>>
             <option value='1'>1</option>
             <option value='2'>2</option>
             <option value='3'>3</option>
