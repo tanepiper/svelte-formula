@@ -6,6 +6,7 @@
 
   // This creates a contact group - you can now bind `contacts.group` to the subgroup
   const customers = beaker();
+  const customersValues = customers.formValues;
 
   export let productData = {
     productName: '',
@@ -19,42 +20,36 @@
     subscriptionLevel: '',
     signups: [],
   }];
-  const contactStore = customers.formValues;
-  const contactsValid = customers.validity;
-  contactStore.set(contactData);
 
-  $: console.log($contactsValid);
+  customers.init(contactData);
 
   // Add a row to the store
   function addCustomer() {
-    customers.formValues.update(state => [...state, {
+    customers.add({
       firstName: '',
       lastName: '',
       email: '',
       subscriptionLevel: '',
       signups: [],
-    }]);
+    });
   }
 
   // Remove a row from the store
   function deleteCustomer(index) {
-    customers.formValues.update(state => {
-      state.splice(index, 1);
-      return state;
-    });
+    customers.delete(index);
   }
 
   function submit() {
     const mainForm = get(formValues);
-    const contacts = get(contactStore);
+    const contacts = get(customersValues);
     //Do something with the data here
     console.log(mainForm, contacts);
   }
 </script>
 
-<form use:form on:submit={submit}>
+<form use:form on:submit|preventDefault={submit}>
   <label for='productName'>ProductName</label>
-  <input type='text' id='productName' name='productName' bind:value={productData.productName} />
+  <input type='text' id='productName' name='productName' required bind:value={productData.productName} />
 
   <button type='submit'>Submit Form</button>
   <button on:click|preventDefault={addCustomer}>Add Customer</button>
@@ -67,11 +62,11 @@
       <th></th>
       <th>Subscription Level</th>
       <th>Subscriptions</th>
-      <th>&nbsp;</th>
+      <th></th>
     </tr>
     </thead>
     <tbody use:customers.group>
-    {#each $contactStore as row, i}
+    {#each $customersValues as row, i}
       <tr>
         <td>
           <label for='firstName-{i}'>First Name</label>
@@ -132,3 +127,4 @@
     </tbody>
   </table>
 </form>
+

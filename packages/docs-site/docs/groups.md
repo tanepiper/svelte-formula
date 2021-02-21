@@ -25,6 +25,16 @@ will contain the template for your group form.
 Stores are available via `<myGroup>.stores` object - the names are the same as the [Formula Stores](stores/stores.md) -
 the main difference is that the data is an Array of objects instead of a single object.
 
+### Adding and Removing items
+
+Adding and removing items to the store is easy.
+
+You can initialise a group with `<myGroup>.init(items)` passing an array of items for your form group to be initialised
+with.
+
+To add another item call `<myGroup>.add(item)` with your item to add. To remove an item call `<myGroup>.delete(index)`
+with the numerical index of the array item to remove.
+
 ### Note about `radio` groups
 
 Due to the way [HTML Radio Groups](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio) work it is
@@ -34,7 +44,6 @@ attribute on any radio groups - this will match the group back to the correct da
 ## Example
 
 ```svelte
-
 <script>
   import { get } from 'svelte/store';
   import { beaker, formula } from 'svelte-formula';
@@ -43,6 +52,7 @@ attribute on any radio groups - this will match the group back to the correct da
 
   // This creates a contact group - you can now bind `contacts.group` to the subgroup
   const customers = beaker();
+  const customersValues = customers.formValues;
 
   export let productData = {
     productName: '',
@@ -56,39 +66,36 @@ attribute on any radio groups - this will match the group back to the correct da
     subscriptionLevel: '',
     signups: [],
   }];
-  const contactStore = customers.formValues;
-  contactStore.set(contactData);
+
+  customers.init(contactData);
 
   // Add a row to the store
   function addCustomer() {
-    customers.formValues.update(state => [...state, {
+    customers.add({
       firstName: '',
       lastName: '',
       email: '',
       subscriptionLevel: '',
       signups: [],
-    }]);
+    });
   }
 
   // Remove a row from the store
   function deleteCustomer(index) {
-    customers.formValues.update(state => {
-      state.splice(index, 1);
-      return state;
-    });
+    customers.delete(index);
   }
 
   function submit() {
     const mainForm = get(formValues);
-    const contacts = get(contactStore);
+    const contacts = get(customersValues);
     //Do something with the data here
     console.log(mainForm, contacts);
   }
 </script>
 
-<form use:form on:submit={submit}>
+<form use:form on:submit|preventDefault={submit}>
   <label for='productName'>ProductName</label>
-  <input type='text' id='productName' name='productName' bind:value={productData.productName} />
+  <input type='text' id='productName' name='productName' required bind:value={productData.productName} />
 
   <button type='submit'>Submit Form</button>
   <button on:click|preventDefault={addCustomer}>Add Customer</button>
@@ -105,7 +112,7 @@ attribute on any radio groups - this will match the group back to the correct da
     </tr>
     </thead>
     <tbody use:customers.group>
-    {#each $contactStore as row, i}
+    {#each $customersValues as row, i}
       <tr>
         <td>
           <label for='firstName-{i}'>First Name</label>
