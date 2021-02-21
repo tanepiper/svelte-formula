@@ -157,6 +157,10 @@ export function createFieldExtract(
       setElementValue(element, value, isMultiValue, elementGroup);
     }
 
+    if (element.dataset?.beakerKey) {
+      name = element.dataset.beakerKey;
+    }
+
     return {
       name,
       value,

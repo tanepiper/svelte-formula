@@ -56,21 +56,21 @@ export interface Beaker extends BeakerStores {
    * The form object for use with the Svelte use directive
    * @param node
    */
-  form: (node: HTMLElement) => { destroy: () => void };
+  group: (node: HTMLElement) => { destroy: () => void };
   /**
    * Update
    */
-  updateForm: (updatedOpts?: FormulaOptions) => void;
+  update: (updatedOpts?: FormulaOptions) => void;
   /**
    * Destroy
    */
-  destroyForm: () => void;
+  destroy: () => void;
   /**
    * Resets the form to the initial value
    */
-  resetForm: () => void;
+  reset: () => void;
   /**
    * Stores
    */
-  stores: FormulaStores;
+  stores: BeakerStores;
 }

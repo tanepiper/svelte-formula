@@ -16,7 +16,7 @@
     email: 'formula@svelte.codes',
     checkboxMulti: ['B', 'C'],
     checkbox: true,
-    radio: 'C',
+    radio: 'B',
     selectOne: '2',
     selectMulti: ['1', '3']
   }, {
@@ -114,10 +114,10 @@
                  bind:group={row.checkboxMulti} />
         </td>
         <td>
-          <input type='radio' id='radio-{i}-1' name='radio' value='A' bind:group={row.radio} />
-          <input type='radio' id='radio-{i}-2' name='radio' value='B' bind:group={row.radio} />
-          <input type='radio' id='radio-{i}-3' name='radio' value='C' bind:group={row.radio} />
-          <input type='radio' id='radio-{i}-4' name='radio' value='D' bind:group={row.radio} />
+          <input type='radio' id='radio-{i}-1' name='radio-{i}' data-beaker-key='radio' value='A' bind:group={row.radio} />
+          <input type='radio' id='radio-{i}-2' name='radio-{i}' data-beaker-key='radio' value='B' bind:group={row.radio} />
+          <input type='radio' id='radio-{i}-3' name='radio-{i}' data-beaker-key='radio' value='C' bind:group={row.radio} />
+          <input type='radio' id='radio-{i}-4' name='radio-{i}' data-beaker-key='radio' value='D' bind:group={row.radio} />
         </td>
         <td>
           <select name='selectOne' bind:value={row.selectOne}>

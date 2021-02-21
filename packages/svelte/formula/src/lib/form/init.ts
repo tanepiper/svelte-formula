@@ -19,11 +19,11 @@ export function getInitialFormValues(allGroups: [string, FormEl[]][], stores: Fo
   for (const [key, elements] of allGroups) {
     const extract = createFieldExtract(key, elements, options, stores);
     const { name, value, ...validity } = extract(elements[0], true);
-    formValues[key] = value;
-    validityValues[key] = validity;
-    if (options?.enrich?.[key]) {
-      const enrich = createEnrichField(key, options);
-      enrichmentValues[key] = enrich(value);
+    formValues[name] = value;
+    validityValues[name] = validity;
+    if (options?.enrich?.[name]) {
+      const enrich = createEnrichField(name, options);
+      enrichmentValues[name] = enrich(value);
     }
   }
   stores.formValues.set(formValues);
