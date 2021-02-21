@@ -69,4 +69,16 @@ export interface Formula extends FormulaStores {
    * Resets the form to the initial value
    */
   resetForm: () => void;
+  /**
+   * Stores
+   */
+  stores: FormulaStores
+}
+
+export interface Form {
+  create: (node: HTMLElement, isGroup?: boolean) => { destroy: () => void };
+  update: (updatedOpts: FormulaOptions) => void;
+  destroy: () => void;
+  reset: () => void;
+  stores: FormulaStores;
 }

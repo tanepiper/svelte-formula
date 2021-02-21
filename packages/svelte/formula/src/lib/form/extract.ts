@@ -123,10 +123,9 @@ export function createFieldExtract(
   elementGroup: FormEl[],
   options: FormulaOptions,
   stores: FormulaStores,
-  isGroup?: boolean
 ) {
   const validator = createValidationChecker(name, options);
-  const isMultiValue = isGroup ||
+  const isMultiValue =
     (() => {
       if (elementGroup[0].type === 'radio') {
         return false;

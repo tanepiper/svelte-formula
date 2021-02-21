@@ -64,7 +64,7 @@ export function createHandler(
   options: FormulaOptions,
   isGroup?: boolean
 ): () => void {
-  const extract = createFieldExtract(name, groupElements, options, stores, isGroup);
+  const extract = createFieldExtract(name, groupElements, options, stores);
   let enrich;
   if (options?.enrich?.[name]) {
     enrich = createEnrichField(name, options);
