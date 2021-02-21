@@ -12,12 +12,12 @@ const initialEnrichment = new WeakMap<FormulaStores, Record<string, Record<strin
  * @param stores
  * @param options
  */
-export function getInitialFormValues(allGroups: [string, FormEl[]][], stores: FormulaStores, options: FormulaOptions, isGroup?: boolean) {
+export function getInitialFormValues(allGroups: [string, FormEl[]][], stores: FormulaStores, options: FormulaOptions) {
   const formValues: Record<string, unknown | unknown[]> = {};
   const validityValues: Record<string, FormulaError> = {};
   const enrichmentValues: Record<string, Record<string, unknown>> = {};
   for (const [key, elements] of allGroups) {
-    const extract = createFieldExtract(key, elements, options, stores, isGroup);
+    const extract = createFieldExtract(key, elements, options, stores);
     const { name, value, ...validity } = extract(elements[0], true);
     formValues[key] = value;
     validityValues[key] = validity;
@@ -60,7 +60,7 @@ export function createReset(allGroups: [string, FormEl[]][], stores: FormulaStor
 
     // Update the elements
     for (const [key, elements] of allGroups) {
-      const extract = createFieldExtract(key, elements, options, stores, isGroup);
+      const extract = createFieldExtract(key, elements, options, stores);
       extract(elements[0], false, true);
     }
   };

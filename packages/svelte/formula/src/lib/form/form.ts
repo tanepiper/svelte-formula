@@ -1,10 +1,10 @@
-import { getAllFieldsWithValidity } from './fields';
+import { getAllFieldsWithValidity, getGroupFields } from 'packages/svelte/formula/src/lib/shared/fields';
 import { createHandler, createSubmitHandler } from './event';
 import { createReset, getInitialFormValues } from './init';
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
 import { createFormValidator } from './errors';
-import { FormEl, FormulaOptions, FormulaStores } from '../../types';
+import { Form, FormEl, FormulaOptions, FormulaStores } from '../../types';
 
 /**
  * Creates the form action
@@ -15,14 +15,8 @@ import { FormEl, FormulaOptions, FormulaStores } from '../../types';
 export function createForm(
   stores: FormulaStores,
   options: FormulaOptions,
-  globalStore: Map<string, FormulaStores>,
-  isGroup?: boolean
-): {
-  create: (node: HTMLElement) => { destroy: () => void };
-  update: (updatedOpts: FormulaOptions) => void;
-  destroy: () => void;
-  reset: () => void;
-} {
+  globalStore?: Map<string, FormulaStores>,
+): Form {
   /**
    * Store for all keyup handlers than need removed when destroyed
    */
@@ -41,9 +35,10 @@ export function createForm(
    * Internal method to do binding of te action element
    * @param node
    * @param innerOpt
+   * @param isGroup
    */
-  function bindElements(node: HTMLElement, innerOpt: FormulaOptions) {
-    const formElements = getAllFieldsWithValidity(node, isGroup);
+  function bindElements(node: HTMLElement, innerOpt: FormulaOptions, isGroup?: boolean) {
+    const formElements = isGroup ? getGroupFields(node) : getAllFieldsWithValidity(node);
 
     // Group elements by name
     groupedMap = [
@@ -53,20 +48,19 @@ export function createForm(
       }, new Map()),
     ];
 
-    getInitialFormValues(groupedMap, stores, innerOpt, isGroup);
-    innerReset = createReset(groupedMap, stores, innerOpt, isGroup);
+    getInitialFormValues(groupedMap, stores, innerOpt);
+    innerReset = createReset(groupedMap, stores, innerOpt);
 
     // Loop over each group and setup up their initial touch and dirty handlers,
     // also get initial values
     groupedMap.forEach(([name, elements]) => {
-
       touchHandlers.add(createTouchHandlers(name, elements, stores));
       dirtyHandlers.add(createDirtyHandler(name, elements, stores));
 
       // Loop over each element and hook in it's handler
       elements.forEach((el) => {
         if (el instanceof HTMLSelectElement) {
-          changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt, isGroup));
+          changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
         } else {
           switch (el.type) {
             case 'radio':
@@ -77,11 +71,11 @@ export function createForm(
             case 'date':
             case 'time':
             case 'week': {
-              changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt, isGroup));
+              changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
               break;
             }
             default:
-              keyupHandlers.set(el, createHandler(name, 'keyup', el, elements, stores, innerOpt, isGroup));
+              keyupHandlers.set(el, createHandler(name, 'keyup', el, elements, stores, innerOpt));
           }
         }
       });
@@ -93,7 +87,7 @@ export function createForm(
     }
 
     // If the field has a global store, set the ID
-    if (node.id) {
+    if (node.id && globalStore) {
       globalStore.set(node.id, stores);
     }
 
@@ -127,15 +121,13 @@ export function createForm(
   }
 
   return {
-    create: (node: HTMLElement) => {
+    create: (node: HTMLElement, isGroup?: boolean) => {
       currentNode = node;
-      bindElements(node, options);
+      bindElements(node, options, isGroup);
       return {
         destroy: () => {
           cleanupSubscriptions();
-          if (currentNode.id) {
-            globalStore.delete(name);
-          }
+          currentNode.id && globalStore && globalStore.delete(name);
         },
       };
     },
@@ -145,16 +137,12 @@ export function createForm(
       if (updatedOpts) {
         currentOptions = updatedOpts;
       }
-      setTimeout(() => {
-        bindElements(currentNode, currentOptions);
-      }, 0);
+      bindElements(currentNode, currentOptions);
     },
     destroy: () => {
       stores.isFormReady.set(false);
       cleanupSubscriptions();
-      if (currentNode.id) {
-        globalStore.delete(name);
-      }
+      currentNode.id && globalStore && globalStore.delete(name);
     },
     reset: () => {
       innerReset();
@@ -163,7 +151,7 @@ export function createForm(
         touchHandlers.add(createTouchHandlers(name, elements, stores));
         dirtyHandlers.add(createDirtyHandler(name, elements, stores));
       });
-      bindElements(currentNode, currentOptions);
     },
+    stores,
   };
 }

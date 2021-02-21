@@ -1,8 +1,10 @@
 import { createForm } from 'packages/svelte/formula/src/lib/form/form';
 import { Formula, FormulaError, FormulaOptions, FormulaStores, FormValues } from './types';
-import { createFormStores } from 'packages/svelte/formula/src/lib/shared/stores';
+import { createFormStores, createGroupStores } from 'packages/svelte/formula/src/lib/shared/stores';
 import { derived } from 'svelte/store';
 import { generateGroupArray } from 'packages/svelte/formula/src/lib/group/data';
+import { createGroup } from 'packages/svelte/formula/src/lib/group/group';
+import { BeakerStores } from 'packages/svelte/formula/src/types/groups';
 
 export { FormulaError, FormValues, FormulaStores };
 
@@ -12,6 +14,7 @@ export { FormulaError, FormValues, FormulaStores };
  * @type Map<string, FormulaStores>
  */
 export const formulaStores = new Map<string, FormulaStores>();
+export const beakerStores = new Map<string, BeakerStores>();
 
 /**
  * The `formula` function returns a form object that can be bound to any HTML
@@ -34,6 +37,7 @@ export function formula(options?: FormulaOptions): Formula {
     updateForm: update,
     destroyForm: destroy,
     resetForm: reset,
+    stores,
     ...stores,
   };
 }
@@ -44,14 +48,14 @@ export function formula(options?: FormulaOptions): Formula {
  * @param options
  */
 export function beaker(options?: FormulaOptions): any {
-  const stores = createFormStores(options);
-  const { create, update, destroy, reset } = createForm(stores, options, formulaStores, true);
+  const stores = createGroupStores(options);
+  const { create, update, destroy, reset } = createGroup(stores, options, beakerStores);
   return {
     group: create,
     update: update,
     destroy: destroy,
     reset: reset,
     stores,
-    data: derived(stores.formValues, generateGroupArray),
+    ...stores
   };
 }
