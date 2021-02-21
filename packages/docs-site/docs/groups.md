@@ -1,91 +1,169 @@
 ---
 id: beaker
 
-title: Formula Beaker
+title: Beaker API
 
-sidebar_label: Formula Beaker
+sidebar_label: Beaker API
 ---
 
-Formula `beaker` is a function that allows the creation of sub-groups within your main form - these groups can be used for
-row-based data that contain multiple fields.
+Beaker is Formula's API that helps with the creation of multi-row forms using lists of data (e.g. contact or product
+list).
+
+## Usage
+
+Like `formula` you import the `beaker` function. This function returns an object that is the entire group functionality.
+
+```svelte
+import { beaker } from 'svelte-formula';
+
+const myGroup = beaker();
+```
+
+To bind the group to a component pass `<myGroup>.group` to `use`, then inside the group provide an `{#each}` block that
+will contain the template for your group form.
+
+Stores are available via `<myGroup>.stores` object - the names are the same as the [Formula Stores](stores/stores.md) -
+the main difference is that the data is an Array of objects instead of a single object.
+
+### Note about `radio` groups
+
+Due to the way [HTML Radio Groups](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio) work it is
+required to have unique names as well as ID properties in your HTML. To support this you can provide a `data-beaker-key`
+attribute on any radio groups - this will match the group back to the correct data.
 
 ## Example
 
-```sveltehtml
+```svelte
 
 <script>
-  import { writable } from 'svelte/store';
-  import { formula, beaker } from 'svelte-formula';
+  import { get } from 'svelte/store';
+  import { beaker, formula } from 'svelte-formula';
 
   const { form, formValues, updateForm } = formula();
 
   // This creates a contact group - you can now bind `contacts.group` to the subgroup
-  const contacts = beaker();
+  const customers = beaker();
 
-  // The internal data rows would come from our own source
-  const rows = writable([]);
+  export let productData = {
+    productName: '',
+  };
 
-  function addRow() {
-    rows.update(state => [...state, {
+  // Set the store with any existing data
+  export let contactData = [{
+    firstName: '',
+    lastName: '',
+    email: '',
+    subscriptionLevel: '',
+    signups: [],
+  }];
+  const contactStore = customers.formValues;
+  contactStore.set(contactData);
+
+  // Add a row to the store
+  function addCustomer() {
+    customers.formValues.update(state => [...state, {
       firstName: '',
       lastName: '',
       email: '',
+      subscriptionLevel: '',
+      signups: [],
     }]);
-    contacts.update()
   }
 
-  function deleteRow(index) {
-    rows.update(state => {
+  // Remove a row from the store
+  function deleteCustomer(index) {
+    customers.formValues.update(state => {
       state.splice(index, 1);
       return state;
-    })
-    contacts.update()
+    });
   }
 
-  const contactValues = contacts.stores.formValues;
-  const data = contacts.data;
-  const isFormReady = contacts.stores.isFormReady;
-  $: console.log('contactValues', $data)
-  $: console.log($isFormReady)
-
+  function submit() {
+    const mainForm = get(formValues);
+    const contacts = get(contactStore);
+    //Do something with the data here
+    console.log(mainForm, contacts);
+  }
 </script>
 
-<div use:form>
-  <label for='foo'>
-    Foo
-  </label>
-  <input type='text' id='foo' name='foo' />
+<form use:form on:submit={submit}>
+  <label for='productName'>ProductName</label>
+  <input type='text' id='productName' name='productName' bind:value={productData.productName} />
 
-  <button on:click|preventDefault={addRow}>Add Row</button>
+  <button type='submit'>Submit Form</button>
+  <button on:click|preventDefault={addCustomer}>Add Customer</button>
+
   <table>
     <thead>
     <tr>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Email</th>
-      <th>&nbsp;</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>Subscription Level</th>
+      <th>Subscriptions</th>
+      <th></th>
     </tr>
     </thead>
-    <tbody use:contacts.group role='group'>
-    {#each $rows as row, i}
+    <tbody use:customers.group>
+    {#each $contactStore as row, i}
       <tr>
         <td>
-          <input type='text' id='firstName-{i}' name='firstName' bind:value={row.firstName} />
+          <label for='firstName-{i}'>First Name</label>
+          <input type='text' id='firstName-{i}' name='firstName' required bind:value={row.firstName} />
         </td>
         <td>
-          <input type='text' id='lastName-{i}' name='lastName' bind:value={row.lastName} />
+          <label for='lastName-{i}'>Last Name</label>
+          <input type='text' id='lastName-{i}' name='lastName' bind:value={row.lastName} required />
         </td>
         <td>
-          <input type='text' id='email-{i}' name='email' bind:value={row.email} />
+          <label for='email-{i}'>Email Name</label>
+          <input type='email' id='email-{i}' name='email' bind:value={row.email} required />
         </td>
         <td>
-          <button on:click|preventDefault={() => deleteRow(i)}>X</button>
+          <!-- In multi-group forms, radio groups require a unique name in the DOM - her you can provide 'data-beaker-key' to specify the data key -->
+          <label for='subscriptionLevel-{i}-1'>None
+            <input type='radio' id='subscriptionLevel-{i}-1'
+                   name='subscriptionLevel-{i}'
+                   data-beaker-key='subscriptionLevel' value='none'
+                   bind:group={row.subscriptionLevel} />
+          </label>
+
+          <label for='subscriptionLevel-{i}-1'>Partial
+            <input type='radio' id='subscriptionLevel-{i}-2'
+                   name='subscriptionLevel-{i}'
+                   data-beaker-key='subscriptionLevel' value='partial'
+                   bind:group={row.subscriptionLevel} />
+          </label>
+
+          <label for='subscriptionLevel-{i}-1'>Full
+            <input type='radio' id='subscriptionLevel-{i}-3'
+                   name='subscriptionLevel-{i}'
+                   data-beaker-key='subscriptionLevel' value='full'
+                   bind:group={row.subscriptionLevel} />
+          </label>
+
+        </td>
+        <label for='signups-{i}-1'>Daily <input type='checkbox' id='signups-{i}-1' name='signups' value='daily'
+                                                bind:group={row.signups} /></label>
+
+        <label for='signups-{i}-2'>Weekly
+          <input type='checkbox' id='signups-{i}-2' name='signups' value='weekly'
+                 bind:group={row.signups} />
+        </label>
+        <label for='signups-{i}-3'>News
+          <input type='checkbox' id='signups-{i}-3' name='signups' value='news'
+                 bind:group={row.signups} />
+        </label>
+        <label for='signups-{i}-4'>Product
+          <input type='checkbox' id='signups-{i}-4' name='signups' value='product'
+                 bind:group={row.signups} />
+        </label>
+        <td>
+          <button on:click|preventDefault={() => deleteCustomer(i)}>X</button>
         </td>
       </tr>
     {/each}
     </tbody>
   </table>
-</div>
-
-
+</form>
 ```
