@@ -44,9 +44,7 @@ function setElementValue(element: FormEl, value: unknown | unknown[], isMultiVal
     } else if (element.type === 'checkbox') {
       (element as HTMLInputElement).checked = value as boolean;
     } else if (element.type === 'radio') {
-      elementGroup.forEach((el) => {
-        (el as HTMLInputElement).checked = value === el.value;
-      });
+      elementGroup.forEach((el) => ((el as HTMLInputElement).checked = value === el.value));
     } else if (element.type === 'file') {
       (element as HTMLInputElement).files = value instanceof FileList ? value : null;
     } else {
@@ -92,7 +90,7 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
         break;
       }
       case 'radio': {
-        elValue = (element as HTMLInputElement).checked ? element.value : null;
+        elValue = elementGroup.find((el: HTMLInputElement) => el.checked).value || null;
         break;
       }
       case 'file': {
