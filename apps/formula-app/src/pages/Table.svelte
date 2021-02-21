@@ -73,7 +73,7 @@
     {#each $rows as row, i}
       <tr data-bind-data={JSON.stringify(row)}>
         <td>
-          <input type='text' id='firstName-{i}' name='firstName' />
+          <input type='text' id='firstName-{i}' name='firstName' required />
         </td>
         <td>
           <input type='text' id='lastName-{i}' name='lastName' />

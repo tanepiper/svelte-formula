@@ -62,7 +62,7 @@ export function createHandler(
   groupElements: FormEl[],
   stores: FormulaStores,
   options: FormulaOptions,
-  isGroup?: boolean
+  isGroup?: boolean,
 ): () => void {
   const extract = createFieldExtract(name, groupElements, options, stores);
   let enrich;

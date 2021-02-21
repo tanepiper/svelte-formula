@@ -16,15 +16,15 @@ row-based data that contain multiple fields.
 <script>
   import { writable } from 'svelte/store';
   import { formula, beaker } from 'svelte-formula';
-  
+
   const { form, formValues, updateForm } = formula();
-  
+
   // This creates a contact group - you can now bind `contacts.group` to the subgroup
   const contacts = beaker();
-  
+
   // The internal data rows would come from our own source
   const rows = writable([]);
-  
+
   function addRow() {
     rows.update(state => [...state, {
       firstName: '',

@@ -1,10 +1,7 @@
-import { createForm } from 'packages/svelte/formula/src/lib/form/form';
-import { Formula, FormulaError, FormulaOptions, FormulaStores, FormValues } from './types';
-import { createFormStores, createGroupStores } from 'packages/svelte/formula/src/lib/shared/stores';
-import { derived } from 'svelte/store';
-import { generateGroupArray } from 'packages/svelte/formula/src/lib/group/data';
-import { createGroup } from 'packages/svelte/formula/src/lib/group/group';
-import { BeakerStores } from 'packages/svelte/formula/src/types/groups';
+import { createForm } from './lib/form/form';
+import { createGroup } from './lib/group/group';
+import { Beaker, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaStores, FormValues } from './types';
+import { createFormStores, createGroupStores } from './lib/shared/stores';
 
 export { FormulaError, FormValues, FormulaStores };
 
@@ -47,7 +44,7 @@ export function formula(options?: FormulaOptions): Formula {
  * The methos returns a group
  * @param options
  */
-export function beaker(options?: FormulaOptions): any {
+export function beaker(options?: FormulaOptions): Beaker {
   const stores = createGroupStores(options);
   const { create, update, destroy, reset } = createGroup(stores, options, beakerStores);
   return {
@@ -56,6 +53,6 @@ export function beaker(options?: FormulaOptions): any {
     destroy: destroy,
     reset: reset,
     stores,
-    ...stores
+    ...stores,
   };
 }

@@ -41,7 +41,12 @@ export function getInitialFormValues(allGroups: [string, FormEl[]][], stores: Fo
  * Create the form reset method
 
  */
-export function createReset(allGroups: [string, FormEl[]][], stores: FormulaStores, options: FormulaOptions, isGroup?: boolean) {
+export function createReset(
+  allGroups: [string, FormEl[]][],
+  stores: FormulaStores,
+  options: FormulaOptions,
+  isGroup?: boolean,
+) {
   /**
    * Resets the form to the initial values
    */

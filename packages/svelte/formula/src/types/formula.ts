@@ -72,7 +72,7 @@ export interface Formula extends FormulaStores {
   /**
    * Stores
    */
-  stores: FormulaStores
+  stores: FormulaStores;
 }
 
 export interface Form {
