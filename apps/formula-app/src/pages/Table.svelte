@@ -10,13 +10,18 @@
   const contactValues = contacts.stores.formValues;
   console.log(contacts);
 
+  const formData = {
+    foo: 'Foo',
+    bar: true
+  }
+
   const rows = writable([{
     firstName: 'Tane',
     lastName: 'Piper',
     email: 'formula@svelte.codes',
     checkboxMulti: ['B', 'C'],
     checkbox: true,
-    radio: 'B',
+    radio: 'A',
     selectOne: '2',
     selectMulti: ['1', '3']
   }, {
@@ -25,7 +30,7 @@
     email: 'formula@svelte.codes',
     checkboxMulti: ['A', 'D'],
     checkbox: true,
-    radio: 'A',
+    radio: 'B',
     selectOne: '3',
     selectMulti: ['1', '2']
   }, {
@@ -34,7 +39,7 @@
     email: 'formula1@svelte.codes',
     checkboxMulti: ['A', 'C'],
     checkbox: true,
-    radio: 'A',
+    radio: 'C',
     selectOne: '1',
     selectMulti: ['2', '3']
   }]);
@@ -70,9 +75,9 @@
   <label for='foo'>
     Foo
   </label>
-  <input type='text' id='foo' name='foo' />
+  <input type='text' id='foo' name='foo' bind:value={formData.foo}/>
 
-  <input type='checkbox' id='bar' name='bar' />
+  <input type='checkbox' id='bar' name='bar' bind:checked={formData.bar}/>
 
   <button on:click|preventDefault={addRow}>Add Row</button>
   <button type='submit'>Submit</button>
