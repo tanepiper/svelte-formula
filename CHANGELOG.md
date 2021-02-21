@@ -19,7 +19,17 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   export let loadedContacts = [];
 
   const contactValues = contacts.formValues;
-  contactValues.set(loadedContacts) // Set initial values
+  contacts.init(loadedContacts) // Set initial values
+  
+  // Easily add items to the group
+  function addRow(item) {
+    contacts.add({...item});
+  }
+  //... or remove them
+  function removeRow(index) {
+    contacts.delete(index);
+  }
+  
   ....
   <div use:contacts.group>
   {#each $contactValues as contact, i}
