@@ -12,20 +12,25 @@ const features = [
     imageUrl: 'img/undraw_form.svg',
     description: (
       <>
-        Formula works out-of-the-box with HTML5 forms and validation without the need for any JavaScript configuration
+        Formula works out-of-the-box with HTML5 forms and validation without the need for any JavaScript configuration.
       </>
     ),
   },
   {
     title: <>Fully Reactive</>,
     imageUrl: 'img/undraw_apps.svg',
-    description: <>Build powerful reactive data-driven applications with custom validation, enrichment and messages</>,
+    description: (
+      <>
+        Build powerful reactive data-driven applications with custom validation, enrichment and messages, and work with
+        grouped data.
+      </>
+    ),
   },
   {
     title: <>Built for Svelte</>,
     imageUrl: 'img/svelte-logo.svg',
     description: (
-      <>Easy to install Action and Subscriptions that just work with your application without getting in the way</>
+      <>Easy to install Action and Subscriptions that just work with your application without getting in the way.</>
     ),
   },
 ];

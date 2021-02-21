@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- New `beaker` API that provides functionality for working with groups of data as multi-line forms.
+  See [documentation](https://formula.svelte.codes/docs/beaker) for more details on use
+
+  ```sveltehtml
+  import { beaker } from 'svelte-formula'
+  const contacts = beaker();
+
+  export let loadedContacts = [];
+
+  const contactValues = contacts.formValues;
+  contactValues.set(loadedContacts) // Set initial values
+  ....
+  <div use:contacts.group>
+  {#each $contactValues as contact, i}
+    <!-- Template for each row -->
+  {/each}
+  </div>
+  ```
+
 ## [0.7.2] 2021-02-19
 
 ### Fixed

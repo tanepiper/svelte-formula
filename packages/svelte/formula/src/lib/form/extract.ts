@@ -90,7 +90,8 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
         break;
       }
       case 'radio': {
-        elValue = elementGroup.find((el: HTMLInputElement) => el.checked).value || null;
+        const foundElement = elementGroup.find((el: HTMLInputElement) => el.checked);
+        elValue = foundElement ? foundElement.value : null;
         break;
       }
       case 'file': {

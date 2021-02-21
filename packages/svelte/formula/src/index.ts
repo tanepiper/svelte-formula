@@ -24,7 +24,6 @@ export const beakerStores = new Map<string, BeakerStores>();
  * the form and all the stores available for the form
  */
 export function formula(options?: FormulaOptions): Formula {
-  // Create a store object for this instance, if there is an `id` on the element the stores will be added to formulaStores
   const stores = createFormStores(options);
 
   const { create, update, destroy, reset } = createForm(stores, options, formulaStores);

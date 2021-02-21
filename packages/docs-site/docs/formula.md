@@ -18,11 +18,13 @@ and fully data-driven applications.
 Out-of-the box it's designed to work with HTML5 forms. Configuring your forms validation is as easy as setting
 attributes, and doesn't get in the way of things like Accessibility.
 
-For example making a field requied - add the `<input required>` property or `<input minlength="8">` to set a minimum
+For example making a field required - add the `<input required>` property or `<input minlength="8">` to set a minimum
 length.
 
 All the form values, states and enrichment are available through the instance [stores](stores/stores.md) (which are just
 Svelte stores!)
+
+If you are working with arrays of data you can use [beaker](groups.md) to create multi-row forms.
 
 ## Installation
 

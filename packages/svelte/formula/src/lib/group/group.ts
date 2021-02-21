@@ -2,6 +2,12 @@ import { BeakerStores, FormulaOptions } from '../../types';
 import { createFormStores } from '../shared/stores';
 import { createForm } from '../form/form';
 
+/**
+ * Creates a group, which is really just a collection of forms for row data
+ * @param stores
+ * @param options
+ * @param beakerStores
+ */
 export function createGroup(
   stores: BeakerStores,
   options: FormulaOptions,
@@ -89,11 +95,17 @@ export function createGroup(
   return {
     create: (node: HTMLElement) => {
       groupId = node.id;
+      if (groupId) {
+        beakerStores.set(groupId, stores);
+      }
       groupParentNode = node;
       setupGroupContainer(node);
 
       return {
         destroy: () => {
+          if (groupId) {
+            beakerStores.delete(groupId);
+          }
           resetGroup();
           globalObserver.disconnect();
         },
@@ -101,6 +113,9 @@ export function createGroup(
     },
     update: (updatedOpts: FormulaOptions) => {},
     destroy: () => {
+      if (groupId) {
+        beakerStores.delete(groupId);
+      }
       resetGroup();
       globalObserver.disconnect();
     },
