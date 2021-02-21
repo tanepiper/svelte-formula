@@ -42,9 +42,7 @@ function setElementValue(element: FormEl, value: unknown | unknown[], isMultiVal
         el.selected = (value as unknown[]).includes(el.value);
       }
     } else if (element.type === 'checkbox') {
-      elementGroup.forEach((el) => {
-        (el as HTMLInputElement).checked = value === el.value;
-      });
+      (element as HTMLInputElement).checked = value as boolean;
     } else if (element.type === 'radio') {
       elementGroup.forEach((el) => {
         (el as HTMLInputElement).checked = value === el.value;

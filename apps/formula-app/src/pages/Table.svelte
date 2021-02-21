@@ -72,6 +72,8 @@
   </label>
   <input type='text' id='foo' name='foo' />
 
+  <input type='checkbox' id='bar' name='bar' />
+
   <button on:click|preventDefault={addRow}>Add Row</button>
   <button type='submit'>Submit</button>
   <table>
