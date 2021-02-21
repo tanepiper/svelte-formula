@@ -15,22 +15,30 @@ sidebar_label: Formula API
 Formula is a library for [Svelte](https://svelte.dev) with features for creating **Zero Configuration** reactive forms
 and fully data-driven applications.
 
-Out-of-the box it's designed to work with HTML5 forms. Configuring your forms validation is as easy as setting
-attributes, and doesn't get in the way of things like Accessibility.
+Out-of-the box it's designed to work with HTML5 forms. Using the `name` attribute of your HTML elements, Formula builds
+a set of state objects using Svelte's subscribable [stores](stores/stores.md), making them available for you subscribe
+to in your application. These stores contain values and validation states, which are configured as easily as setting
+supported attributes, and doesn't get in the way of things like Accessibility.
 
-For example making a field required - add the `<input required>` property or `<input minlength="8">` to set a minimum
-length.
+> Want to make a field required? Just add the `<input required>` attribute, or add `<input minlength="8">` to set a minimum length on the fields.
 
-All the form values, states and enrichment are available through the instance [stores](stores/stores.md) (which are just
-Svelte stores!)
+Validation is enhanced via custom field and form level validation functions passed in the [options](options.md) - you
+can also pass default values, or override default HTML5 validation text with your own versions (such as localised text).
 
-If you are working with arrays of data you can use [beaker](groups.md) to create multi-row forms.
+You can also enrich you fields with computed values (such as a password strength derived from the users input).
+
+### Working with Data Collections
+
+Formula also provides an API for working with collections of data - [beaker](groups/groups.md) allows you to use Formula to
+create rich row-level forms for applications such as data grids.
 
 ## Installation
 
 Formula is available on NPM, with the source available on GitHub. To install in your project type:
 
 > `npm i svelte-formula`
+
+## Basic Form Example
 
 To use in your project all you need is an element container binding the form with
 Svelte [use](https://svelte.dev/docs#use_action)
@@ -54,98 +62,4 @@ directive, and form input fields with their `name` property set.
     <span hidden={!projectNameInvalid}>{validity?.projectName?.message}</span>
     <button disabled={!$formIsValid}>Update Project Name</button>
   </div>
-```
-
-## Adding powerful custom validations and enrichment
-
-While you don't need any configuration to get started, Formula does provide a set of
-powerful [configuration options](options.md) for any form instance, providing custom field and form validations, custom
-errors messages and custom enrichments which allow you to return additional calculated data.
-
-### Signup Form Example
-
-```svelte
-<script>
-  import { get } from 'svelte/store'
-  import { createEventDispatcher} from 'svelte';
-  import { formula } from 'svelte-formula';
-  import { checkPasswordScore } from './password'
-
-  const dispatch = createEventDispatcher();
-
-  const { form, dirty, enrichment, formValidity, formValues, isFormValid, submitValues, touched, validity } = formula({
-    messages: {
-      username: {
-        valueMissing: 'This service requires you enter a username'
-      }
-    },
-    enrich: {
-      password: {
-        passwordStrength: (value) => checkPasswordScore(value),
-      }
-    },
-    validators: {
-      username: {
-        inDomain: (value) => value.includes('@svelte.codes') ? null : 'You can only sign up wit a @svelte.codes domain'
-      },
-      t_and_c: {
-        isChecked: (value) => value ? null : 'You must check the T&Cs to sign up'
-      }
-    },
-    formValidators: {
-      passwordsMatch: (values) => values.password === values.matchPassword ? null : 'Your passwords must match'
-    }
-  })
-
-  $: usernameErr = $touched?.username && $validity?.username?.invalid
-  $: passwordErr = $touched?.password && $validity?.password?.invalid
-  $: passwordsMatchErr = $touched.passwordMatch && $formValidity?.passwordsMatch;
-  $: passwordStrength = $enrichment?.password?.passwordStrength || 0;
-
-
-  function onSubmit() {
-    dispatch('signup', {
-      user: get(submitValues)
-    })
-  }
-</script>
-{passwordStrength}
-<form use:form id='signup' on:submit={onSubmit}>
-  <div hidden={$isFormValid}>
-    There are errors
-  </div>
-
-  <div class='form-field' on:submit={onSubmit}>
-    <label for='username'>Username</label>
-    <input type='email' id='username' name='username' required class:error={usernameErr}>
-    <span hidden={!usernameErr}>{$validity?.username?.message}</span>
-  </div>
-  <div class='form-field'>
-    <label for='password'>Password</label>
-    <input type='password' id='password' name='password' required minlength='8' class:error={passwordErr}>
-    <span hidden={!passwordErr}>{$validity?.password?.message}</span>
-    <meter value={$enrichment?.password?.passwordStrength || 0} min='0' max='100' low='33' high='66'
-           optimum='80'></meter>
-  </div>
-  <div class='form-field'>
-    <label for='passwordMatch'>Password Match</label>
-    <input type='password' id='passwordMatch' name='passwordMatch' required minlength='8'
-           class:error={passwordsMatchErr}>
-    <span hidden={!passwordsMatchErr}>{$formValidity?.passwordsMatch}</span>
-  </div>
-  <div class='form-field'>
-    <label for='t_and_c'>Agree to T&amp;Cs</label>
-    <input type='checkbox' id='t_and_c' name='t_and_c' />
-    <span hidden={$validity?.t_and_c?.valid}>{$validity?.t_and_c?.message}</span>
-  </div>
-
-  <button type='submit' disabled={!$isFormValid}>Signup For Service</button>
-</form>
-
-<style>
-  .error {
-    border: 1px solid red;
-  }
-</style>
-
 ```

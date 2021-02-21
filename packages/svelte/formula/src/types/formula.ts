@@ -5,19 +5,19 @@ import { FormulaOptions } from './options';
 /**
  * The stores available in Formula
  */
-export interface FormulaStores {
+export interface FormulaStores<T extends FormValues> {
   /**
    * A store containing the current form values
    */
-  formValues: Writable<FormValues>;
+  formValues: Writable<T>;
   /**
    * A store containing the values at the time of `<form>` submission
    */
-  submitValues: Writable<FormValues>;
+  submitValues: Writable<T>;
   /**
    * A store containing the initial values
    */
-  initialValues: Writable<FormValues>;
+  initialValues: Writable<T>;
   /**
    * A store containing the touched status of each named field
    */
@@ -51,7 +51,7 @@ export interface FormulaStores {
 /**
  * The Formula interface with stores and form factory
  */
-export interface Formula extends FormulaStores {
+export interface Formula<T extends FormValues> extends FormulaStores<T> {
   /**
    * The form object for use with the Svelte use directive
    * @param node
@@ -72,13 +72,13 @@ export interface Formula extends FormulaStores {
   /**
    * Stores
    */
-  stores: FormulaStores;
+  stores: FormulaStores<T>;
 }
 
-export interface Form {
+export interface Form<T extends FormValues> {
   create: (node: HTMLElement, isGroup?: boolean) => { destroy: () => void };
   update: (updatedOpts: FormulaOptions) => void;
   destroy: () => void;
   reset: () => void;
-  stores: FormulaStores;
+  stores: FormulaStores<T>;
 }

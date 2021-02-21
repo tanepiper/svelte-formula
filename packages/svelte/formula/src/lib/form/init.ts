@@ -1,18 +1,24 @@
-import { FormEl, FormulaError, FormulaOptions, FormulaStores } from '../../types';
+import { FormEl, FormulaError, FormulaOptions, FormulaStores, FormValues } from '../../types';
 import { createFieldExtract } from './extract';
 import { createEnrichField } from './enrichment';
 
-const initialValues = new WeakMap<FormulaStores, Record<string, unknown | unknown[]>>();
-const initialValidity = new WeakMap<FormulaStores, Record<string, FormulaError>>();
-const initialEnrichment = new WeakMap<FormulaStores, Record<string, Record<string, unknown>>>();
+const initialValues = new Map<HTMLElement, Record<string, unknown | unknown[]>>();
+const initialValidity = new Map<HTMLElement, Record<string, FormulaError>>();
+const initialEnrichment = new Map<HTMLElement, Record<string, Record<string, unknown>>>();
 
 /**
  * Initialise the stores with data from the form, it will also use any default values provided
+ * @param node
  * @param allGroups
  * @param stores
  * @param options
  */
-export function getInitialFormValues(allGroups: [string, FormEl[]][], stores: FormulaStores, options: FormulaOptions) {
+export function getInitialFormValues<T extends FormValues>(
+  node: HTMLElement,
+  allGroups: [string, FormEl[]][],
+  stores: FormulaStores<T>,
+  options: FormulaOptions,
+) {
   const formValues: Record<string, unknown | unknown[]> = {};
   const validityValues: Record<string, FormulaError> = {};
   const enrichmentValues: Record<string, Record<string, unknown>> = {};
@@ -26,36 +32,36 @@ export function getInitialFormValues(allGroups: [string, FormEl[]][], stores: Fo
       enrichmentValues[name] = enrich(value);
     }
   }
-  stores.formValues.set(formValues);
-  stores.initialValues.set(formValues);
-  stores.validity.set(validityValues);
-  stores.isFormValid.set(Object.values(validityValues).every((v: FormulaError) => v.valid));
-  stores.enrichment.set(enrichmentValues);
+  stores.formValues.set({ ...formValues } as T);
+  stores.initialValues.set({ ...formValues } as T);
+  stores.validity.set({ ...validityValues });
+  stores.isFormValid.set(Object.values({ ...validityValues }).every((v: FormulaError) => v.valid));
+  stores.enrichment.set({ ...enrichmentValues });
 
-  initialValues.set(stores, formValues);
-  initialValidity.set(stores, validityValues);
-  initialEnrichment.set(stores, enrichmentValues);
+  initialValues.set(node, { ...formValues });
+  initialValidity.set(node, { ...validityValues });
+  initialEnrichment.set(node, { ...enrichmentValues });
 }
 
 /**
  * Create the form reset method
 
  */
-export function createReset(
+export function createReset<T extends FormValues>(
+  node: HTMLElement,
   allGroups: [string, FormEl[]][],
-  stores: FormulaStores,
+  stores: FormulaStores<T>,
   options: FormulaOptions,
-  isGroup?: boolean,
 ) {
   /**
    * Resets the form to the initial values
    */
   return () => {
-    const formValues = initialValues.get(stores);
-    const validityValues = initialValidity.get(stores);
-    const enrichment = initialEnrichment.get(stores);
+    const formValues = initialValues.get(node);
+    const validityValues = initialValidity.get(node);
+    const enrichment = initialEnrichment.get(node);
 
-    stores.formValues.set(formValues);
+    stores.formValues.set(formValues as T);
     stores.validity.set(validityValues);
     stores.isFormValid.set(Object.values(validityValues).every((v: FormulaError) => v.valid));
     stores.enrichment.set(enrichment);
@@ -69,4 +75,16 @@ export function createReset(
       extract(elements[0], false, true);
     }
   };
+}
+
+export function cleanupDefaultValues(node: HTMLElement) {
+  if (initialValues.has(node)) {
+    initialValues.delete(node);
+  }
+  if (initialValidity.has(node)) {
+    initialValidity.delete(node);
+  }
+  if (initialEnrichment.has(node)) {
+    initialEnrichment.delete(node);
+  }
 }

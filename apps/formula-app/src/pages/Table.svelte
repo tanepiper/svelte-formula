@@ -1,11 +1,11 @@
-<script>
+<script type='ts'>
   import { get } from 'svelte/store';
   import { beaker, formula } from '../../../../dist/packages/svelte/formula';
 
   const { form, formValues, updateForm } = formula();
 
   // This creates a contact group - you can now bind `contacts.group` to the subgroup
-  const customers = beaker();
+  const customers = beaker<{ firstName: string, lastName: string, email: string, subscriptionLevel: string, signups: string[] }>();
   const customersValues = customers.formValues;
 
   export let productData = {
@@ -53,7 +53,8 @@
 
   <button type='submit'>Submit Form</button>
   <button on:click|preventDefault={addCustomer}>Add Customer</button>
-
+  <button on:click|preventDefault={() => customers.clear()}>Clear</button>
+  <button on:click|preventDefault={() => customers.reset()}>Reset</button>
   <table>
     <thead>
     <tr>

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2021-02-21
+
+### Added
+
+- Added `clear` method to `beaker` - this will empty the store of any group data
+- Group forms now available on `forms` property
+
+### Fixed
+
+- Fixed `reset` method of group, now correctly calls reset on the forms
+- Fixed lifecycle issues with group
+
 ## [0.8.0] - 2021-02-21
 
 ### Added
@@ -20,7 +32,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
   const contactValues = contacts.formValues;
   contacts.init(loadedContacts) // Set initial values
-  
+
   // Easily add items to the group
   function addRow(item) {
     contacts.add({...item});
@@ -29,7 +41,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   function removeRow(index) {
     contacts.delete(index);
   }
-  
+
   ....
   <div use:contacts.group>
   {#each $contactValues as contact, i}
@@ -37,7 +49,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   {/each}
   </div>
   ```
-  
+
 ### Fixed
 
 - Some internal API fixes and refactoring

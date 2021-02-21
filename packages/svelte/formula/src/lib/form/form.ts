@@ -1,10 +1,10 @@
 import { getAllFieldsWithValidity, getGroupFields } from '../shared/fields';
 import { createHandler, createSubmitHandler } from './event';
-import { createReset, getInitialFormValues } from './init';
+import { cleanupDefaultValues, createReset, getInitialFormValues } from './init';
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
 import { createFormValidator } from './errors';
-import { Form, FormEl, FormulaOptions, FormulaStores } from '../../types';
+import { Form, FormEl, FormulaOptions, FormulaStores, FormValues } from '../../types';
 
 /**
  * Creates the form action
@@ -12,11 +12,11 @@ import { Form, FormEl, FormulaOptions, FormulaStores } from '../../types';
  * @param stores
  * @param globalStore
  */
-export function createForm(
-  stores: FormulaStores,
+export function createForm<T extends FormValues>(
+  stores: FormulaStores<T>,
   options: FormulaOptions,
-  globalStore?: Map<string, FormulaStores>,
-): Form {
+  globalStore?: Map<string, FormulaStores<T>>,
+): Form<T> {
   /**
    * Store for all keyup handlers than need removed when destroyed
    */
@@ -25,10 +25,10 @@ export function createForm(
   const touchHandlers = new Set<() => void>();
   const dirtyHandlers = new Set<() => void>();
 
-  let currentOptions = options;
+  let initialOptions = options;
   let submitHandler = undefined;
-  let unsub;
-  let innerReset;
+  let unsub: () => void;
+  let innerReset: () => void;
   let groupedMap: [string, FormEl[]][] = [];
 
   /**
@@ -48,8 +48,8 @@ export function createForm(
       }, new Map()),
     ];
 
-    getInitialFormValues(groupedMap, stores, innerOpt);
-    innerReset = createReset(groupedMap, stores, innerOpt);
+    getInitialFormValues<T>(node, groupedMap, stores, innerOpt);
+    innerReset = createReset<T>(node, groupedMap, stores, innerOpt);
 
     // Loop over each group and setup up their initial touch and dirty handlers,
     // also get initial values
@@ -121,6 +121,11 @@ export function createForm(
   }
 
   return {
+    /**
+     * Create an action for the `use` directive
+     * @param node
+     * @param isGroup
+     */
     create: (node: HTMLElement, isGroup?: boolean) => {
       currentNode = node;
       bindElements(node, options, isGroup);
@@ -131,19 +136,28 @@ export function createForm(
         },
       };
     },
+    /**
+     * Update a form instance , new options can be passed to the form instance, if not it will use the original
+     * values passed
+     * @param updatedOpts
+     */
     update: (updatedOpts?: FormulaOptions) => {
       stores.isFormReady.set(false);
       cleanupSubscriptions();
-      if (updatedOpts) {
-        currentOptions = updatedOpts;
-      }
-      bindElements(currentNode, currentOptions);
+      bindElements(currentNode, updatedOpts || initialOptions);
     },
+    /**
+     * Destroy the form instance
+     */
     destroy: () => {
       stores.isFormReady.set(false);
       cleanupSubscriptions();
       currentNode.id && globalStore && globalStore.delete(name);
+      cleanupDefaultValues(currentNode);
     },
+    /**
+     * Reset the data in the form instance
+     */
     reset: () => {
       innerReset();
       [...touchHandlers, ...dirtyHandlers].forEach((fn) => fn());
