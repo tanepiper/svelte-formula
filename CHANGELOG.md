@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.3] - 2021-02-22
+
+### Fixed
+
+- Example in readme fixed with link to demo on [Svelte Repl](https://svelte.dev/repl/3c3fe78a258a45779bd122d399560f19)
+
 ## [0.8.2] - 2021-02-22
 
 ### Added
