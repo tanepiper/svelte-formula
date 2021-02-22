@@ -1,6 +1,6 @@
 module.exports = {
   someSidebar: {
-    Formula: ['formula', 'options', 'lifecycle', 'enrich'],
+    Formula: ['formula', 'options', 'lifecycle'],
     Beaker: ['groups/beaker', 'groups/data'],
     Stores: [
       'stores/stores',
@@ -14,5 +14,6 @@ module.exports = {
       'stores/stores-touched',
       'stores/stores-validity',
     ],
+    Examples: ['examples/signup', 'examples/customer-rows']
   },
 };

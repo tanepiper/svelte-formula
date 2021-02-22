@@ -1,6 +1,7 @@
 import { FormEl, FormulaField, FormulaOptions, FormulaStores } from '../../types';
 import { createValidationChecker } from './errors';
 import { get } from 'svelte/store';
+import { setAriaValue } from './aria';
 
 /**
  * As the `HTMLCollectionOf` is not iterable, we have to loop over it with
@@ -115,11 +116,11 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
  * @param options
  * @param stores
  */
-export function createFieldExtract(
+export function createFieldExtract<T extends Record<string, unknown | unknown[]>>(
   name: string,
   elementGroup: FormEl[],
   options: FormulaOptions,
-  stores: FormulaStores,
+  stores: FormulaStores<T>,
 ) {
   const validator = createValidationChecker(name, options);
   const isMultiValue =
@@ -153,6 +154,7 @@ export function createFieldExtract(
     if (isInit || isReset) {
       setElementValue(element, value, isMultiValue, elementGroup);
     }
+    setAriaValue(element, elementGroup);
 
     if (element.dataset?.beakerKey) {
       name = element.dataset.beakerKey;

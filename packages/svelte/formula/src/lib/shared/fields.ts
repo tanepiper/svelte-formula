@@ -1,4 +1,4 @@
-import { FormEl } from 'packages/svelte/formula/src/types';
+import { FormEl } from '../../types';
 
 /**
  * Extract all fields from the form that are valid inputs with `name` property that are not part of a form group

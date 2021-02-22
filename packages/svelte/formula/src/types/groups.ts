@@ -1,11 +1,10 @@
 import { Writable } from 'svelte/store';
-import { FormulaError, FormValues } from 'svelte-formula';
-import { Form } from 'packages/svelte/formula/src/types/formula';
+import { Formula, FormulaError, FormulaOptions } from '../types';
 
 /**
  * The stores available in Beaker
  */
-export interface BeakerStores<T extends FormValues> {
+export interface BeakerStores<T extends Record<string, unknown | unknown[]>> {
   /**
    * A store containing the current form values
    */
@@ -51,12 +50,16 @@ export interface BeakerStores<T extends FormValues> {
 /**
  * The Formula interface with stores and form factory
  */
-export interface Beaker<T extends FormValues> extends BeakerStores<T> {
+export interface Beaker<T extends Record<string, unknown | unknown[]>> extends BeakerStores<T> {
   /**
    * The form object for use with the Svelte use directive
    * @param node
    */
   group: (node: HTMLElement) => { destroy: () => void };
+  /**
+   * Update all the underlying forms
+   */
+  update: (options?: FormulaOptions) => void;
   /**
    * Destroy
    */
@@ -68,7 +71,7 @@ export interface Beaker<T extends FormValues> extends BeakerStores<T> {
   /**
    * Instance forms
    */
-  forms: Set<Form<T>>;
+  forms: Set<Formula<T>>;
   /**
    * Stores
    */

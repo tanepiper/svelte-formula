@@ -1,6 +1,5 @@
 import { CustomValidationMessages, ValidationRule, ValidationRules } from './validation';
 import { EnrichFields } from './enrich';
-import { FormValues } from 'svelte-formula';
 
 /**
  * Optional settings for Formula
@@ -33,5 +32,5 @@ export interface FormulaOptions {
   /**
    * Default values are used as initial values for the form fields if there is no value already set on the form
    */
-  defaultValues?: FormValues;
+  defaultValues?: Record<string, unknown | unknown[]>;
 }

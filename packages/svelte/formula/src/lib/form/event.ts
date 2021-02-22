@@ -8,9 +8,9 @@ import { createEnrichField } from './enrichment';
  * @param stores
  * @param enrich
  */
-export function valueUpdate(
+export function valueUpdate<T extends Record<string, unknown | unknown[]>>(
   details: FormulaField,
-  stores: FormulaStores,
+  stores: FormulaStores<T>,
   enrich?: (value: unknown | unknown[]) => Record<string, unknown>,
 ): void {
   const { name, value, ...validity } = details;
@@ -34,9 +34,9 @@ export function valueUpdate(
  * @param stores
  * @param enrich
  */
-function createHandlerForData(
+function createHandlerForData<T extends Record<string, unknown | unknown[]>>(
   extractor: (el: FormEl) => FormulaField,
-  stores: FormulaStores,
+  stores: FormulaStores<T>,
   enrich?: (value: unknown | unknown[]) => Record<string, unknown>,
 ) {
   return (event: Event) => {
@@ -55,12 +55,12 @@ function createHandlerForData(
  * @param options
  * @param isGroup
  */
-export function createHandler(
+export function createHandler<T extends Record<string, unknown | unknown[]>>(
   name: string,
   eventName: string,
   element: FormEl,
   groupElements: FormEl[],
-  stores: FormulaStores,
+  stores: FormulaStores<T>,
   options: FormulaOptions,
   isGroup?: boolean,
 ): () => void {
@@ -83,6 +83,8 @@ export function createHandler(
  * of the current value store to the submit store and then unsubscribes
  * @param stores
  */
-export function createSubmitHandler(stores: FormulaStores): (event: Event) => void {
+export function createSubmitHandler<T extends Record<string, unknown | unknown[]>>(
+  stores: FormulaStores<T>,
+): (event: Event) => void {
   return (): void => stores.formValues.subscribe((v) => stores.submitValues.set(v))();
 }

@@ -2,7 +2,7 @@
   import { get } from 'svelte/store';
   import { beaker, formula } from '../../../../dist/packages/svelte/formula';
 
-  const { form, formValues, updateForm } = formula();
+  const testForm = formula();
 
   // This creates a contact group - you can now bind `contacts.group` to the subgroup
   const customers = beaker<{ firstName: string, lastName: string, email: string, subscriptionLevel: string, signups: string[] }>();
@@ -13,13 +13,16 @@
   };
 
   // Set the store with any existing data
-  export let contactData = [{
-    firstName: '',
-    lastName: '',
-    email: '',
-    subscriptionLevel: '',
-    signups: [],
-  }];
+  export let contactData = [];
+  for (let i = 0; i < 10; i++) {
+    contactData.push({
+      firstName: '',
+      lastName: '',
+      email: '',
+      subscriptionLevel: '',
+      signups: [],
+    })
+  }
 
   customers.init(contactData);
 
@@ -40,14 +43,16 @@
   }
 
   function submit() {
-    const mainForm = get(formValues);
+    const mainForm = get(testForm.formValues);
     const contacts = get(customersValues);
     //Do something with the data here
     console.log(mainForm, contacts);
   }
+
+  $: console.log($customersValues)
 </script>
 
-<form use:form on:submit|preventDefault={submit}>
+<form use:testForm.form on:submit|preventDefault={submit}>
   <label for='productName'>ProductName</label>
   <input type='text' id='productName' name='productName' required bind:value={productData.productName} />
 

@@ -1,11 +1,11 @@
 import { Writable } from 'svelte/store';
-import { FormulaError, FormValues } from './forms';
+import { FormulaError } from './forms';
 import { FormulaOptions } from './options';
 
 /**
  * The stores available in Formula
  */
-export interface FormulaStores<T extends FormValues> {
+export interface FormulaStores<T extends Record<string, unknown | unknown[]>> {
   /**
    * A store containing the current form values
    */
@@ -51,12 +51,12 @@ export interface FormulaStores<T extends FormValues> {
 /**
  * The Formula interface with stores and form factory
  */
-export interface Formula<T extends FormValues> extends FormulaStores<T> {
+export interface Formula<T extends Record<string, unknown | unknown[]>> extends FormulaStores<T> {
   /**
    * The form object for use with the Svelte use directive
    * @param node
    */
-  form: (node: HTMLElement) => { destroy: () => void };
+  form: (node: HTMLElement, isGroup?: boolean) => { destroy: () => void };
   /**
    * Update
    */
@@ -72,10 +72,10 @@ export interface Formula<T extends FormValues> extends FormulaStores<T> {
   /**
    * Stores
    */
-  stores: FormulaStores<T>;
+  stores: FormulaStores<Record<string, unknown | unknown[]>>;
 }
 
-export interface Form<T extends FormValues> {
+export interface Form<T extends Record<string, unknown | unknown[]>> {
   create: (node: HTMLElement, isGroup?: boolean) => { destroy: () => void };
   update: (updatedOpts: FormulaOptions) => void;
   destroy: () => void;

@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.2] - 2021-02-22
+
+### Added
+
+- `update` method on groups, takes a `FormulaOptions` object and applies it to all forms in the group
+
+- Formula and Beaker now set ARIA properties for some form and field states
+  - Form, Group and Row are applied to containers
+  - Sets radio elements and attempts to discover the `radiogroup` root element
+  - Set properties like required and checked for value types and attributes
+
+### Changed
+
+- Performance improvements and some internal refactoring
+- Documentation improvements
+
 ## [0.8.1] - 2021-02-21
 
 ### Added
@@ -194,7 +210,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   uppercase (e.g `valueMissing` becomes `data-value-missing`)
 
   ```html
-  <input type="text" name="postcode" required data-value-missing="Bitte geben Sie Ihre Postleitzahl ein" />
+  <input type='text' name='postcode' required data-value-missing='Bitte geben Sie Ihre Postleitzahl ein' />
   ```
 
 ### Changed

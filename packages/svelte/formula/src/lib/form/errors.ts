@@ -50,7 +50,10 @@ function getCustomValidations(
  * @param stores
  * @param customValidators
  */
-export function createFormValidator(stores: FormulaStores, customValidators: ValidationRule) {
+export function createFormValidator<T extends Record<string, unknown | unknown[]>>(
+  stores: FormulaStores<T>,
+  customValidators: ValidationRule,
+) {
   const sub = stores.formValues.subscribe((values) => {
     stores.formValidity.set({});
     const validators = Object.entries(customValidators);

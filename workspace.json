@@ -72,7 +72,10 @@
           "options": {
             "linter": "eslint",
             "tsConfig": "apps/formula-app/tsconfig.app.json",
-            "exclude": ["**/node_modules/**", "!apps/formula-app/**/*"]
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/formula-app/**/*"
+            ]
           }
         },
         "test": {
@@ -106,7 +109,9 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["packages/formula-app-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": [
+              "packages/formula-app-e2e/**/*.{js,ts}"
+            ]
           }
         }
       }
@@ -119,12 +124,16 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["packages/svelte/formula/**/*.ts"]
+            "lintFilePatterns": [
+              "packages/svelte/formula/**/*.ts"
+            ]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/packages/svelte/formula"],
+          "outputs": [
+            "coverage/packages/svelte/formula"
+          ],
           "options": {
             "jestConfig": "packages/svelte/formula/jest.config.js",
             "passWithNoTests": true
@@ -147,7 +156,9 @@
             "tsConfig": "packages/svelte/formula/tsconfig.lib.json",
             "project": "packages/svelte/formula/package.json",
             "entryFile": "packages/svelte/formula/src/index.ts",
-            "external": ["svelte"],
+            "external": [
+              "svelte"
+            ],
             "babelConfig": "@nrwl/web/babel",
             "assets": [
               {
@@ -158,11 +169,6 @@
               {
                 "glob": "CHANGELOG.md",
                 "input": ".",
-                "output": "."
-              },
-              {
-                "glob": "logo.png",
-                "input": "packages/svelte/formula/.",
                 "output": "."
               }
             ]
