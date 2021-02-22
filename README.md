@@ -44,7 +44,7 @@ fields with their `name` property set.
 
 		// Handle submission of data easily to parent components or services
 		function submitForm() {
-			dispatch('updateProject', {
+			dispatch('updateUser', {
 				user: get(submitValues)
 			})
 		}
