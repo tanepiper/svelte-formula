@@ -1,4 +1,4 @@
-import { FormEl, FormulaError, FormulaOptions, FormulaStores, FormValues } from '../../types';
+import { FormEl, FormulaError, FormulaOptions, FormulaStores } from '../../types';
 import { createFieldExtract } from './extract';
 import { createEnrichField } from './enrichment';
 
@@ -13,7 +13,7 @@ const initialEnrichment = new Map<HTMLElement, Record<string, Record<string, unk
  * @param stores
  * @param options
  */
-export function getInitialFormValues<T extends FormValues>(
+export function getInitialFormValues<T extends Record<string, unknown | unknown[]>>(
   node: HTMLElement,
   allGroups: [string, FormEl[]][],
   stores: FormulaStores<T>,
@@ -47,7 +47,7 @@ export function getInitialFormValues<T extends FormValues>(
  * Create the form reset method
 
  */
-export function createReset<T extends FormValues>(
+export function createReset<T extends Record<string, unknown | unknown[]>>(
   node: HTMLElement,
   allGroups: [string, FormEl[]][],
   stores: FormulaStores<T>,

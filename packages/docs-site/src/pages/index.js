@@ -9,39 +9,45 @@ import styles from './styles.module.css';
 const features = [
   {
     title: <>Zero Configuration</>,
-    imageUrl: 'img/undraw_form.svg',
+    alt: 'An image of an atom',
+    imageUrl: 'img/atom_256.png',
     description: (
       <>
-        Formula works out-of-the-box with HTML5 forms and validation without the need for any JavaScript configuration.
+        Native HTML5 forms and validation support without the need for any additional JavaScript configuration, but with
+        powerful options to enhance forms.
       </>
     ),
   },
   {
     title: <>Fully Reactive</>,
-    imageUrl: 'img/undraw_apps.svg',
+    alt: 'An image of a chemical reaction',
+    imageUrl: 'img/beaker_256.png',
     description: (
       <>
-        Build powerful reactive data-driven applications with custom validation, enrichment and messages, and work with
-        grouped data.
+        Build powerful reactive data-driven applications with Formula and data groups with Beaker - enrich with custom
+        validation, computed values and custom messages messages.
       </>
     ),
   },
   {
     title: <>Built for Svelte</>,
-    imageUrl: 'img/svelte-logo.svg',
+    alt: 'An image of a molecular structure',
+    imageUrl: 'img/molecular-structure_256.png',
     description: (
-      <>Easy to install Action and Subscriptions that just work with your application without getting in the way.</>
+      <>
+        Easy to install Action and Subscriptions that just work with your Svelte application without getting in the way.
+      </>
     ),
   },
 ];
 
-function Feature({ imageUrl, title, description }) {
+function Feature({ imageUrl, title, description, alt }) {
   const imgUrl = useBaseUrl(imageUrl);
   return (
     <div className={clsx('col col--4', styles.feature)}>
       {imgUrl && (
         <div className="text--center">
-          <img className={styles.featureImage} src={imgUrl} alt={title} />
+          <img className={styles.featureImage} src={imgUrl} alt={alt} />
           <h3>{title}</h3>
           <p>{description}</p>
         </div>

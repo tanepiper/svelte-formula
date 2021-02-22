@@ -43,11 +43,6 @@ export interface FormulaField extends FormulaError {
 }
 
 /**
- * Form Values
- */
-export type FormValues = Record<string, unknown | unknown[]>;
-
-/**
  * Form Errors
  */
 export type FormErrors = Record<string, FormulaError>;

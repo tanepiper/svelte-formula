@@ -6,14 +6,19 @@ title: Data API
 sidebar_label: Data API
 ---
 
-Any group created with `beaker` returns an instance of the Beaker stores. The names are the same as
-the [Formula store](../stores/stores.md) but return an Array of form data as rows, except `isFormReady` and
-`isFormValid` which are for the entire group and still a single value.
+Like Formula, `beaker` returns an instance of the Beaker stores which are have the same name as
+the [Formula store](../stores/stores.md), but container Array of form data as rows. The exceptions are
+`isFormReady` and `isFormValid` which are for the entire group and still a single value.
+
+It also contains some additional properties and methods. The methods listed below allow for data to be added or removed
+from the groups `formValue` store - this store can also be used with a `{#each}` block to render the rows in the
+template.
 
 ## `init`
 
-It's possible to pass initial data into the form group using the `init` - this should be an array of the items to
-display with keys matching the form field `name` (the exception is [radio fields](./groups.md)).
+Pass initial data into the form group - this will the form store data with the current items to render. Each key and
+value should match the fields in the group template (the exception is [radio fields](./groups.md) which should be based
+on the `data-beaker-key` attribute passed).
 
 ```svelte
 
@@ -24,13 +29,19 @@ display with keys matching the form field `name` (the exception is [radio fields
 
   export let contactData = [];
   contacts.init(contactData);
+
+  const items = contacts.formValues;
 </script>
+<div use:contacts.group>
+  {#each items as item, i}
+
+  {/each}
+</div>
 ```
 
 ## `add`
 
-Add a row to the store, when using the store as your rendering source this will append a row to the page. Pass your item
-type to the function
+Add a row item to the store - this item should be a single object with the same key/value type for the form.
 
 ```svelte
 
@@ -55,8 +66,7 @@ type to the function
 
 ## `delete`
 
-Delete a row to the store, when using the store as your rendering source this will remove a row from the page. Pass the
-index of the item to remove to the function
+Deletes a row from the form - this method takes the index of the row to remove.
 
 ```svelte
 
@@ -85,4 +95,9 @@ underlying form row `reset` methods.
 
 ## `clear`
 
-Calling this will clear the group of all rows of data
+Calling this will empty the group of all rows of data.
+
+## `forms`
+
+An `Set` of all the underlying [Formula](../formula.md) instances that allows for finer control, or access to the form
+stores

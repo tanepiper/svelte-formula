@@ -1,17 +1,16 @@
 import { createForm } from './lib/form/form';
 import { createGroup } from './lib/group/group';
-import { Beaker, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaStores, FormValues } from './types';
-import { createFormStores, createGroupStores } from './lib/shared/stores';
+import { Beaker, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaStores } from './types';
 
-export { Beaker, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaStores, FormValues };
+export { Beaker, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaStores };
 
 /**
  * A global map of stores for elements with an `id` property and the `use` directive,
  * if no ID is used the store is not added
  * @type Map<string, FormulaStores>
  */
-export const formulaStores = new Map<string, FormulaStores<FormValues>>();
-export const beakerStores = new Map<string, BeakerStores<FormValues>>();
+export const formulaStores = new Map<string, FormulaStores<Record<string, unknown | unknown[]>>>() as any;
+export const beakerStores = new Map<string, BeakerStores<Record<string, unknown | unknown[]>>>() as any;
 
 /**
  * The `formula` function returns a form object that can be bound to any HTML
@@ -23,19 +22,8 @@ export const beakerStores = new Map<string, BeakerStores<FormValues>>();
  * @returns Formula object containing the current form, function to update or destroy
  * the form and all the stores available for the form
  */
-export function formula<T extends FormValues>(options?: FormulaOptions): Formula<T> {
-  const stores = createFormStores<T>(options);
-
-  const { create, update, destroy, reset } = createForm(stores, options, formulaStores);
-
-  return {
-    form: create,
-    updateForm: update,
-    destroyForm: destroy,
-    resetForm: reset,
-    stores,
-    ...stores,
-  };
+export function formula<T extends Record<string, unknown | unknown[]>>(options?: FormulaOptions): Formula<T> {
+  return createForm<T>(options, formulaStores);
 }
 
 /**
@@ -46,23 +34,6 @@ export function formula<T extends FormValues>(options?: FormulaOptions): Formula
  *
  * @returns Beaker object containing the form group and it's associated methods
  */
-export function beaker<T extends FormValues>(options?: FormulaOptions): Beaker<T> {
-  const stores = createGroupStores<T>(options);
-  const { create, destroy, reset, forms } = createGroup<T>(stores, options, beakerStores as any);
-  return {
-    group: create,
-    destroy: destroy,
-    forms,
-    reset,
-    stores,
-    ...stores,
-    init: (items) => stores.formValues.set(items),
-    add: (item) => stores.formValues.update((state) => [...state, item]),
-    delete: (index) =>
-      stores.formValues.update((state) => {
-        state.splice(index, 1);
-        return state;
-      }),
-    clear: () => stores.formValues.set([]),
-  };
+export function beaker<T extends Record<string, unknown | unknown[]>>(options?: FormulaOptions): Beaker<T> {
+  return createGroup<T>(options, beakerStores);
 }

@@ -21,7 +21,11 @@ function matchingArrays(array1: unknown[], array2: unknown[]) {
  *
  * @returns Function that when called will remove all blur handlers from the elements, if not removed by user action
  */
-export function createDirtyHandler(name: string, elements: FormEl[], stores: FormulaStores): () => void {
+export function createDirtyHandler<T extends Record<string, unknown | unknown[]>>(
+  name: string,
+  elements: FormEl[],
+  stores: FormulaStores<T>,
+): () => void {
   /**
    * Internal map of element blur handlers
    */

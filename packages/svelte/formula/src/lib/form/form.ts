@@ -4,19 +4,19 @@ import { cleanupDefaultValues, createReset, getInitialFormValues } from './init'
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
 import { createFormValidator } from './errors';
-import { Form, FormEl, FormulaOptions, FormulaStores, FormValues } from '../../types';
+import { FormEl, Formula, FormulaOptions, FormulaStores } from '../../types';
+import { createFormStores } from '../shared/stores';
+import { setAriaButtons, setAriaContainer, setAriaRole, setAriaStates } from './aria';
 
 /**
  * Creates the form action
  * @param options
- * @param stores
  * @param globalStore
  */
-export function createForm<T extends FormValues>(
-  stores: FormulaStores<T>,
+export function createForm<T extends Record<string, unknown | unknown[]>>(
   options: FormulaOptions,
   globalStore?: Map<string, FormulaStores<T>>,
-): Form<T> {
+): Formula<T> {
   /**
    * Store for all keyup handlers than need removed when destroyed
    */
@@ -25,6 +25,7 @@ export function createForm<T extends FormValues>(
   const touchHandlers = new Set<() => void>();
   const dirtyHandlers = new Set<() => void>();
 
+  const stores = createFormStores<T>(options);
   let initialOptions = options;
   let submitHandler = undefined;
   let unsub: () => void;
@@ -39,6 +40,10 @@ export function createForm<T extends FormValues>(
    */
   function bindElements(node: HTMLElement, innerOpt: FormulaOptions, isGroup?: boolean) {
     const formElements = isGroup ? getGroupFields(node) : getAllFieldsWithValidity(node);
+
+    node.setAttribute(`data-beaker-${isGroup ? 'row' : 'form'}`, 'true');
+    setAriaContainer(node, isGroup);
+    setAriaButtons(node);
 
     // Group elements by name
     groupedMap = [
@@ -59,6 +64,9 @@ export function createForm<T extends FormValues>(
 
       // Loop over each element and hook in it's handler
       elements.forEach((el) => {
+        setAriaRole(el, elements);
+        setAriaStates(el);
+
         if (el instanceof HTMLSelectElement) {
           changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
         } else {
@@ -126,7 +134,7 @@ export function createForm<T extends FormValues>(
      * @param node
      * @param isGroup
      */
-    create: (node: HTMLElement, isGroup?: boolean) => {
+    form: (node: HTMLElement, isGroup?: boolean) => {
       currentNode = node;
       bindElements(node, options, isGroup);
       return {
@@ -141,7 +149,7 @@ export function createForm<T extends FormValues>(
      * values passed
      * @param updatedOpts
      */
-    update: (updatedOpts?: FormulaOptions) => {
+    updateForm: (updatedOpts?: FormulaOptions) => {
       stores.isFormReady.set(false);
       cleanupSubscriptions();
       bindElements(currentNode, updatedOpts || initialOptions);
@@ -149,7 +157,7 @@ export function createForm<T extends FormValues>(
     /**
      * Destroy the form instance
      */
-    destroy: () => {
+    destroyForm: () => {
       stores.isFormReady.set(false);
       cleanupSubscriptions();
       currentNode.id && globalStore && globalStore.delete(name);
@@ -158,7 +166,7 @@ export function createForm<T extends FormValues>(
     /**
      * Reset the data in the form instance
      */
-    reset: () => {
+    resetForm: () => {
       innerReset();
       [...touchHandlers, ...dirtyHandlers].forEach((fn) => fn());
       groupedMap.forEach(([name, elements]) => {
@@ -167,5 +175,6 @@ export function createForm<T extends FormValues>(
       });
     },
     stores,
+    ...stores,
   };
 }
