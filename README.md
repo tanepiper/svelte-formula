@@ -30,11 +30,12 @@ fields with their `name` property set.
 ```svelte
 <script>
     import { createEventDispatcher } from 'svelte';
-		import { get } from 'svelte/store'
-		import { formula } from 'svelte-formula@0.8.2'
+    import { get } from 'svelte/store'
+    import { formula } from 'svelte-formula@0.8.2'
+    
     const { form, isFormValid, validity, touched, submitValues } = formula();
 
-		const dispatcher = createEventDispatcher()
+    const dispatcher = createEventDispatcher()
 
     // Allow components to accept value that can be used as default values
     export let userName = '';
@@ -42,29 +43,29 @@ fields with their `name` property set.
     // You can calculate values for valid UI states
     $: usernameInvalid = $touched?.userName && $validity?.userName?.invalid
 
-		// Handle submission of data easily to parent components or services
-		function submitForm() {
-			dispatch('updateUser', {
-				user: get(submitValues)
-			})
-		}
+    // Handle submission of data easily to parent components or services
+    function submitForm() {
+      dispatch('updateUser', {
+        user: get(submitValues)
+      })
+    }
   </script>
 
 <!-- Use as form element to get full form submission validation-->
 <form use:form on:submit|preventDefault={submitForm}>
-	<div class="form-field">
-		<label for="userName">User Name</label>
-		<input type="text" id="userName" name="userName" required minlength="8" class:error={usernameInvalid} bind:value={userName} />
-		<span hidden={!usernameInvalid}>{$validity?.userName?.message}</span>
-	</div>
-
-	<button disabled={!$isFormValid} type="submit">Update User Name</button>
+  <div class="form-field">
+    <label for="userName">User Name</label>
+    <input type="text" id="userName" name="userName" required minlength="8" class:error={usernameInvalid} bind:value={userName} />
+    <span hidden={!usernameInvalid}>{$validity?.userName?.message}</span>
+  </div>
+  
+  <button disabled={!$isFormValid} type="submit">Update User Name</button>
 </form>
 
 <style>
-	.error {
-		border: 1px solid hotpink;
-	}
+  .error {
+    border: 1px solid hotpink;
+  }
 </style>
 ```
 
