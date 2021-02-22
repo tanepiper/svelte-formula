@@ -26,24 +26,47 @@ with rich forms for collections of data.
 All you need is an element container with the Svelte [use](https://svelte.dev/docs#use_action) directive and form input
 fields with their `name` property set.
 
+[Live Demo](https://svelte.dev/repl/3c3fe78a258a45779bd122d399560f19)
 ```svelte
-  <script>
-    import { formula } from 'svelte-formula'
-    const { form, formIsValid, validity, touched } = formula();
+<script>
+    import { createEventDispatcher } from 'svelte';
+		import { get } from 'svelte/store'
+		import { formula } from 'svelte-formula@0.8.2'
+    const { form, isFormValid, validity, touched, submitValues } = formula();
 
-    // Here we can provide a default value
-    export let projectname = '';
+		const dispatcher = createEventDispatcher()
+
+    // Allow components to accept value that can be used as default values
+    export let userName = '';
 
     // You can calculate values for valid UI states
-    $: projectNameInvalid = $touched?.projectName && validity?.projectName?.invalid
+    $: usernameInvalid = $touched?.userName && $validity?.userName?.invalid
+
+		// Handle submission of data easily to parent components or services
+		function submitForm() {
+			dispatch('updateProject', {
+				user: get(submitValues)
+			})
+		}
   </script>
 
-  <div use:form>
-    <label for="project-name">Project Name</label>
-    <input type="text" name="projectName" required minlength="8" class:error={projectNameInvalid} bind:value={projectName} />
-    <span hidden={!projectNameInvalid}>{validity?.projectName?.message}</span>
-    <button disabled={!$formIsValid}>Update Project Name</button>
-  </div>
+<!-- Use as form element to get full form submission validation-->
+<form use:form on:submit|preventDefault={submitForm}>
+	<div class="form-field">
+		<label for="userName">User Name</label>
+		<input type="text" id="userName" name="userName" required minlength="8" class:error={usernameInvalid} bind:value={userName} />
+		<span hidden={!usernameInvalid}>{$validity?.userName?.message}</span>
+	</div>
+
+	<button disabled={!$isFormValid} type="submit">Update User Name</button>
+</form>
+
+<style>
+	.error {
+		border: 1px solid hotpink;
+	}
+</style>
 ```
+
 
 Visit the [documentation](https://formula.svelte.codes) for more details API instructions.
