@@ -74,7 +74,7 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
               .filter((v) => !isNaN(v))
           : (() => {
               const val = parseFloat(element.value);
-              return !isNaN(val) ? val : null;
+              return !isNaN(val) ? val : '';
             })();
         break;
       }
@@ -92,7 +92,7 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
       }
       case 'radio': {
         const foundElement = elementGroup.find((el: HTMLInputElement) => el.checked);
-        elValue = foundElement ? foundElement.value : null;
+        elValue = foundElement ? foundElement.value : '';
         break;
       }
       case 'file': {
@@ -102,7 +102,7 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
       default: {
         elValue = isMultiValue
           ? elementGroup.map((v) => (v.id === element.id ? element.value : v.value))
-          : element.value || null;
+          : element.value;
       }
     }
   }
