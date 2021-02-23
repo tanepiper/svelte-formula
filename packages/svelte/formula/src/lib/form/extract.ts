@@ -74,7 +74,7 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
               .filter((v) => !isNaN(v))
           : (() => {
               const val = parseFloat(element.value);
-              return !isNaN(val) ? val : '';
+              return !isNaN(val) ? val : null;
             })();
         break;
       }
@@ -92,7 +92,7 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
       }
       case 'radio': {
         const foundElement = elementGroup.find((el: HTMLInputElement) => el.checked);
-        elValue = foundElement ? foundElement.value : '';
+        elValue = foundElement ? foundElement.value : null;
         break;
       }
       case 'file': {
@@ -102,7 +102,7 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
       default: {
         elValue = isMultiValue
           ? elementGroup.map((v) => (v.id === element.id ? element.value : v.value))
-          : element.value;
+          : element.value || null;
       }
     }
   }
@@ -147,8 +147,8 @@ export function createFieldExtract<T extends Record<string, unknown | unknown[]>
       const elValue = getElementValues(element, isMultiValue, elementGroup);
       if (isInit && (isMultiValue || element.type === 'select-multiple')) {
         value = (elValue as unknown[]).length === 0 ? value : elValue;
-      } else if (!isReset && elValue !== null) {
-        value = elValue;
+      } else {
+        value = elValue === null ? '' : elValue;
       }
     }
     if (isInit || isReset) {

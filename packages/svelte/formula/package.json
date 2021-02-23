@@ -1,7 +1,7 @@
 {
   "name": "svelte-formula",
   "description": "Reactive Forms for Svelte",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "keywords": [
     "svelte",
     "sveltejs",
