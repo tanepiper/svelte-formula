@@ -64,6 +64,9 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
 
       // Loop over each element and hook in it's handler
       elements.forEach((el) => {
+        if (isGroup) {
+          el.setAttribute('data-in-group', 'true');
+        }
         setAriaRole(el, elements);
         setAriaStates(el);
 
