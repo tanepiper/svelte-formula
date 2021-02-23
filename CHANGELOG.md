@@ -5,11 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.7] - 2021-02-23
+
+### Changed
+
+- Group elements now have `data-in-group` attribute set which allows for better filtering of groups from form data
+
 ## [0.8.6] - 2021-02-23
 
 ### Fixed
 
-- When a single value field is emptied after having values, correctly update the form state instead of leaving previous value
+- When a single value field is emptied after having values, correctly update the form state instead of leaving previous
+  value
 - Removed a stay console introduced in `0.8.5`, and fixed typo in `0.8.4`
 
 ## [0.8.3] - 2021-02-22
@@ -223,7 +230,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   uppercase (e.g `valueMissing` becomes `data-value-missing`)
 
   ```html
-  <input type='text' name='postcode' required data-value-missing='Bitte geben Sie Ihre Postleitzahl ein' />
+  <input type="text" name="postcode" required data-value-missing="Bitte geben Sie Ihre Postleitzahl ein" />
   ```
 
 ### Changed
