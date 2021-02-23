@@ -14,7 +14,6 @@ export function valueUpdate<T extends Record<string, unknown | unknown[]>>(
   enrich?: (value: unknown | unknown[]) => Record<string, unknown>,
 ): void {
   const { name, value, ...validity } = details;
-  console.log(name, value);
   stores.formValues.update((state) => ({ ...state, [name]: value }));
   stores.validity.update((state) => {
     const result = {
