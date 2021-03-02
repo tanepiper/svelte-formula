@@ -12,6 +12,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Beaker now accepts `defaultValues` as an array
 - Internal refactoring to improve group handling
 - Removed global state stores for initial values, now only generated internally for reset methods
+- Touched and Dirty and Invalid fields now have attributes set
 
 ### Fixed
 
