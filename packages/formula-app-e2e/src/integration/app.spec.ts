@@ -1,7 +1,7 @@
 import { getGreeting } from '../support/app.po';
 
 describe('formula-app', () => {
-  beforeEach(() => cy.visit('/'));
+  beforeEach(() => cy.visit('/#login-form'));
 
   it('should display welcome message', () => {
     // Custom command example, see `../support/commands.ts` file

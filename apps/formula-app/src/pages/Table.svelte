@@ -5,7 +5,21 @@
   const testForm = formula();
 
   // This creates a contact group - you can now bind `contacts.group` to the subgroup
-  const customers = beaker<{ firstName: string, lastName: string, email: string, subscriptionLevel: string, signups: string[] }>();
+  const customers = beaker<{ firstName: string, lastName: string, email: string, subscriptionLevel: string, signups: string[] }>({
+    defaultValues: [{
+      firstName: 'Finn',
+      lastName: 'McSvelte',
+      email: 'foo@bar.com',
+      subscriptionLevel: '',
+      signups: [],
+    }, {
+      firstName: 'Bob',
+      lastName: 'McCool',
+      email: 'bar@foo.com',
+      subscriptionLevel: '',
+      signups: [],
+    }]
+  });
   const customersValues = customers.formValues;
 
   export let productData = {
@@ -14,17 +28,17 @@
 
   // Set the store with any existing data
   export let contactData = [];
-  for (let i = 0; i < 10; i++) {
-    contactData.push({
-      firstName: '',
-      lastName: '',
-      email: '',
-      subscriptionLevel: '',
-      signups: [],
-    })
-  }
+  // for (let i = 0; i < 10; i++) {
+  //   contactData.push({
+  //     firstName: '',
+  //     lastName: '',
+  //     email: '',
+  //     subscriptionLevel: '',
+  //     signups: [],
+  //   })
+  // }
 
-  customers.init(contactData);
+  //customers.init(contactData);
 
   // Add a row to the store
   function addCustomer() {

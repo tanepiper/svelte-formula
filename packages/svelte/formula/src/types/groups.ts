@@ -32,7 +32,7 @@ export interface BeakerStores<T extends Record<string, unknown | unknown[]>> {
   /**
    * A store containing the current validity of all custom form validations
    */
-  formValidity: Writable<Record<string, string | null>>;
+  formValidity: Writable<Record<string, string | null>[]>;
   /**
    * A store containing a boolean value if the form is overall valid
    */

@@ -1,4 +1,4 @@
-import { Beaker, BeakerStores, Formula, FormulaOptions } from '../../types';
+import { Beaker, BeakerOptions, BeakerStores, Formula, FormulaOptions } from '../../types';
 import { createGroupStores } from '../shared/stores';
 import { createForm } from '../form/form';
 
@@ -10,29 +10,38 @@ let groupCounter = 0;
  * @param beakerStores
  */
 export function createGroup<T extends Record<string, unknown | unknown[]>>(
-  options: FormulaOptions,
+  options: BeakerOptions,
   beakerStores: Map<string, BeakerStores<T>>,
 ): Beaker<T> {
   const stores = createGroupStores<T>(options);
   let groupName;
-  let groupParentNode: HTMLElement;
   let globalObserver: MutationObserver;
+
+  const { defaultValues, ...formulaOptions } = options || {};
 
   const formSet = new Set<Formula<T>>();
   const instanceSet = new Set<{ destroy: () => void }>();
 
+  /**
+   * Called when the group forms need destroyed
+   */
   function destroyGroup() {
     instanceSet.forEach((instance) => instance.destroy());
     formSet.clear();
   }
 
+  /**
+   * Called when there is a change in the number of rows in the group
+   * @param rows
+   */
   function groupHasChanged(rows: HTMLElement[]) {
-    rows.forEach((row, i) => {
-      const form = createForm<T>(options, undefined, groupName);
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const form = createForm<T>(formulaOptions, undefined, groupName);
       const instance = form.form(row as HTMLElement, true);
       formSet.add(form);
       instanceSet.add(instance);
-    });
+    }
     stores.isFormReady.set(true);
   }
 
@@ -41,7 +50,7 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
    * @param node
    */
   function setupGroupContainer(node: HTMLElement) {
-    globalObserver = new MutationObserver((mutations) => {
+    globalObserver = new MutationObserver(() => {
       destroyGroup();
       const rows = node.querySelectorAll(':scope > *');
       groupHasChanged(Array.from(rows) as HTMLElement[]);
@@ -61,7 +70,6 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
         groupName = `beaker-group-${groupCounter++}`;
         node.id = groupName;
       }
-      groupParentNode = node;
 
       node.setAttribute('data-beaker-group', 'true');
       node.setAttribute('aria-role', 'group');
