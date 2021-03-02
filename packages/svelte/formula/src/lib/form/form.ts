@@ -1,6 +1,6 @@
 import { getAllFieldsWithValidity, getGroupFields } from '../shared/fields';
 import { createHandler, createSubmitHandler } from './event';
-import { cleanupDefaultValues, createReset, getInitialFormValues } from './init';
+import { createReset, getInitialFormValues } from './init';
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
 import { createFormValidator } from './errors';
@@ -53,7 +53,6 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
       }, new Map()),
     ];
 
-    getInitialFormValues<T>(node, groupedMap, stores, innerOpt);
     innerReset = createReset<T>(node, groupedMap, stores, innerOpt);
 
     // Loop over each group and setup up their initial touch and dirty handlers,
@@ -164,7 +163,6 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
       stores.isFormReady.set(false);
       cleanupSubscriptions();
       currentNode.id && globalStore && globalStore.delete(name);
-      cleanupDefaultValues(currentNode);
     },
     /**
      * Reset the data in the form instance
