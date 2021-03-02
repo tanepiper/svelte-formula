@@ -37,11 +37,6 @@ describe('Formula Fields Methods', () => {
     inputInGroup2.setAttribute('data-in-group', 'group-test-1')
     groupEl.appendChild(inputInGroup2);
 
-    const inputInGroup3 = document.createElement('input');
-    inputInGroup3.setAttribute('type', 'text');
-    inputInGroup3.setAttribute('name', 'testing6')
-    inputInGroup3.setAttribute('data-in-group', 'group-test-2')
-    groupEl.appendChild(inputInGroup3);
 
     root.appendChild(inputWithName1);
     root.appendChild(inputWithoutName)
@@ -66,7 +61,7 @@ describe('Formula Fields Methods', () => {
 
   describe('getGroupFields', () => {
     it('should find elements any elements with name', () => {
-      const elements = getGroupFields(groupEl, 'group-test-1');
+      const elements = getGroupFields(groupEl);
       expect(elements.length).toBe(2)
     });
 
