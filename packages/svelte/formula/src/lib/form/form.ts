@@ -29,7 +29,7 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
 
   const stores = createFormStores<T>(options);
   const isGroup = typeof groupName !== 'undefined';
-  let initialOptions = options;
+  const initialOptions = options;
   let submitHandler = undefined;
   let unsub: () => void;
   let innerReset: () => void;
