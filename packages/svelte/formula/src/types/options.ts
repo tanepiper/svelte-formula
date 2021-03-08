@@ -1,14 +1,7 @@
 import { CustomValidationMessages, ValidationRule, ValidationRules } from './validation';
 import { EnrichFields } from './enrich';
 
-/**
- * Optional settings for Formula
- */
-export interface FormulaOptions {
-  /**
-   * Locale for i18n - currently not used
-   */
-  locale?: string;
+interface BaseOptions {
   /**
    * Provide customised messages to the application, these messages replace the default browser messages for the provided
    * error types and are useful for internationalisation or custom domain messages
@@ -29,8 +22,24 @@ export interface FormulaOptions {
    * Each function result is available in the `enrichment` store
    */
   enrich?: EnrichFields;
+}
+
+/**
+ * Optional settings for Formula
+ */
+export interface FormulaOptions extends BaseOptions {
   /**
    * Default values are used as initial values for the form fields if there is no value already set on the form
    */
   defaultValues?: Record<string, unknown | unknown[]>;
+}
+
+/**
+ * Optional settings for Beaker
+ */
+export interface BeakerOptions extends BaseOptions {
+  /**
+   * Default values are used as initial values for the form fields if there is no value already set on the form
+   */
+  defaultValues?: Record<string, unknown | unknown[]>[];
 }

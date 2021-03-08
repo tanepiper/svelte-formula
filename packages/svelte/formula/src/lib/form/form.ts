@@ -1,6 +1,6 @@
-import { getAllFieldsWithValidity, getGroupFields } from '../shared/fields';
+import { getFormFields, getGroupFields } from '../shared/fields';
 import { createHandler, createSubmitHandler } from './event';
-import { cleanupDefaultValues, createReset, getInitialFormValues } from './init';
+import { createReset } from './init';
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
 import { createFormValidator } from './errors';
@@ -12,10 +12,12 @@ import { setAriaButtons, setAriaContainer, setAriaRole, setAriaStates } from './
  * Creates the form action
  * @param options
  * @param globalStore
+ * @param groupName
  */
 export function createForm<T extends Record<string, unknown | unknown[]>>(
   options: FormulaOptions,
   globalStore?: Map<string, FormulaStores<T>>,
+  groupName?: string,
 ): Formula<T> {
   /**
    * Store for all keyup handlers than need removed when destroyed
@@ -26,7 +28,8 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
   const dirtyHandlers = new Set<() => void>();
 
   const stores = createFormStores<T>(options);
-  let initialOptions = options;
+  const isGroup = typeof groupName !== 'undefined';
+  const initialOptions = options;
   let submitHandler = undefined;
   let unsub: () => void;
   let innerReset: () => void;
@@ -36,10 +39,9 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
    * Internal method to do binding of te action element
    * @param node
    * @param innerOpt
-   * @param isGroup
    */
-  function bindElements(node: HTMLElement, innerOpt: FormulaOptions, isGroup?: boolean) {
-    const formElements = isGroup ? getGroupFields(node) : getAllFieldsWithValidity(node);
+  function bindElements(node: HTMLElement, innerOpt: FormulaOptions) {
+    const formElements = isGroup ? getGroupFields(node) : getFormFields(node);
 
     node.setAttribute(`data-beaker-${isGroup ? 'row' : 'form'}`, 'true');
     setAriaContainer(node, isGroup);
@@ -53,7 +55,6 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
       }, new Map()),
     ];
 
-    getInitialFormValues<T>(node, groupedMap, stores, innerOpt);
     innerReset = createReset<T>(node, groupedMap, stores, innerOpt);
 
     // Loop over each group and setup up their initial touch and dirty handlers,
@@ -65,7 +66,7 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
       // Loop over each element and hook in it's handler
       elements.forEach((el) => {
         if (isGroup) {
-          el.setAttribute('data-in-group', 'true');
+          el.setAttribute('data-in-group', groupName);
         }
         setAriaRole(el, elements);
         setAriaStates(el);
@@ -135,11 +136,10 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
     /**
      * Create an action for the `use` directive
      * @param node
-     * @param isGroup
      */
-    form: (node: HTMLElement, isGroup?: boolean) => {
+    form: (node: HTMLElement) => {
       currentNode = node;
-      bindElements(node, options, isGroup);
+      bindElements(node, options);
       return {
         destroy: () => {
           cleanupSubscriptions();
@@ -164,7 +164,6 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
       stores.isFormReady.set(false);
       cleanupSubscriptions();
       currentNode.id && globalStore && globalStore.delete(name);
-      cleanupDefaultValues(currentNode);
     },
     /**
      * Reset the data in the form instance

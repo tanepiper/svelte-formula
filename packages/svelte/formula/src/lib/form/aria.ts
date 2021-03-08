@@ -73,7 +73,7 @@ export function setAriaValue(el: FormEl, elGroup: FormEl[]) {
   if (el.type === 'radio') {
     elGroup.forEach((el) => el.removeAttribute('aria-checked'));
   }
-  if ((el as any).checked) {
+  if ((el as HTMLInputElement).checked) {
     el.setAttribute('aria-checked', 'checked');
   } else {
     el.removeAttribute('aria-checked');
