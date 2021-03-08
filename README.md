@@ -4,7 +4,7 @@
 
 **Reactive Forms for Svelte**
 
-![The Svelte Formula Logo](https://formula.svelte.codes/img/logo_256.png)
+![The Svelte Formula Logo](https://raw.githubusercontent.com/tanepiper/svelte-formula/main/docs/img/logo_256.png)
 
 </div>
 
@@ -33,7 +33,7 @@ Visit the [documentation](https://formula.svelte.codes) for more details API ins
 
 <div style='text-align: center; float: left; margin-right: 20px'>
 
-![The Svelte Formula Logo](https://formula.svelte.codes/img/formula-small.png)
+![The Svelte Formula Logo](https://raw.githubusercontent.com/tanepiper/svelte-formula/main/docs/img/formula-small.png)
 
 </div>
 
@@ -71,7 +71,7 @@ native messages, which can be customised for localisation.
 
 <div style='text-align: center; float: left; margin-right: 20px'>
 
-![The Svelte Formula Logo](https://formula.svelte.codes/img/beaker-small.png)
+![The Svelte Formula Logo](https://raw.githubusercontent.com/tanepiper/svelte-formula/main/docs/img/beaker-small.png)
 
 </div>
 

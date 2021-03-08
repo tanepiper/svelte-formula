@@ -55,7 +55,11 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
   function nodesAdded(addedNodes: HTMLElement[]) {
     for (let i = 0; i < addedNodes.length; i++) {
       const row = addedNodes[i];
-      const form = createForm<T>({ ...formulaOptions, defaultValues: defaultValues[i] }, undefined, groupName);
+      const opts: FormulaOptions = { ...formulaOptions };
+      if (defaultValues && defaultValues[i]) {
+        opts.defaultValues = defaultValues[i];
+      }
+      const form = createForm<T>(opts, undefined, groupName);
       formulaInstances.set(row, form);
       const instance = form.form(row as HTMLElement, true);
       formInstances.set(row, instance);
