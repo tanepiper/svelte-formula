@@ -2,7 +2,7 @@
 
 # Formula + Beaker Δ→
 
-## Reactive Forms for Svelte
+**Reactive Forms for Svelte**
 
 ![The Svelte Formula Logo](https://raw.githubusercontent.com/tanepiper/svelte-plugins/main/packages/docs-site/static/img/logo_256.png)
 
@@ -40,7 +40,7 @@ Visit the [documentation](https://formula.svelte.codes) for more details API ins
 **Formula** is a library for creating _Zero Configuration_ reactive form components, and fully data-driven applications.
 
 **Zero-Configuration** means you need nothing more than a well-defined HTML5 form element to have fully reactive stores
-of data.
+of data and form states.
 
 Accessing the input requires only setting the `name` property, and for validation providing attributes like `require`
 or `minlength`. Formula supports single and multi-value inputs across all widely supported HTML inputs and extends them
@@ -83,4 +83,5 @@ collection store.
 Beaker also provides methods for setting, adding and removing items from the in-built stores, when can be used with
 Svelte's `{#each}{/each}` blocks to create a re-usable template in the component
 
-With this you can build applications such as multi-row editable tables or lists.
+With this you can build applications such as multi-row editable tables or lists. See
+the [documentation](https://formula.svelte.codes/docs/groups/beaker) for more details and examples.
