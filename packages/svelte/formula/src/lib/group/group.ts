@@ -19,28 +19,46 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
 
   const { defaultValues, ...formulaOptions } = options || {};
 
-  const formSet = new Set<Formula<T>>();
-  const instanceSet = new Set<{ destroy: () => void }>();
+  const formulaInstances = new Map<HTMLElement, Formula<T>>();
+  const formInstances = new Map<HTMLElement, { destroy: () => void }>();
 
   /**
    * Called when the group forms need destroyed
    */
   function destroyGroup() {
-    instanceSet.forEach((instance) => instance.destroy());
-    formSet.clear();
+    formInstances.forEach((instance) => instance.destroy());
+    formInstances.clear();
+    formulaInstances.clear();
   }
 
   /**
-   * Called when there is a change in the number of rows in the group
-   * @param rows
+   * Called when a node it removed, it destroys it's form instance
+   * @param removedNodes
    */
-  function groupHasChanged(rows: HTMLElement[]) {
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
-      const form = createForm<T>(formulaOptions, undefined, groupName);
+  function nodesRemoved(removedNodes: HTMLElement[]) {
+    for (let i = 0; i < removedNodes.length; i++) {
+      const row = removedNodes[i];
+      const instance = formInstances.get(row);
+      if (instance) {
+        instance.destroy();
+      }
+      formInstances.delete(row);
+      formulaInstances.delete(row);
+    }
+    stores.isFormReady.set(true);
+  }
+
+  /**
+   * Called when a node is added, creates a new instance of a form for the row
+   * @param addedNodes
+   */
+  function nodesAdded(addedNodes: HTMLElement[]) {
+    for (let i = 0; i < addedNodes.length; i++) {
+      const row = addedNodes[i];
+      const form = createForm<T>({ ...formulaOptions, defaultValues: defaultValues[i] }, undefined, groupName);
+      formulaInstances.set(row, form);
       const instance = form.form(row as HTMLElement, true);
-      formSet.add(form);
-      instanceSet.add(instance);
+      formInstances.set(row, instance);
     }
     stores.isFormReady.set(true);
   }
@@ -50,15 +68,17 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
    * @param node
    */
   function setupGroupContainer(node: HTMLElement) {
-    globalObserver = new MutationObserver(() => {
-      destroyGroup();
-      const rows = node.querySelectorAll(':scope > *');
-      groupHasChanged(Array.from(rows) as HTMLElement[]);
+    globalObserver = new MutationObserver((records) => {
+      stores.isFormReady.set(false);
+      if (records[0].addedNodes.length > 0) {
+        nodesAdded(Array.from(records[0].addedNodes) as HTMLElement[]);
+      } else if (records[0].removedNodes.length > 0) {
+        nodesRemoved(Array.from(records[0].removedNodes) as HTMLElement[]);
+      }
     });
     globalObserver.observe(node, { childList: true });
-
     const rows = node.querySelectorAll(':scope > *');
-    groupHasChanged(Array.from(rows) as HTMLElement[]);
+    nodesAdded(Array.from(rows) as HTMLElement[]);
   }
 
   return {
@@ -86,10 +106,7 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
       };
     },
     update: (options?: FormulaOptions) => {
-      [...formSet].forEach((form) => form.updateForm(options));
-    },
-    reset: () => {
-      [...formSet].forEach((form) => form.resetForm());
+      [...formulaInstances].forEach(([_, form]) => form.updateForm(options));
     },
     destroy: () => {
       if (groupName) {
@@ -98,10 +115,15 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
       destroyGroup();
       globalObserver.disconnect();
     },
-    forms: formSet,
+    forms: formulaInstances,
     stores: stores,
     init: (items) => stores.formValues.set(items),
     add: (item) => stores.formValues.update((state) => [...state, item]),
+    set: (index: number, item: T) =>
+      stores.formValues.update((state) => {
+        state.splice(index, 1, item);
+        return state;
+      }),
     delete: (index) =>
       stores.formValues.update((state) => {
         state.splice(index, 1);

@@ -65,13 +65,9 @@ export interface Beaker<T extends Record<string, unknown | unknown[]>> extends B
    */
   destroy: () => void;
   /**
-   * Reset
-   */
-  reset: () => void;
-  /**
    * Instance forms
    */
-  forms: Set<Formula<T>>;
+  forms: Map<HTMLElement, Formula<T>>;
   /**
    * Stores
    */
@@ -85,6 +81,10 @@ export interface Beaker<T extends Record<string, unknown | unknown[]>> extends B
    * Add an item to the group store
    */
   add: (item: T) => void;
+  /**
+   * Add an item to the group store
+   */
+  set: (index: number, item: T) => void;
   /**
    * Remove and item from the group store
    */

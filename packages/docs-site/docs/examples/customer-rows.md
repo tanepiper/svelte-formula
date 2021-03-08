@@ -6,13 +6,12 @@ title: Example - Customer Rows
 sidebar_label: Row Data
 ---
 
-
 ```svelte
 <script>
   import { createEventDispatcher } from 'svelte';
   import { get } from 'svelte/store';
   import { beaker, formula } from 'svelte-formula@0.8.1';
-  
+
   const dispatch = createEventDispatcher();
 
   const { form, formValues, updateForm } = formula();
@@ -56,7 +55,7 @@ sidebar_label: Row Data
     const mainForm = get(formValues);
     const contactValues = get(customersValues);
     //Do something with the data here
-    
+
     dispatch('signup', {
       form: mainForm,
       contacts: contactValues
@@ -71,7 +70,7 @@ sidebar_label: Row Data
 
   <button type='submit'>Submit Form</button>
   <button on:click|preventDefault={addCustomer}>Add Customer</button>
-	<button on:click|preventDefault={() => customers.reset()}>Reset Fields</button>
+	<button on:click|preventDefault={() => customers.init(contactData)}>Reset Fields</button>
 	<button on:click|preventDefault={() => customers.clear()}>Clear Fields</button>
 
   <table role="grid">

@@ -5,11 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.9.0] - 2021-03-02
+## [0.9.0] - 2021-03-08
+
+### Removed
+
+- Group `reset` method - instead to reset a group of form instances call `group.init` with the initial data that was
+  used to create the group.
 
 ### Changed
 
-- Beaker now accepts `defaultValues` as an array
+- Beaker now accepts `defaultValues` as an array (`group.init` will always overide this)
 - Internal refactoring to improve group handling
 - Removed global state stores for initial values, now only generated internally for reset methods
 - Touched and Dirty and Invalid fields now have attributes set
@@ -18,6 +23,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - `formValidity` in Beaker stores is now an array
 - Group stores no longer emit twice on changes
+- Groups correctly now use `MutationRecord` added and removed nodes to be the reference to form instances when adding
+  and removing data
 
 ## [0.8.7] - 2021-02-23
 
