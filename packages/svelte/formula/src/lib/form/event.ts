@@ -53,7 +53,6 @@ function createHandlerForData<T extends Record<string, unknown | unknown[]>>(
  * @param groupElements
  * @param stores
  * @param options
- * @param isGroup
  */
 export function createHandler<T extends Record<string, unknown | unknown[]>>(
   name: string,
@@ -62,7 +61,6 @@ export function createHandler<T extends Record<string, unknown | unknown[]>>(
   groupElements: FormEl[],
   stores: FormulaStores<T>,
   options: FormulaOptions,
-  isGroup?: boolean,
 ): () => void {
   const extract = createFieldExtract(name, groupElements, options, stores);
   let enrich;

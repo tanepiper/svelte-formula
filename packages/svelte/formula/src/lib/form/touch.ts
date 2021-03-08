@@ -27,6 +27,7 @@ export function createTouchHandlers<T extends Record<string, unknown | unknown[]
    */
   const destroy = () => {
     for (const [el, handler] of elementHandlers) {
+      el.setAttribute('data-formula-touched', 'true');
       el.removeEventListener('focus', handler);
     }
     elementHandlers.clear();

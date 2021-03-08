@@ -1,6 +1,6 @@
 import { createForm } from './lib/form/form';
 import { createGroup } from './lib/group/group';
-import { Beaker, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaStores } from './types';
+import { Beaker, BeakerOptions, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaStores } from './types';
 
 export { Beaker, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaStores };
 
@@ -34,6 +34,6 @@ export function formula<T extends Record<string, unknown | unknown[]>>(options?:
  *
  * @returns Beaker object containing the form group and it's associated methods
  */
-export function beaker<T extends Record<string, unknown | unknown[]>>(options?: FormulaOptions): Beaker<T> {
+export function beaker<T extends Record<string, unknown | unknown[]>>(options?: BeakerOptions): Beaker<T> {
   return createGroup<T>(options, beakerStores);
 }

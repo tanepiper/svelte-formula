@@ -43,7 +43,7 @@
     },
     validators: {
       username: {
-        inDomain: (value) => value.includes('@svete.codes') ? null : 'You in the svelte codes?',
+        inDomain: (value) => value.includes('@svelte.codes') ? null : 'You in the svelte codes?',
       },
     },
   };
@@ -86,18 +86,11 @@
 </script>
 <h2>Signup Form Example</h2>
 <p>A simple signup form example</p>
-{$isFormValid}
-{$isFormReady}
-{usernameInvalid}
-
 
 <div class='container signup-container'>
-  {$touched.username}
-  <div hidden={$isFormValid}>
+
+  <div hidden={$isFormValid} class='errors'>
     {#each Object.entries($formValidity) as [key, val]}
-      {val}
-    {/each}
-    {#each Object.entries($validity.username) as [key, val]}
       {val}
     {/each}
   </div>

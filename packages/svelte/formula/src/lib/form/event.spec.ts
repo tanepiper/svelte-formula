@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { createHandler } from 'packages/svelte/formula/src/lib/form/event';
+import { createHandler } from './event';
 
 describe('Formula Event Handlers', () => {
   const storeMock: any = {

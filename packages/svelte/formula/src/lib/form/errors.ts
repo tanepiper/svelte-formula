@@ -96,6 +96,7 @@ export function createValidationChecker(inputGroup: string, options?: FormulaOpt
   return (el: FormEl, elValue: unknown | unknown[]): FormulaError => {
     // Reset the validity
     el.setCustomValidity('');
+    el.removeAttribute('data-formula-invalid');
 
     // If there's no options, just return the current error
     if (!options) {
@@ -128,6 +129,10 @@ export function createValidationChecker(inputGroup: string, options?: FormulaOpt
     }
     // Recheck validity and show any messages
     const valid = el.checkValidity();
+    if (!valid) {
+      el.setAttribute('data-formula-invalid', 'true');
+    }
+
     return {
       valid,
       invalid: !valid,

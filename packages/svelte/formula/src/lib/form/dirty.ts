@@ -38,6 +38,7 @@ export function createDirtyHandler<T extends Record<string, unknown | unknown[]>
 
   const destroy = () => {
     for (const [el, handler] of elementHandlers) {
+      el.setAttribute('data-formula-dirty', 'true');
       el.removeEventListener('blur', handler);
     }
     elementHandlers.clear();

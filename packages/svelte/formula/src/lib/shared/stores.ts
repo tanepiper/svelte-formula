@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { BeakerStores, FormulaError, FormulaOptions, FormulaStores } from '../../types';
+import { BeakerOptions, BeakerStores, FormulaError, FormulaOptions, FormulaStores } from '../../types';
 
 /**
  * Function to create initial state values for the store using any passed default values, this is not the final initial
@@ -96,18 +96,36 @@ export function createFormStores<T extends Record<string, unknown | unknown[]>>(
  * Create a group store which contains arrays of form store values
  */
 export function createGroupStores<T extends Record<string, unknown | unknown[]>>(
-  options?: FormulaOptions,
+  options?: BeakerOptions,
 ): BeakerStores<T> {
+  let initialValues = [];
+  let initialFieldState = [];
+  let initialValidity = [];
+  let initialEnrichment = [];
+  let initialFormValidity = [];
+
+  if (options?.defaultValues?.length > 0) {
+    const { defaultValues, ...rest } = options;
+    const eachState = defaultValues.map((d) => createFirstState({ ...rest, defaultValues: d }));
+    for (let i = 0; i < eachState.length; i++) {
+      initialValues = [...initialValues, eachState[i].initialValues];
+      initialFieldState = [...initialFieldState, eachState[i].initialFieldState];
+      initialValidity = [...initialValidity, eachState[i].initialValidity];
+      initialEnrichment = [...initialEnrichment, eachState[i].initialEnrichment];
+      initialFormValidity = [...initialFormValidity, eachState[i].initialFormValidity];
+    }
+  }
+
   return {
-    formValues: writable<T[]>([]),
+    formValues: writable<T[]>(initialValues),
     submitValues: writable<T[]>([]),
-    initialValues: writable<T[]>([]),
-    touched: writable<Record<string, boolean>[]>([]),
-    dirty: writable<Record<string, boolean>[]>([]),
-    validity: writable<Record<string, FormulaError>[]>([]),
-    formValidity: writable<Record<string, string>>({}),
+    initialValues: writable<T[]>(initialValues),
+    touched: writable<Record<string, boolean>[]>(initialFieldState),
+    dirty: writable<Record<string, boolean>[]>(initialFieldState),
+    validity: writable<Record<string, FormulaError>[]>(initialValidity),
+    formValidity: writable<Record<string, string>[]>(initialFormValidity),
     isFormValid: writable<boolean>(false),
     isFormReady: writable<boolean>(false),
-    enrichment: writable<Record<string, Record<string, unknown>>[]>([]),
+    enrichment: writable<Record<string, Record<string, unknown>>[]>(initialEnrichment),
   };
 }

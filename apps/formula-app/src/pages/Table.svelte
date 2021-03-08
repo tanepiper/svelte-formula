@@ -5,7 +5,15 @@
   const testForm = formula();
 
   // This creates a contact group - you can now bind `contacts.group` to the subgroup
-  const customers = beaker<{ firstName: string, lastName: string, email: string, subscriptionLevel: string, signups: string[] }>();
+  const customers = beaker<{ firstName: string, lastName: string, email: string, subscriptionLevel: string, signups: string[] }>({
+    defaultValues: [{
+      firstName: 'Add',
+      lastName: 'Customer',
+      email: '',
+      subscriptionLevel: '',
+      signups: [],
+    }]
+  });
   const customersValues = customers.formValues;
 
   export let productData = {
@@ -13,18 +21,21 @@
   };
 
   // Set the store with any existing data
-  export let contactData = [];
-  for (let i = 0; i < 10; i++) {
-    contactData.push({
-      firstName: '',
-      lastName: '',
-      email: '',
-      subscriptionLevel: '',
-      signups: [],
-    })
-  }
+  export let contactData = [{
+    firstName: 'Finn',
+    lastName: 'McSvelte',
+    email: 'foo@bar.com',
+    subscriptionLevel: 'full',
+    signups: ['weekly', 'news'],
+  }, {
+    firstName: 'Bob',
+    lastName: 'McCool',
+    email: 'bar@foo.com',
+    subscriptionLevel: 'partial',
+    signups: ['daily', 'news'],
+  }]
 
-  customers.init(contactData);
+  customers.init([...contactData]);
 
   // Add a row to the store
   function addCustomer() {
@@ -49,6 +60,16 @@
     console.log(mainForm, contacts);
   }
 
+  function updateItem() {
+    customers.set(1, {
+      firstName: 'Bob',
+      lastName: 'McCool',
+      email: 'bar@svelte.codes',
+      subscriptionLevel: '',
+      signups: [],
+    })
+  }
+
   $: console.log($customersValues)
 </script>
 
@@ -59,7 +80,11 @@
   <button type='submit'>Submit Form</button>
   <button on:click|preventDefault={addCustomer}>Add Customer</button>
   <button on:click|preventDefault={() => customers.clear()}>Clear</button>
-  <button on:click|preventDefault={() => customers.reset()}>Reset</button>
+  <button on:click|preventDefault={() => updateItem()}>?</button>
+  <button on:click|preventDefault={() => {
+    testForm.resetForm();
+    customers.init([...contactData])}
+    }>Reset</button>
   <table>
     <thead>
     <tr>
@@ -92,6 +117,7 @@
             <input type='radio' id='subscriptionLevel-{i}-1'
                    name='subscriptionLevel-{i}'
                    data-beaker-key='subscriptionLevel' value='none'
+                   required
                    bind:group={row.subscriptionLevel} />
           </label>
 
@@ -99,6 +125,7 @@
             <input type='radio' id='subscriptionLevel-{i}-2'
                    name='subscriptionLevel-{i}'
                    data-beaker-key='subscriptionLevel' value='partial'
+                   required
                    bind:group={row.subscriptionLevel} />
           </label>
 
@@ -106,6 +133,7 @@
             <input type='radio' id='subscriptionLevel-{i}-3'
                    name='subscriptionLevel-{i}'
                    data-beaker-key='subscriptionLevel' value='full'
+                   required
                    bind:group={row.subscriptionLevel} />
           </label>
 
