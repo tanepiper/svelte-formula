@@ -1,46 +1,526 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="generator" content="Docusaurus v2.0.0-alpha.70">
-<link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="Formula Blog RSS Feed">
-<link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="Formula Blog Atom Feed">
-<script defer="defer" src="https://cdn.usefathom.com/script.js" spa="auto" site="NOVPWZMR"></script><title data-react-helmet="true">Formula API | Formula</title><meta data-react-helmet="true" name="twitter:card" content="summary_large_image"><meta data-react-helmet="true" name="docusaurus_locale" content="en"><meta data-react-helmet="true" name="docusaurus_version" content="current"><meta data-react-helmet="true" name="docusaurus_tag" content="docs-default-current"><meta data-react-helmet="true" property="og:title" content="Formula API | Formula"><meta data-react-helmet="true" name="description" content="svelte-formula"><meta data-react-helmet="true" property="og:description" content="svelte-formula"><meta data-react-helmet="true" property="og:url" content="https://formula.svelte.codes//docs/formula"><link data-react-helmet="true" rel="shortcut icon" href="/img/favicon.ico"><link data-react-helmet="true" rel="canonical" href="https://formula.svelte.codes//docs/formula"><link rel="stylesheet" href="/styles.c3950510.css">
-<link rel="preload" href="/styles.da17f09d.js" as="script">
-<link rel="preload" href="/runtime~main.783a8ea5.js" as="script">
-<link rel="preload" href="/main.42a5e472.js" as="script">
-<link rel="preload" href="/1.538e3cfb.js" as="script">
-<link rel="preload" href="/2.7af8a389.js" as="script">
-<link rel="preload" href="/25.5580180d.js" as="script">
-<link rel="preload" href="/26.cd6ae3f1.js" as="script">
-<link rel="preload" href="/935f2afb.dcbd53b2.js" as="script">
-<link rel="preload" href="/17896441.c9e60f8c.js" as="script">
-<link rel="preload" href="/c9862f47.530f1076.js" as="script">
-</head>
-<body>
-<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){var t=null;try{t=localStorage.getItem("theme")}catch(t){}return t}();t(null!==e?e:"light")}()</script><div id="__docusaurus">
-<nav aria-label="Skip navigation links"><button type="button" tabindex="0" class="skipToContent_11B0">Skip to main content</button></nav><nav class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><div aria-label="Navigation bar toggle" class="navbar__toggle" role="button" tabindex="0"><svg aria-label="Menu" width="30" height="30" viewBox="0 0 30 30" role="img" focusable="false"><title>Menu</title><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></div><a class="navbar__brand" href="/"><img src="/img/logo-small.png" alt="The Formula logo containing a molecule and two science beakers" class="themedImage_YANc themedImage--light_3CMI navbar__logo"><img src="/img/logo-small.png" alt="The Formula logo containing a molecule and two science beakers" class="themedImage_YANc themedImage--dark_3ARp navbar__logo"><strong class="navbar__title">Formula</strong></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/docs/formula">Docs</a><a href="https://github.com/tanepiper/svelte-formula/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">Changelog</a></div><div class="navbar__items navbar__items--right"><a href="https://www.npmjs.com/package/svelte-formula" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">NPM</a><a href="https://github.com/tanepiper/svelte-formula" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub</a><div class="react-toggle react-toggle--disabled displayOnlyInLargeViewport_2N3Q"><div class="react-toggle-track"><div class="react-toggle-track-check"><span class="toggle_3NWk">🌜</span></div><div class="react-toggle-track-x"><span class="toggle_3NWk">🌞</span></div></div><div class="react-toggle-thumb"></div><input type="checkbox" disabled="" aria-label="Dark mode toggle" class="react-toggle-screenreader-only"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div><div class="navbar-sidebar"><div class="navbar-sidebar__brand"><a class="navbar__brand" href="/"><img src="/img/logo-small.png" alt="The Formula logo containing a molecule and two science beakers" class="themedImage_YANc themedImage--light_3CMI navbar__logo"><img src="/img/logo-small.png" alt="The Formula logo containing a molecule and two science beakers" class="themedImage_YANc themedImage--dark_3ARp navbar__logo"><strong class="navbar__title">Formula</strong></a></div><div class="navbar-sidebar__items"><div class="menu"><ul class="menu__list"><li class="menu__list-item"><a aria-current="page" class="menu__link navbar__link--active" href="/docs/formula">Docs</a></li><li class="menu__list-item"><a href="https://github.com/tanepiper/svelte-formula/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" class="menu__link">Changelog</a></li><li class="menu__list-item"><a href="https://www.npmjs.com/package/svelte-formula" target="_blank" rel="noopener noreferrer" class="menu__link">NPM</a></li><li class="menu__list-item"><a href="https://github.com/tanepiper/svelte-formula" target="_blank" rel="noopener noreferrer" class="menu__link">GitHub</a></li></ul></div></div></div></nav><div class="main-wrapper"><div class="docPage_vMrn"><div class="docSidebarContainer_3Ak5" role="complementary"><div class="sidebar_3gvy"><div class="menu menu--responsive thin-scrollbar menu_1yIk"><button aria-label="Open Menu" aria-haspopup="true" class="button button--secondary button--sm menu__button" type="button"><svg aria-label="Menu" class="sidebarMenuIcon_1CUI" width="24" height="24" viewBox="0 0 30 30" role="img" focusable="false"><title>Menu</title><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><ul class="menu__list"><li class="menu__list-item"><a class="menu__link menu__link--sublist menu__link--active" href="#!">Formula</a><ul class="menu__list"><li class="menu__list-item"><a aria-current="page" class="menu__link menu__link--active active" tabindex="0" href="/docs/formula">Formula API</a></li><li class="menu__list-item"><a class="menu__link" tabindex="0" href="/docs/options">Formula Options</a></li><li class="menu__list-item"><a class="menu__link" tabindex="0" href="/docs/lifecycle">Formula Lifecycle</a></li></ul></li><li class="menu__list-item menu__list-item--collapsed"><a class="menu__link menu__link--sublist" href="#!">Beaker</a><ul class="menu__list"><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/groups/beaker">Beaker API</a></li><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/groups/data">Data API</a></li></ul></li><li class="menu__list-item menu__list-item--collapsed"><a class="menu__link menu__link--sublist" href="#!">Stores</a><ul class="menu__list"><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/stores/stores">Formula Stores</a></li><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/stores/stores-dirty">dirty</a></li><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/stores/stores-enrichment">enrichment</a></li><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/stores/stores-form-validity">formValidity</a></li><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/stores/stores-form-values">formValues</a></li><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/stores/stores-initial-values">initialValues</a></li><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/stores/stores-form-valid">isFormValid</a></li><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/stores/stores-submit-values">submitValues</a></li><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/stores/stores-touched">touched</a></li><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/stores/stores-validity">validity</a></li></ul></li><li class="menu__list-item menu__list-item--collapsed"><a class="menu__link menu__link--sublist" href="#!">Examples</a><ul class="menu__list"><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/examples/signup">Complex Form</a></li><li class="menu__list-item"><a class="menu__link" tabindex="-1" href="/docs/examples/customer-rows">Row Data</a></li></ul></li></ul></div></div></div><main class="docMainContainer_2iGs"><div class="container padding-vert--lg docItemWrapper_1bxp"><div class="row"><div class="col docItemCol_U38p"><div class="docItemContainer_a7m4"><article><header><h1 class="docTitle_Oumm">Formula API</h1></header><div class="markdown"><p><a href="https://www.npmjs.com/package/svelte-formula" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/svelte-formula?label=svelte-formula" alt="svelte-formula"></a></p><h2><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="what-is-formula"></a>What is Formula?<a class="hash-link" href="#what-is-formula" title="Direct link to heading">#</a></h2><blockquote><p><strong>Formula is still in active development - as such there may still be API changes</strong></p></blockquote><p>Formula is a library for <a href="https://svelte.dev" target="_blank" rel="noopener noreferrer">Svelte</a> with features for creating <strong>Zero Configuration</strong> reactive forms
-and fully data-driven applications.</p><p>Out-of-the box it&#x27;s designed to work with HTML5 forms. Using the <code>name</code> attribute of your HTML elements, Formula builds
-a set of state objects using Svelte&#x27;s subscribable <a href="/docs/stores/stores">stores</a>, making them available for you subscribe
-to in your application. These stores contain values and validation states, which are configured as easily as setting
-supported attributes, and doesn&#x27;t get in the way of things like Accessibility.</p><blockquote><p>Want to make a field required? Just add the <code>&lt;input required&gt;</code> attribute, or add <code>&lt;input minlength=&quot;8&quot;&gt;</code> to set a minimum length on the fields.</p></blockquote><p>Validation is enhanced via custom field and form level validation functions passed in the <a href="/docs/options">options</a> - you
-can also pass default values, or override default HTML5 validation text with your own versions (such as localised text).</p><p>You can also enrich you fields with computed values (such as a password strength derived from the users input).</p><h3><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="working-with-data-collections"></a>Working with Data Collections<a class="hash-link" href="#working-with-data-collections" title="Direct link to heading">#</a></h3><p>Formula also provides an API for working with collections of data - <a href="/docs/groups/beaker">beaker</a> allows you to use Formula to
-create rich row-level forms for applications such as data grids.</p><h2><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="installation"></a>Installation<a class="hash-link" href="#installation" title="Direct link to heading">#</a></h2><p>Formula is available on NPM, with the source available on GitHub. To install in your project type:</p><blockquote><p><code>npm i svelte-formula</code></p></blockquote><h2><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="basic-form-example"></a>Basic Form Example<a class="hash-link" href="#basic-form-example" title="Direct link to heading">#</a></h2><p>To use in your project all you need is an element container binding the form with
-Svelte <a href="https://svelte.dev/docs#use_action" target="_blank" rel="noopener noreferrer">use</a>
-directive, and form input fields with their <code>name</code> property set.</p><div class="mdxCodeBlock_1zKU"><div class="codeBlockContent_actS"><div tabindex="0" class="prism-code language-svelte codeBlock_tuNs thin-scrollbar"><div class="codeBlockLines_3uvA" style="color:#bfc7d5;background-color:#292d3e"><div class="token-line" style="color:#bfc7d5"><span class="token plain">  &lt;script&gt;</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    import { formula } from &#x27;svelte-formula&#x27;</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    const { form, formIsValid, validity, touched } = formula();</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block">
-</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    // Here we can provide a default value</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    export let projectname = &#x27;&#x27;;</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block">
-</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    // You can calculate values for valid UI states</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    $: projectNameInvalid = $touched?.projectName &amp;&amp; validity?.projectName?.invalid</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  &lt;/script&gt;</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block">
-</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  &lt;div use:form&gt;</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    &lt;label for=&quot;project-name&quot;&gt;Project Name&lt;/label&gt;</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    &lt;input type=&quot;text&quot; name=&quot;projectName&quot; required minlength=&quot;8&quot; class:error={projectNameInvalid} bind:value={projectName} /&gt;</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    &lt;span hidden={!projectNameInvalid}&gt;{validity?.projectName?.message}&lt;/span&gt;</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    &lt;button disabled={!$formIsValid}&gt;Update Project Name&lt;/button&gt;</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  &lt;/div&gt;</span></div></div></div><button type="button" aria-label="Copy code to clipboard" class="copyButton_2GIj">Copy</button></div></div></div></article><div class="margin-vert--lg"><nav class="pagination-nav" aria-label="Blog list page navigation"><div class="pagination-nav__item"></div><div class="pagination-nav__item pagination-nav__item--next"><a class="pagination-nav__link" href="/docs/options"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Formula Options »</div></a></div></nav></div></div></div><div class="col col--3"><div class="tableOfContents_2xL- thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#what-is-formula" class="table-of-contents__link">What is Formula?</a><ul><li><a href="#working-with-data-collections" class="table-of-contents__link">Working with Data Collections</a></li></ul></li><li><a href="#installation" class="table-of-contents__link">Installation</a></li><li><a href="#basic-form-example" class="table-of-contents__link">Basic Form Example</a></li></ul></div></div></div></div></main></div></div><footer class="footer footer--dark"><div class="container"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2021 Tane Piper. Built with Docusaurus.</div></div></div></footer></div>
-<script src="/styles.da17f09d.js"></script>
-<script src="/runtime~main.783a8ea5.js"></script>
-<script src="/main.42a5e472.js"></script>
-<script src="/1.538e3cfb.js"></script>
-<script src="/2.7af8a389.js"></script>
-<script src="/25.5580180d.js"></script>
-<script src="/26.cd6ae3f1.js"></script>
-<script src="/935f2afb.dcbd53b2.js"></script>
-<script src="/17896441.c9e60f8c.js"></script>
-<script src="/c9862f47.530f1076.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="generator" content="Docusaurus v2.0.0-alpha.70" />
+    <link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="Formula Blog RSS Feed" />
+    <link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="Formula Blog Atom Feed" />
+    <script defer="defer" src="https://cdn.usefathom.com/script.js" spa="auto" site="NOVPWZMR"></script>
+    <title data-react-helmet="true">Formula API | Formula</title>
+    <meta data-react-helmet="true" name="twitter:card" content="summary_large_image" />
+    <meta data-react-helmet="true" name="docusaurus_locale" content="en" />
+    <meta data-react-helmet="true" name="docusaurus_version" content="current" />
+    <meta data-react-helmet="true" name="docusaurus_tag" content="docs-default-current" />
+    <meta data-react-helmet="true" property="og:title" content="Formula API | Formula" />
+    <meta data-react-helmet="true" name="description" content="svelte-formula" />
+    <meta data-react-helmet="true" property="og:description" content="svelte-formula" />
+    <meta data-react-helmet="true" property="og:url" content="https://formula.svelte.codes//docs/formula" />
+    <link data-react-helmet="true" rel="shortcut icon" href="/img/favicon.ico" />
+    <link data-react-helmet="true" rel="canonical" href="https://formula.svelte.codes//docs/formula" />
+    <link rel="stylesheet" href="/styles.c3950510.css" />
+    <link rel="preload" href="/styles.da17f09d.js" as="script" />
+    <link rel="preload" href="/runtime~main.783a8ea5.js" as="script" />
+    <link rel="preload" href="/main.42a5e472.js" as="script" />
+    <link rel="preload" href="/1.538e3cfb.js" as="script" />
+    <link rel="preload" href="/2.7af8a389.js" as="script" />
+    <link rel="preload" href="/25.5580180d.js" as="script" />
+    <link rel="preload" href="/26.cd6ae3f1.js" as="script" />
+    <link rel="preload" href="/935f2afb.dcbd53b2.js" as="script" />
+    <link rel="preload" href="/17896441.c9e60f8c.js" as="script" />
+    <link rel="preload" href="/c9862f47.530f1076.js" as="script" />
+  </head>
+  <body>
+    <script>
+      !(function () {
+        function t(t) {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+        var e = (function () {
+          var t = null;
+          try {
+            t = localStorage.getItem('theme');
+          } catch (t) {}
+          return t;
+        })();
+        t(null !== e ? e : 'light');
+      })();
+    </script>
+    <div id="__docusaurus">
+      <nav aria-label="Skip navigation links">
+        <button type="button" tabindex="0" class="skipToContent_11B0">Skip to main content</button>
+      </nav>
+      <nav class="navbar navbar--fixed-top">
+        <div class="navbar__inner">
+          <div class="navbar__items">
+            <div aria-label="Navigation bar toggle" class="navbar__toggle" role="button" tabindex="0">
+              <svg aria-label="Menu" width="30" height="30" viewBox="0 0 30 30" role="img" focusable="false">
+                <title>Menu</title>
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-miterlimit="10"
+                  stroke-width="2"
+                  d="M4 7h22M4 15h22M4 23h22"
+                ></path>
+              </svg>
+            </div>
+            <a class="navbar__brand" href="/"
+              ><img
+                src="/img/logo-small.png"
+                alt="The Formula logo containing a molecule and two science beakers"
+                class="themedImage_YANc themedImage--light_3CMI navbar__logo"
+              /><img
+                src="/img/logo-small.png"
+                alt="The Formula logo containing a molecule and two science beakers"
+                class="themedImage_YANc themedImage--dark_3ARp navbar__logo"
+              /><strong class="navbar__title">Formula</strong></a
+            ><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/docs/formula">Docs</a
+            ><a
+              href="https://github.com/tanepiper/svelte-formula/blob/main/CHANGELOG.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="navbar__item navbar__link"
+              >Changelog</a
+            >
+          </div>
+          <div class="navbar__items navbar__items--right">
+            <a
+              href="https://www.npmjs.com/package/svelte-formula"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="navbar__item navbar__link"
+              >NPM</a
+            ><a
+              href="https://github.com/tanepiper/svelte-formula"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="navbar__item navbar__link"
+              >GitHub</a
+            >
+            <div class="react-toggle react-toggle--disabled displayOnlyInLargeViewport_2N3Q">
+              <div class="react-toggle-track">
+                <div class="react-toggle-track-check"><span class="toggle_3NWk">🌜</span></div>
+                <div class="react-toggle-track-x"><span class="toggle_3NWk">🌞</span></div>
+              </div>
+              <div class="react-toggle-thumb"></div>
+              <input type="checkbox" disabled="" aria-label="Dark mode toggle" class="react-toggle-screenreader-only" />
+            </div>
+          </div>
+        </div>
+        <div role="presentation" class="navbar-sidebar__backdrop"></div>
+        <div class="navbar-sidebar">
+          <div class="navbar-sidebar__brand">
+            <a class="navbar__brand" href="/"
+              ><img
+                src="/img/logo-small.png"
+                alt="The Formula logo containing a molecule and two science beakers"
+                class="themedImage_YANc themedImage--light_3CMI navbar__logo"
+              /><img
+                src="/img/logo-small.png"
+                alt="The Formula logo containing a molecule and two science beakers"
+                class="themedImage_YANc themedImage--dark_3ARp navbar__logo"
+              /><strong class="navbar__title">Formula</strong></a
+            >
+          </div>
+          <div class="navbar-sidebar__items">
+            <div class="menu">
+              <ul class="menu__list">
+                <li class="menu__list-item">
+                  <a aria-current="page" class="menu__link navbar__link--active" href="/docs/formula">Docs</a>
+                </li>
+                <li class="menu__list-item">
+                  <a
+                    href="https://github.com/tanepiper/svelte-formula/blob/main/CHANGELOG.md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="menu__link"
+                    >Changelog</a
+                  >
+                </li>
+                <li class="menu__list-item">
+                  <a
+                    href="https://www.npmjs.com/package/svelte-formula"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="menu__link"
+                    >NPM</a
+                  >
+                </li>
+                <li class="menu__list-item">
+                  <a
+                    href="https://github.com/tanepiper/svelte-formula"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="menu__link"
+                    >GitHub</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="main-wrapper">
+        <div class="docPage_vMrn">
+          <div class="docSidebarContainer_3Ak5" role="complementary">
+            <div class="sidebar_3gvy">
+              <div class="menu menu--responsive thin-scrollbar menu_1yIk">
+                <button
+                  aria-label="Open Menu"
+                  aria-haspopup="true"
+                  class="button button--secondary button--sm menu__button"
+                  type="button"
+                >
+                  <svg
+                    aria-label="Menu"
+                    class="sidebarMenuIcon_1CUI"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 30 30"
+                    role="img"
+                    focusable="false"
+                  >
+                    <title>Menu</title>
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-miterlimit="10"
+                      stroke-width="2"
+                      d="M4 7h22M4 15h22M4 23h22"
+                    ></path>
+                  </svg>
+                </button>
+                <ul class="menu__list">
+                  <li class="menu__list-item">
+                    <a class="menu__link menu__link--sublist menu__link--active" href="#!">Formula</a>
+                    <ul class="menu__list">
+                      <li class="menu__list-item">
+                        <a
+                          aria-current="page"
+                          class="menu__link menu__link--active active"
+                          tabindex="0"
+                          href="/docs/formula"
+                          >Formula API</a
+                        >
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="0" href="/docs/options">Formula Options</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="0" href="/docs/lifecycle">Formula Lifecycle</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="menu__list-item menu__list-item--collapsed">
+                    <a class="menu__link menu__link--sublist" href="#!">Beaker</a>
+                    <ul class="menu__list">
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/groups/beaker">Beaker API</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/groups/data">Data API</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="menu__list-item menu__list-item--collapsed">
+                    <a class="menu__link menu__link--sublist" href="#!">Stores</a>
+                    <ul class="menu__list">
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/stores/stores">Formula Stores</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/stores/stores-dirty">dirty</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/stores/stores-enrichment">enrichment</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/stores/stores-form-validity">formValidity</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/stores/stores-form-values">formValues</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/stores/stores-initial-values">initialValues</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/stores/stores-form-valid">isFormValid</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/stores/stores-submit-values">submitValues</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/stores/stores-touched">touched</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/stores/stores-validity">validity</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="menu__list-item menu__list-item--collapsed">
+                    <a class="menu__link menu__link--sublist" href="#!">Examples</a>
+                    <ul class="menu__list">
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/examples/signup">Complex Form</a>
+                      </li>
+                      <li class="menu__list-item">
+                        <a class="menu__link" tabindex="-1" href="/docs/examples/customer-rows">Row Data</a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <main class="docMainContainer_2iGs">
+            <div class="container padding-vert--lg docItemWrapper_1bxp">
+              <div class="row">
+                <div class="col docItemCol_U38p">
+                  <div class="docItemContainer_a7m4">
+                    <article>
+                      <header><h1 class="docTitle_Oumm">Formula API</h1></header>
+                      <div class="markdown">
+                        <p>
+                          <a
+                            href="https://www.npmjs.com/package/svelte-formula"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            ><img
+                              src="https://img.shields.io/npm/v/svelte-formula?label=svelte-formula"
+                              alt="svelte-formula"
+                          /></a>
+                        </p>
+                        <h2>
+                          <a
+                            aria-hidden="true"
+                            tabindex="-1"
+                            class="anchor enhancedAnchor_prK2"
+                            id="what-is-formula"
+                          ></a
+                          >What is Formula?<a class="hash-link" href="#what-is-formula" title="Direct link to heading"
+                            >#</a
+                          >
+                        </h2>
+                        <blockquote>
+                          <p>
+                            <strong
+                              >Formula is still in active development - as such there may still be API changes</strong
+                            >
+                          </p>
+                        </blockquote>
+                        <p>
+                          Formula is a library for
+                          <a href="https://svelte.dev" target="_blank" rel="noopener noreferrer">Svelte</a> with
+                          features for creating <strong>Zero Configuration</strong> reactive forms and fully data-driven
+                          applications.
+                        </p>
+                        <p>
+                          Out-of-the box it&#x27;s designed to work with HTML5 forms. Using the
+                          <code>name</code> attribute of your HTML elements, Formula builds a set of state objects using
+                          Svelte&#x27;s subscribable <a href="/docs/stores/stores">stores</a>, making them available for
+                          you subscribe to in your application. These stores contain values and validation states, which
+                          are configured as easily as setting supported attributes, and doesn&#x27;t get in the way of
+                          things like Accessibility.
+                        </p>
+                        <blockquote>
+                          <p>
+                            Want to make a field required? Just add the <code>&lt;input required&gt;</code> attribute,
+                            or add <code>&lt;input minlength=&quot;8&quot;&gt;</code> to set a minimum length on the
+                            fields.
+                          </p>
+                        </blockquote>
+                        <p>
+                          Validation is enhanced via custom field and form level validation functions passed in the
+                          <a href="/docs/options">options</a> - you can also pass default values, or override default
+                          HTML5 validation text with your own versions (such as localised text).
+                        </p>
+                        <p>
+                          You can also enrich you fields with computed values (such as a password strength derived from
+                          the users input).
+                        </p>
+                        <h3>
+                          <a
+                            aria-hidden="true"
+                            tabindex="-1"
+                            class="anchor enhancedAnchor_prK2"
+                            id="working-with-data-collections"
+                          ></a
+                          >Working with Data Collections<a
+                            class="hash-link"
+                            href="#working-with-data-collections"
+                            title="Direct link to heading"
+                            >#</a
+                          >
+                        </h3>
+                        <p>
+                          Formula also provides an API for working with collections of data -
+                          <a href="/docs/groups/beaker">beaker</a> allows you to use Formula to create rich row-level
+                          forms for applications such as data grids.
+                        </p>
+                        <h2>
+                          <a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="installation"></a
+                          >Installation<a class="hash-link" href="#installation" title="Direct link to heading">#</a>
+                        </h2>
+                        <p>
+                          Formula is available on NPM, with the source available on GitHub. To install in your project
+                          type:
+                        </p>
+                        <blockquote>
+                          <p><code>npm i svelte-formula</code></p>
+                        </blockquote>
+                        <h2>
+                          <a
+                            aria-hidden="true"
+                            tabindex="-1"
+                            class="anchor enhancedAnchor_prK2"
+                            id="basic-form-example"
+                          ></a
+                          >Basic Form Example<a
+                            class="hash-link"
+                            href="#basic-form-example"
+                            title="Direct link to heading"
+                            >#</a
+                          >
+                        </h2>
+                        <p>
+                          To use in your project all you need is an element container binding the form with Svelte
+                          <a href="https://svelte.dev/docs#use_action" target="_blank" rel="noopener noreferrer">use</a>
+                          directive, and form input fields with their <code>name</code> property set.
+                        </p>
+                        <div class="mdxCodeBlock_1zKU">
+                          <div class="codeBlockContent_actS">
+                            <div tabindex="0" class="prism-code language-svelte codeBlock_tuNs thin-scrollbar">
+                              <div class="codeBlockLines_3uvA" style="color: #bfc7d5; background-color: #292d3e">
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain"> &lt;script&gt;</span>
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain"> import { formula } from &#x27;svelte-formula&#x27;</span>
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain">
+                                    const { form, formIsValid, validity, touched } = formula();</span
+                                  >
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain" style="display: inline-block"> </span>
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain"> // Here we can provide a default value</span>
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain"> export let projectname = &#x27;&#x27;;</span>
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain" style="display: inline-block"> </span>
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain"> // You can calculate values for valid UI states</span>
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain">
+                                    $: projectNameInvalid = $touched?.projectName &amp;&amp;
+                                    validity?.projectName?.invalid</span
+                                  >
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain"> &lt;/script&gt;</span>
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain" style="display: inline-block"> </span>
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain"> &lt;div use:form&gt;</span>
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain">
+                                    &lt;label for=&quot;project-name&quot;&gt;Project Name&lt;/label&gt;</span
+                                  >
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain">
+                                    &lt;input type=&quot;text&quot; name=&quot;projectName&quot; required
+                                    minlength=&quot;8&quot; class:error={projectNameInvalid} bind:value={projectName}
+                                    /&gt;</span
+                                  >
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain">
+                                    &lt;span
+                                    hidden={!projectNameInvalid}&gt;{validity?.projectName?.message}&lt;/span&gt;</span
+                                  >
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain">
+                                    &lt;button disabled={!$formIsValid}&gt;Update Project Name&lt;/button&gt;</span
+                                  >
+                                </div>
+                                <div class="token-line" style="color: #bfc7d5">
+                                  <span class="token plain"> &lt;/div&gt;</span>
+                                </div>
+                              </div>
+                            </div>
+                            <button type="button" aria-label="Copy code to clipboard" class="copyButton_2GIj">
+                              Copy
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                    <div class="margin-vert--lg">
+                      <nav class="pagination-nav" aria-label="Blog list page navigation">
+                        <div class="pagination-nav__item"></div>
+                        <div class="pagination-nav__item pagination-nav__item--next">
+                          <a class="pagination-nav__link" href="/docs/options"
+                            ><div class="pagination-nav__sublabel">Next</div>
+                            <div class="pagination-nav__label">Formula Options »</div></a
+                          >
+                        </div>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
+                <div class="col col--3">
+                  <div class="tableOfContents_2xL- thin-scrollbar">
+                    <ul class="table-of-contents table-of-contents__left-border">
+                      <li>
+                        <a href="#what-is-formula" class="table-of-contents__link">What is Formula?</a>
+                        <ul>
+                          <li>
+                            <a href="#working-with-data-collections" class="table-of-contents__link"
+                              >Working with Data Collections</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a href="#installation" class="table-of-contents__link">Installation</a></li>
+                      <li><a href="#basic-form-example" class="table-of-contents__link">Basic Form Example</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+      <footer class="footer footer--dark">
+        <div class="container">
+          <div class="footer__bottom text--center">
+            <div class="footer__copyright">Copyright © 2021 Tane Piper. Built with Docusaurus.</div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="/styles.da17f09d.js"></script>
+    <script src="/runtime~main.783a8ea5.js"></script>
+    <script src="/main.42a5e472.js"></script>
+    <script src="/1.538e3cfb.js"></script>
+    <script src="/2.7af8a389.js"></script>
+    <script src="/25.5580180d.js"></script>
+    <script src="/26.cd6ae3f1.js"></script>
+    <script src="/935f2afb.dcbd53b2.js"></script>
+    <script src="/17896441.c9e60f8c.js"></script>
+    <script src="/c9862f47.530f1076.js"></script>
+  </body>
 </html>
