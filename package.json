@@ -15,6 +15,7 @@
     "cleanup:branches": "git pull --prune && git branch -vv | grep ': gone]'|  grep -v \"\\*\" | awk '{ print $1; }' | xargs -r git branch -D",
     "cleanup:workspace": "nxpm-stack lint",
     "dep-graph": "nx dep-graph",
+    "docs": "nx build docs-site",
     "e2e": "nx e2e",
     "format": "nx format:write",
     "format:check": "nx format:check",
@@ -25,8 +26,7 @@
     "start": "nx serve",
     "test": "nx test",
     "update": "nx migrate latest",
-    "workspace-generator": "nx workspace-generator",
-    "docs": "nx build docs-site"
+    "workspace-generator": "nx workspace-generator"
   },
   "private": true,
   "dependencies": {
