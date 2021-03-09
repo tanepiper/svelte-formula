@@ -82,7 +82,7 @@ export function createFormValidator<T extends Record<string, unknown | unknown[]
  *
  * @returns Function that is called each time an element is updated which returns field validity state
  */
-export function createValidationChecker(inputGroup: string, options?: FormulaOptions) {
+export function createValidationChecker(inputGroup: string, elementGroup: FormEl[], options?: FormulaOptions) {
   /**
    * Method called each time a field is updated
    *
@@ -95,8 +95,10 @@ export function createValidationChecker(inputGroup: string, options?: FormulaOpt
    */
   return (el: FormEl, elValue: unknown | unknown[]): FormulaError => {
     // Reset the validity
-    el.setCustomValidity('');
-    el.removeAttribute('data-formula-invalid');
+    elementGroup.forEach((gel) => {
+      gel.setCustomValidity('');
+      gel.removeAttribute('data-formula-invalid');
+    });
 
     // If there's no options, just return the current error
     if (!options) {

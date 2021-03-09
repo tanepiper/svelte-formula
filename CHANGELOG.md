@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.2] - 2021-03-09
+
+### Changed
+
+- Removed Beaker changes for `MutationObserver` - reverted code back to using a check for all rows and re-create forms
+  each time as tracking changes becomes too complex. New code in place that handles subscription correctly to child
+  stores for each form instance within the group and better extraction of values. This also fixes infinite loop bug
+  caused by new code.
+
+### Fixed
+
+- Beaker stores now correctly showing store values in a group without requiring `bind:value`
+
 ## [0.9.1] - 2021-03-08
 
 ### Fixed
@@ -20,7 +33,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Beaker now accepts `defaultValues` as an array (`group.init` will always overide this)
+- Beaker now accepts `defaultValues` as an array (`group.init` will always override this)
 - Internal refactoring to improve group handling
 - Removed global state stores for initial values, now only generated internally for reset methods
 - Touched and Dirty and Invalid fields now have attributes set

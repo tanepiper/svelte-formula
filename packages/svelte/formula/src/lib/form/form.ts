@@ -13,11 +13,13 @@ import { setAriaButtons, setAriaContainer, setAriaRole, setAriaStates } from './
  * @param options
  * @param globalStore
  * @param groupName
+ * @param initialData
  */
 export function createForm<T extends Record<string, unknown | unknown[]>>(
   options: FormulaOptions,
   globalStore?: Map<string, FormulaStores<T>>,
   groupName?: string,
+  initialData?: T,
 ): Formula<T> {
   /**
    * Store for all keyup handlers than need removed when destroyed
@@ -27,7 +29,7 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
   const touchHandlers = new Set<() => void>();
   const dirtyHandlers = new Set<() => void>();
 
-  const stores = createFormStores<T>(options);
+  const stores = createFormStores<T>(options, initialData);
   const isGroup = typeof groupName !== 'undefined';
   const initialOptions = options;
   let submitHandler = undefined;
@@ -50,7 +52,8 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
     // Group elements by name
     groupedMap = [
       ...formElements.reduce((entryMap, e) => {
-        const name = e.getAttribute('name');
+        const beakerKey = e.dataset.beakerKey;
+        const name = beakerKey || e.getAttribute('name');
         return entryMap.set(name, [...(entryMap.get(name) || []), e]);
       }, new Map()),
     ];
@@ -105,7 +108,7 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
 
     // If the HTML element attached is a form, also listen for the submit event
     if (node instanceof HTMLFormElement) {
-      submitHandler = createSubmitHandler(stores);
+      submitHandler = createSubmitHandler(stores, node);
       node.addEventListener('submit', submitHandler);
     }
     stores.isFormReady.set(true);

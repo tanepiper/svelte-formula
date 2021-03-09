@@ -87,54 +87,47 @@ sidebar_label: Row Data
       <tr role="row">
         <td>
           <label for='firstName-{i}'>First Name</label>
-          <input type='text' id='firstName-{i}' name='firstName' required bind:value={row.firstName} />
+          <input type='text' id='firstName-{i}' name='firstName' required />
         </td>
         <td>
           <label for='lastName-{i}'>Last Name</label>
-          <input type='text' id='lastName-{i}' name='lastName' bind:value={row.lastName} required />
+          <input type='text' id='lastName-{i}' name='lastName' required />
         </td>
         <td>
           <label for='email-{i}'>Email Name</label>
-          <input type='email' id='email-{i}' name='email' bind:value={row.email} required />
+          <input type='email' id='email-{i}' name='email' required />
         </td>
         <td>
           <!-- In multi-group forms, radio groups require a unique name in the DOM - her you can provide 'data-beaker-key' to specify the data key -->
           <label for='subscriptionLevel-{i}-1'>None
             <input type='radio' id='subscriptionLevel-{i}-1'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='none'
-                   bind:group={row.subscriptionLevel} />
+                   data-beaker-key='subscriptionLevel' value='none' />
           </label>
 
           <label for='subscriptionLevel-{i}-1'>Partial
             <input type='radio' id='subscriptionLevel-{i}-2'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='partial'
-                   bind:group={row.subscriptionLevel} />
+                   data-beaker-key='subscriptionLevel' value='partial' />
           </label>
 
           <label for='subscriptionLevel-{i}-1'>Full
             <input type='radio' id='subscriptionLevel-{i}-3'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='full'
-                   bind:group={row.subscriptionLevel} />
+                   data-beaker-key='subscriptionLevel' value='full' />
           </label>
 
         </td>
-        <label for='signups-{i}-1'>Daily <input type='checkbox' id='signups-{i}-1' name='signups' value='daily'
-                                                bind:group={row.signups} /></label>
+        <label for='signups-{i}-1'>Daily <input type='checkbox' id='signups-{i}-1' name='signups' value='daily' /></label>
 
         <label for='signups-{i}-2'>Weekly
-          <input type='checkbox' id='signups-{i}-2' name='signups' value='weekly'
-                 bind:group={row.signups} />
+          <input type='checkbox' id='signups-{i}-2' name='signups' value='weekly' />
         </label>
         <label for='signups-{i}-3'>News
-          <input type='checkbox' id='signups-{i}-3' name='signups' value='news'
-                 bind:group={row.signups} />
+          <input type='checkbox' id='signups-{i}-3' name='signups' value='news'  />
         </label>
         <label for='signups-{i}-4'>Product
-          <input type='checkbox' id='signups-{i}-4' name='signups' value='product'
-                 bind:group={row.signups} />
+          <input type='checkbox' id='signups-{i}-4' name='signups' value='product' />
         </label>
         <td>
           <button on:click|preventDefault={() => deleteCustomer(i)}>X</button>
@@ -144,6 +137,4 @@ sidebar_label: Row Data
     </tbody>
   </table>
 </form>
-
-
 ```

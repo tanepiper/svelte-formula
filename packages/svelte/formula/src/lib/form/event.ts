@@ -1,6 +1,7 @@
 import { FormEl, FormulaError, FormulaField, FormulaOptions, FormulaStores } from '../../types';
 import { createFieldExtract } from './extract';
 import { createEnrichField } from './enrichment';
+import { get } from 'svelte/store';
 
 /**
  * Update the value and error stores, also update form validity
@@ -83,6 +84,10 @@ export function createHandler<T extends Record<string, unknown | unknown[]>>(
  */
 export function createSubmitHandler<T extends Record<string, unknown | unknown[]>>(
   stores: FormulaStores<T>,
+  form: HTMLFormElement,
 ): (event: Event) => void {
-  return (): void => stores.formValues.subscribe((v) => stores.submitValues.set(v))();
+  return (): void => {
+    form.reportValidity();
+    stores.formValues.subscribe((v) => stores.submitValues.set(v))();
+  };
 }
