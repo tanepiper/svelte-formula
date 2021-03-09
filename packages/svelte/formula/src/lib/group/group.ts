@@ -1,6 +1,7 @@
 import { Beaker, BeakerOptions, BeakerStores, Formula, FormulaOptions } from '../../types';
 import { createGroupStores } from '../shared/stores';
 import { createForm } from '../form/form';
+import { get } from 'svelte/store';
 
 let groupCounter = 0;
 
@@ -13,7 +14,7 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
   options: BeakerOptions,
   beakerStores: Map<string, BeakerStores<T>>,
 ): Beaker<T> {
-  const stores = createGroupStores<T>(options);
+  const groupStores = createGroupStores<T>(options);
   let groupName;
   let globalObserver: MutationObserver;
 
@@ -21,75 +22,94 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
 
   const formulaInstances = new Map<HTMLElement, Formula<T>>();
   const formInstances = new Map<HTMLElement, { destroy: () => void }>();
+  const subscriptions = new Set<() => void>();
 
   /**
    * Called when the group forms need destroyed
    */
   function destroyGroup() {
     formInstances.forEach((instance) => instance.destroy());
+    subscriptions.forEach((sub) => sub());
     formInstances.clear();
     formulaInstances.clear();
+    subscriptions.clear();
   }
 
   /**
-   * Called when a node it removed, it destroys it's form instance
-   * @param removedNodes
+   * Cleanup stores if there has been items removed, this will be updated with new store data
+   * @param rows
    */
-  function nodesRemoved(removedNodes: HTMLElement[]) {
-    for (let i = 0; i < removedNodes.length; i++) {
-      const row = removedNodes[i];
-      const instance = formInstances.get(row);
-      if (instance) {
-        instance.destroy();
-      }
-      formInstances.delete(row);
-      formulaInstances.delete(row);
-    }
-    stores.isFormReady.set(true);
+  function cleanupStores(rows: HTMLElement[]) {
+    Object.keys(groupStores).forEach((key) => {
+      if (['formValues', 'initialValues', 'submitValues'].includes(key)) return;
+      groupStores[key].update((state) => (Array.isArray(state) ? state.slice(0, rows.length) : state));
+    });
   }
 
   /**
-   * Called when a node is added, creates a new instance of a form for the row
-   * @param addedNodes
+   * Setup subscriptions to child stores when we re-create each form
+   * @param form
+   * @param index
    */
-  function nodesAdded(addedNodes: HTMLElement[]) {
-    for (let i = 0; i < addedNodes.length; i++) {
-      const row = addedNodes[i];
-      const opts: FormulaOptions = { ...formulaOptions };
-      if (defaultValues && defaultValues[i]) {
-        opts.defaultValues = defaultValues[i];
-      }
-      const form = createForm<T>(opts, undefined, groupName);
+  function setupSubscriptions(form: Formula<T>, index: number) {
+    let initial = true;
+    Object.entries(form.stores).forEach(([key, store]) => {
+      const unsub = store.subscribe((value) => {
+        if (initial && key === 'formValues') return; //Don't emit the form values when there is a form value change from the group
+        groupStores[key].update((state) => {
+          if (Array.isArray(state)) {
+            state.splice(index, 1, value);
+            return state;
+          }
+          return value;
+        });
+      });
+      subscriptions.add(unsub);
+    });
+    initial = false;
+  }
+
+  /**
+   * Handle the change in data in the group, recreate the required forms
+   * @param rows
+   */
+  function groupHasChanged(rows: HTMLElement[]) {
+    groupStores.isFormReady.set(false);
+    const currentVals = get(groupStores.formValues);
+    destroyGroup();
+    cleanupStores(rows);
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      row.setAttribute('data-beaker-index', `${i}`);
+      const form = createForm<T>(formulaOptions, undefined, groupName, currentVals[i]);
+      const instance = form.form(row as HTMLElement);
       formulaInstances.set(row, form);
-      const instance = form.form(row as HTMLElement, true);
       formInstances.set(row, instance);
+      setupSubscriptions(form, i);
     }
-    stores.isFormReady.set(true);
+    groupStores.isFormReady.set(true);
   }
 
   /**
-   * Set up the Observer for the group
+   * Set up an observer but use a query for the current scopes child nodes
    * @param node
    */
   function setupGroupContainer(node: HTMLElement) {
-    globalObserver = new MutationObserver((records) => {
-      stores.isFormReady.set(false);
-      if (records[0].addedNodes.length > 0) {
-        nodesAdded(Array.from(records[0].addedNodes) as HTMLElement[]);
-      } else if (records[0].removedNodes.length > 0) {
-        nodesRemoved(Array.from(records[0].removedNodes) as HTMLElement[]);
-      }
+    globalObserver = new MutationObserver((mutations) => {
+      const rows = node.querySelectorAll(':scope > *');
+      groupHasChanged(Array.from(rows) as HTMLElement[]);
     });
+
     globalObserver.observe(node, { childList: true });
     const rows = node.querySelectorAll(':scope > *');
-    nodesAdded(Array.from(rows) as HTMLElement[]);
+    groupHasChanged(Array.from(rows) as HTMLElement[]);
   }
 
   return {
     group: (node: HTMLElement) => {
       if (node.id) {
         groupName = node.id;
-        beakerStores.set(groupName, stores);
+        beakerStores.set(groupName, groupStores);
       } else {
         groupName = `beaker-group-${groupCounter++}`;
         node.id = groupName;
@@ -120,20 +140,25 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
       globalObserver.disconnect();
     },
     forms: formulaInstances,
-    stores: stores,
-    init: (items) => stores.formValues.set(items),
-    add: (item) => stores.formValues.update((state) => [...state, item]),
+    stores: groupStores,
+    init: (items) => groupStores.formValues.set(items),
+    add: (item) => groupStores.formValues.update((state) => [...state, item]),
     set: (index: number, item: T) =>
-      stores.formValues.update((state) => {
+      groupStores.formValues.update((state) => {
         state.splice(index, 1, item);
         return state;
       }),
     delete: (index) =>
-      stores.formValues.update((state) => {
-        state.splice(index, 1);
-        return state;
+      Object.keys(groupStores).forEach((key) => {
+        groupStores[key].update((state) => {
+          if (Array.isArray(state)) {
+            state.splice(index, 1);
+            return state;
+          }
+          return state;
+        });
       }),
-    clear: () => stores.formValues.set([]),
-    ...stores,
+    clear: () => groupStores.formValues.set([]),
+    ...groupStores,
   };
 }

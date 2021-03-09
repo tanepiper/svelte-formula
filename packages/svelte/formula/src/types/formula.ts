@@ -56,7 +56,7 @@ export interface Formula<T extends Record<string, unknown | unknown[]>> extends 
    * The form object for use with the Svelte use directive
    * @param node
    */
-  form: (node: HTMLElement, isGroup?: boolean) => { destroy: () => void };
+  form: (node: HTMLElement) => { destroy: () => void };
   /**
    * Update
    */

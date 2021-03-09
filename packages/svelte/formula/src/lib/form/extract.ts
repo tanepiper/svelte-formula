@@ -122,7 +122,7 @@ export function createFieldExtract<T extends Record<string, unknown | unknown[]>
   options: FormulaOptions,
   stores: FormulaStores<T>,
 ) {
-  const validator = createValidationChecker(name, options);
+  const validator = createValidationChecker(name, elementGroup, options);
   const isMultiValue =
     (() => {
       if (elementGroup[0].type === 'radio') {
@@ -145,8 +145,12 @@ export function createFieldExtract<T extends Record<string, unknown | unknown[]>
     }
     if (!isReset) {
       const elValue = getElementValues(element, isMultiValue, elementGroup);
-      if (isInit && (isMultiValue || element.type === 'select-multiple')) {
-        value = (elValue as unknown[]).length === 0 ? value : elValue;
+      if (isInit) {
+        if (isMultiValue || element.type === 'select-multiple') {
+          value = (elValue as unknown[]).length === 0 ? value : elValue;
+        } else if (typeof value === undefined) {
+          value = elValue === null ? '' : elValue;
+        }
       } else {
         value = elValue === null ? '' : elValue;
       }
