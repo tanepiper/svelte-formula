@@ -14,11 +14,11 @@ rules - however it is also possible to pass custom validation rules via the `for
 The `defaultValues` option allows an initial set of values to be passed to the form.
 
 Form values can also be set with defaults using `<input bind:value={myValue}>`, if no value it set it will fall back to
-this value. If there is no value, then it will be an empty string or array value.
+this value. If there is no default value, then it will be an empty string or array value.
 
 ```svelte
 <script>
-  import { formula } from 'svelte-forms';
+  import { formula } from 'svelte-formula';
 
   const { form } = formula({
     defaultValues: {
@@ -40,7 +40,7 @@ are available via the [enrichment store](stores/enrichment.mdx).
 
 ```svelte
 <script>
-  import { formula } from 'svelte-forms';
+  import { formula } from 'svelte-formula';
 
   const { form, enrichment } = formula({
     enrich: {
@@ -57,7 +57,7 @@ are available via the [enrichment store](stores/enrichment.mdx).
 </div>
 ```
 
-### `messages`
+## `messages`
 
 Used for localisation and custom messages, this is a `Object` containing a key that is the field `name` to apply the
 messages to. The value is another `Object` that contains the key for each error (e.g. `valueMissing`) and the value is
@@ -66,7 +66,7 @@ the replacement string.
 ```svelte
 
 <script>
-  import { formula } from 'svelte-forms';
+  import { formula } from 'svelte-formula';
 
   const { form, validity } = formula({
     messages: {
@@ -78,7 +78,7 @@ the replacement string.
 </script>
 ```
 
-### `validators`
+## `validators`
 
 An `Object` containing a key that is the field `name` to apply the validation to, the value is another object that
 contains each named validation function. The result are made available in the `validity` store.
@@ -86,7 +86,7 @@ contains each named validation function. The result are made available in the `v
 ```svelte
 
 <script>
-  import { formula } from 'svelte-forms';
+  import { formula } from 'svelte-formula';
 
   const { form, validity } = formula({
     validators: {
@@ -98,14 +98,10 @@ contains each named validation function. The result are made available in the `v
 </script>
 ```
 
-### `formValidators`
+## `formValidators`
 
 An `Object` containing a key that is the name of the validation rule, and the function that returns the validation
 result. The results are available in the `formValidity` store
-
-When using custom `validators`
-
-## Example
 
 ```svelte
 
@@ -124,4 +120,40 @@ When using custom `validators`
 <div class:error={$formValidity?.passwordsMatch} hidden={$formValidity?.passwordsMatch}>
   {$formValidity?.passwordsMatch}
 </div>
+```
+
+## `preChanges`
+
+A `Function` that is called before any values are read from the DOM changes and the store updates. This can be used to
+carry out additional changes to the form.
+
+```svelte
+
+<script>
+  import { formula } from 'svelte-formula';
+  
+  let timeStamp = Date.now();
+
+  const { form } = formula({
+    preChanges: () => timeStamp = Date.now()
+  })
+</script>
+
+<input type="hidden" name="timestamp" value={timeStamp} />
+```
+
+## `postChanges`
+
+A `Function` that is called after all the values have been read and stores updated. This function receives the latest
+values and is functionaly the same as subscribing to the `form.formValues` store.
+
+```svelte
+
+<script>
+  import { formula } from 'svelte-formula';
+  
+  const { form } = formula({
+    postChanges: (values) => console.log('Current Values', values)
+  })
+</script>
 ```

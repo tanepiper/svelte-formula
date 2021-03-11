@@ -32,6 +32,14 @@ export interface FormulaOptions extends BaseOptions {
    * Default values are used as initial values for the form fields if there is no value already set on the form
    */
   defaultValues?: Record<string, unknown | unknown[]>;
+  /**
+   * Method called as soon as a change has been detected, before any values are read or stores are updated
+   */
+  preChanges?: () => void;
+  /**
+   * Method called after all updates to the stores have been made
+   */
+  postChanges?: (values: Record<string, unknown | unknown[]>) => void;
 }
 
 /**

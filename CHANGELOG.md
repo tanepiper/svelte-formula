@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.4] - 2021-03-12
+
+### Added
+
+- New `data-formula-bind` attribute for elements - allows the event bindings to be customised. If used the default
+  bindings are not made (so they must be also passed) - more than one event type can be bound to by using the pipe (`|`)
+  separator.
+
+  ```html
+  <!-- Use other browser event types to bind to -->
+  <input type='text' name='myValue' data-formula-bind='mouseover' />
+  <!-- Bind to more than one event type, such as including the original event  -->
+  <input type='text' name='myValue' data-formula-bind='mouseover|keyup' />
+  <!-- You can also emit your own custom events via elements inside custom components -->
+  <input type='number' name='myValue' data-formula-bind='customEvent' bind:this='{el}' />
+  <button on:click|preventDefault='{()' => el.dispatchEvent(new Event('customEvent'))}>Click Me</button>
+  ```
+
+- `options.preChanges` method that is called when a change has been detected, but before any values are read or stores
+  updated
+- `options.postChanges` method that is called after all changes have been made to the stores, with the most recent form
+  values (this is functionally the same as `formValues.subscribe(values => {}))`)
+
+### Fixed
+
+- `options.formValidators` now correctly update `isFormValid` after other validity checks have been carried out instead
+  of before
+- `<input type="hidden">` fields now supported, both single and multi-value. Formula can only set the value of this
+  field via default values and cannot set the value ( but for example it can be changed in something
+  like `options.preChanges`) - hidden fields have no events, so these are a special case where the values are read with
+  each update.
+- Input types `number`, `date`, `time` and `week` now bind to both `keyup` and `change` handlers to handle both valid
+  input cases on these elements
+
+### Changed
+
+- Existing attribute `data-beaker-key` has been renamed to `data-formula-name` - this allows a custom name to be used
+  instead of the `<input name="...">` value
+
+- Existing attributes `data-beaker-form` and `data-beaker-row` now correctly `data-formula-form` and `data-formula-row`
+
+- All event handlers wrapped in a `setTimeout(()=> {}, 0)` to defer an update until after DOM tick, this allows elements
+  to ensure value changes have completed before reading
+
 ## [0.9.3] - 2021-03-11
 
 ### Fixed

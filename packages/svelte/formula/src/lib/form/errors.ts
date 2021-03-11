@@ -1,4 +1,4 @@
-import { FormEl, FormulaError, ValidationFn, ValidationRule, FormulaStores, FormulaOptions } from '../../types';
+import { FormEl, FormulaError, FormulaOptions, ValidationFn } from '../../types';
 
 /**
  * The object returned by the {@link https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation|Contraints Validation API} cannot
@@ -43,31 +43,6 @@ function getCustomValidations(
     }
   });
   return [messages, errors];
-}
-
-/**
- * Do form level validations
- * @param stores
- * @param customValidators
- */
-export function createFormValidator<T extends Record<string, unknown | unknown[]>>(
-  stores: FormulaStores<T>,
-  customValidators: ValidationRule,
-) {
-  const sub = stores.formValues.subscribe((values) => {
-    stores.formValidity.set({});
-    const validators = Object.entries(customValidators);
-    for (let i = 0; i < validators.length; i++) {
-      const [name, validator] = validators[i];
-      const invalid = validator(values);
-      if (invalid !== null) {
-        stores.formValidity.update((state) => ({ ...state, [name]: invalid }));
-        stores.isFormValid.set(false);
-      }
-    }
-  });
-
-  return () => sub();
 }
 
 /**

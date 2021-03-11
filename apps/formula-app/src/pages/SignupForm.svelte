@@ -1,13 +1,17 @@
 <script>
-  import { formula, formulaStores } from '../../../../dist/packages/svelte/formula';
+  import { formula } from '../../../../dist/packages/svelte/formula';
+  import { get } from 'svelte/store';
+
+  let timestamp;
+  let usernameEl;
 
   const options = {
     defaultValues: {
-      username: 'Hello',
-      password: '',
-      passwordMatch: '',
+      csrf: 'j802fv4h80g34h80g34',
+      password: '12345678',
+      passwordMatch: '12345678',
       radio: '3',
-      checkbox: ['1', '3']
+      checkbox: ['1', '3'],
     },
     enrich: {
       password: {
@@ -42,9 +46,16 @@
       passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Your passwords do not match',
     },
     validators: {
-      username: {
+      email: {
         inDomain: (value) => value.includes('@svelte.codes') ? null : 'You in the svelte codes?',
       },
+    },
+    preChanges: () => {
+      timestamp = Date.now();
+      console.log(timestamp);
+    },
+    postChanges: (values) => {
+      console.log('post changes', values);
     },
   };
 
@@ -59,7 +70,8 @@
     destroyForm,
     enrichment,
     isFormReady,
-    resetForm
+    resetForm,
+    submitValues,
   } = formula(options);
 
   $: console.log($isFormReady);
@@ -83,6 +95,12 @@
     resetForm();
   }
 
+  function submit() {
+    console.log(get(submitValues));
+  }
+
+  $: console.log('formValid', $isFormValid);
+
 </script>
 <h2>Signup Form Example</h2>
 <p>A simple signup form example</p>
@@ -94,11 +112,17 @@
       {val}
     {/each}
   </div>
-  <form class='signup' use:form id='signup'>
+  <form class='signup' use:form id='signup' on:submit|preventDefault={submit}>
+    <input type='hidden' name='csrf' />
+    <input type='hidden' name='timestamp' bind:value={timestamp} />
+    <input type='hidden' name='timestamp' bind:value={timestamp} />
     <div class='form-group'>
       <label for='username'>User Name</label>
-      <input type='email' name='username' id='username' required class:error={$touched.username && $validity.username.invalid} />
-      <span hidden={!$touched.username && $validity.username.invalid}>{$validity.username.message}</span>
+      <input type='email' name='username' id='username' required value='hello@svelte.codes'
+             bind:this={usernameEl}
+             class:error={$touched?.email && $validity?.email?.invalid} data-formula-bind='keyup|mouseover|customEvent'
+             data-formula-name='email' data-type-mismatch="Your not entering a valid email"/>
+      <span hidden={!$touched.email && $validity?.email?.invalid}>{$validity?.email?.message}</span>
     </div>
 
     <div class='form-group'>
@@ -106,9 +130,9 @@
       <input type='password' name='password' id='password' minlength='8' required class:error={passwordInvalid}
              value='dasdasd' />
       {#if $isFormReady}
-      <meter value={$enrichment.password.passwordScore || 0} min='0' max='100' low='33' high='66'
-             optimum='80'></meter>
-        {/if}
+        <meter value={$enrichment.password.passwordScore || 0} min='0' max='100' low='33' high='66'
+               optimum='80'></meter>
+      {/if}
       <span hidden={!passwordInvalid}>{passwordInvalid}</span>
     </div>
 
@@ -139,6 +163,9 @@
       <button type='submit' disabled={!$isFormValid}>Login</button>
       <button type='button' on:click|preventDefault={addValidation}>Add</button>
       <button type='button' on:click|preventDefault={removeValidation}>Remove</button>
+      <button type='button' on:click|preventDefault={() => usernameEl.dispatchEvent(new Event('customEvent'))}>Custom
+        Emit
+      </button>
       <button type='button' on:click|preventDefault={resetFormData}>Reset</button>
 
       <button type='button' on:click|preventDefault={() => destroyForm()}>Destroy</button>

@@ -148,7 +148,7 @@ export function createFieldExtract<T extends Record<string, unknown | unknown[]>
       if (isInit) {
         if (isMultiValue || element.type === 'select-multiple') {
           value = (elValue as unknown[]).length === 0 ? value : elValue;
-        } else if (typeof value === undefined) {
+        } else if (!value) {
           value = elValue === null ? '' : elValue;
         }
       } else {
@@ -160,8 +160,8 @@ export function createFieldExtract<T extends Record<string, unknown | unknown[]>
     }
     setAriaValue(element, elementGroup);
 
-    if (element.dataset?.beakerKey) {
-      name = element.dataset.beakerKey;
+    if (element.dataset?.formulaName) {
+      name = element.dataset.formulaName;
     }
 
     return {

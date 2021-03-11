@@ -22,7 +22,7 @@ const { form, enrichement, formValdity, formValues, isFormValid, submitValues, t
 
 If you have multiple forms on the page you can also access stores via `form.stores`
 
-```sveltehtml
+```svelte
 
 <script>
   import { formula } from 'svelte-formula';
