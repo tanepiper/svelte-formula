@@ -97,7 +97,7 @@
   <form class='signup' use:form id='signup'>
     <div class='form-group'>
       <label for='username'>User Name</label>
-      <input type='email' name='username' id='username' required class:error={$touched.username && $validity.username.invalid} />
+      <input type='email' name='username' id='username' required class:error={$touched.username && $validity.username.invalid} data-formula-bind='mouseover|keyup'/>
       <span hidden={!$touched.username && $validity.username.invalid}>{$validity.username.message}</span>
     </div>
 

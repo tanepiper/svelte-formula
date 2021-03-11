@@ -26,7 +26,7 @@
   });
 
   // $: console.log('submit', $submitValues);
-  //$: console.log('current', $formValues);
+  $: console.log('current', $formValues);
   // $: console.log('validity', $validity);
   // $: console.log('formValidity', $formValidity);
   // $: console.log('touched', $touched);
@@ -55,6 +55,9 @@
     console.log(resetForm, 'reset');
     resetForm();
   }
+
+  let customEl;
+  let customValue = 0;
 </script>
 
 
@@ -104,6 +107,18 @@
     <label for='file'>File</label>
     <input type='file' id='file' name='file' accept='.jpg, .jpeg, .png' />
     <img hidden={!imgDisplay?.src} src={imgDisplay?.src} />
+  </div>
+
+  <div class='form-field'>
+    <button on:click|preventDefault={() => {
+      customValue--;
+      customEl.dispatchEvent(new Event('customEvent'))
+    }}>-</button>
+      <input type='number' name='customNumber' bind:this={customEl} bind:value={customValue} data-formula-bind='customEvent|keyup|change'>
+    <button on:click|preventDefault={() => {
+      customValue++;
+      customEl.dispatchEvent(new Event('customEvent'))
+    }}>+</button>
   </div>
 
   <div class='form-field'>

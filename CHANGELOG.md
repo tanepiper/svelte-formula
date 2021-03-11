@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Added `data-formula-bind` property which allows a custom event to be bound for an element instead of the default one -
+  more than one event type can be bound to by using the pipe (`|`) separator. It supports any event the element can bind
+  to and also allows custom event names to be bound
+
+  ```html
+    <!-- Use other browser event types to bind to -->
+    <input type='text' name='myValue' data-formula-bind='mouseover' />
+    <!-- Bind to more than one event type, such as including the original event  -->
+    <input type='text' name='myValue' data-formula-bind='mouseover|keyup' />
+    <!-- You can also emit your own custom events via elements inside custom components -->
+    <input type='number' name='myValue' data-formula-bind='customEvent' bind:this={el} />
+    <button on:click|preventDefault={() => el.dispatchEvent(new Event('customEvent'))}>Click Me</button>
+  ```
+
+### Changed
+
+- Input types `number`, `date`, `time` and `week` now bind to both `keyup` and `change` handlers
+
 ## [0.9.3] - 2021-03-11
 
 ### Fixed

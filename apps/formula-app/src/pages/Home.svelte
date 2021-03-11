@@ -15,4 +15,7 @@
   <li>
     <a href='/wee-page' use:link>Wee Page</a>
   </li>
+  <li>
+    <a href='/custom' use:link>Custom Element</a>
+  </li>
 </ul>

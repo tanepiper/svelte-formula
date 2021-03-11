@@ -24,8 +24,7 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
   /**
    * Store for all keyup handlers than need removed when destroyed
    */
-  const keyupHandlers = new Map<FormEl, () => void>();
-  const changeHandlers = new Map<FormEl, () => void>();
+  const eventHandlers = new Map<FormEl, () => void>();
   const touchHandlers = new Set<() => void>();
   const dirtyHandlers = new Set<() => void>();
 
@@ -73,24 +72,34 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
         }
         setAriaRole(el, elements);
         setAriaStates(el);
-
-        if (el instanceof HTMLSelectElement) {
-          changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
+        const customEvents = el.dataset.formulaBind;
+        if (customEvents) {
+          customEvents
+            .split('|')
+            .forEach((customEvent) =>
+              eventHandlers.set(el, createHandler(name, customEvent, el, elements, stores, innerOpt)),
+            );
+        } else if (el instanceof HTMLSelectElement) {
+          eventHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
         } else {
           switch (el.type) {
             case 'radio':
             case 'checkbox':
             case 'file':
             case 'range':
-            case 'color':
-            case 'date':
-            case 'time':
-            case 'week': {
-              changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
+            case 'color': {
+              eventHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
               break;
             }
+            case 'date':
+            case 'time':
+            case 'week':
+            case 'number':
+              eventHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
+              eventHandlers.set(el, createHandler(name, 'keyup', el, elements, stores, innerOpt));
+              break;
             default:
-              keyupHandlers.set(el, createHandler(name, 'keyup', el, elements, stores, innerOpt));
+              eventHandlers.set(el, createHandler(name, 'keyup', el, elements, stores, innerOpt));
           }
         }
       });
@@ -123,12 +132,12 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
    */
   function cleanupSubscriptions() {
     unsub && unsub();
-    [...keyupHandlers, ...changeHandlers].forEach(([el, fn]) => {
+    [...eventHandlers].forEach(([el, fn]) => {
       el.setCustomValidity('');
       fn();
     });
     [...touchHandlers, ...dirtyHandlers].forEach((fn) => fn());
-    [keyupHandlers, changeHandlers, touchHandlers, dirtyHandlers].forEach((h) => h.clear());
+    [eventHandlers, touchHandlers, dirtyHandlers].forEach((h) => h.clear());
 
     if (submitHandler) {
       currentNode.removeEventListener('submit', submitHandler);

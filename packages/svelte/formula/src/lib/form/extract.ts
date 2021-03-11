@@ -137,6 +137,7 @@ export function createFieldExtract<T extends Record<string, unknown | unknown[]>
    */
   return (element: FormEl, isInit?: boolean, isReset?: boolean): FormulaField => {
     let value;
+    console.log('here');
     if (isInit && options?.defaultValues?.[name]) {
       value = isMultiValue ? options?.defaultValues?.[name] || [] : options?.defaultValues?.[name] || '';
     } else {
