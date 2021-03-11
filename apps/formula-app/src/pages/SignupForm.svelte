@@ -71,12 +71,16 @@
   $: passwordInvalid = ($touched?.password && $validity?.password?.invalid) && $validity?.password?.message;
   $: passwordMatchInvalid = ($touched?.passwordMatch && $validity?.passwordMatch?.invalid) && $validity?.passwordMatch?.message;
 
-  function addValidation() {
+  let formRef;
 
+  function addValidation() {
+    formRef.setAttribute('novalidate', '');
+    updateForm()
   }
 
   function removeValidation() {
-
+    formRef.removeAttribute('novalidate');
+    updateForm()
   }
 
   function resetFormData() {
@@ -94,7 +98,7 @@
       {val}
     {/each}
   </div>
-  <form class='signup' use:form id='signup'>
+  <form class='signup' use:form id='signup' bind:this={formRef}>
     <div class='form-group'>
       <label for='username'>User Name</label>
       <input type='email' name='username' id='username' required class:error={$touched.username && $validity.username.invalid} />
@@ -137,8 +141,8 @@
 
     <div>
       <button type='submit' disabled={!$isFormValid}>Login</button>
-      <button type='button' on:click|preventDefault={addValidation}>Add</button>
-      <button type='button' on:click|preventDefault={removeValidation}>Remove</button>
+      <button type='button' on:click|preventDefault={addValidation}>Enable No Validate</button>
+      <button type='button' on:click|preventDefault={removeValidation}>Disable No Validate</button>
       <button type='button' on:click|preventDefault={resetFormData}>Reset</button>
 
       <button type='button' on:click|preventDefault={() => destroyForm()}>Destroy</button>

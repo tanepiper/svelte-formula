@@ -1,4 +1,4 @@
-import { FormEl, FormulaError, ValidationFn, ValidationRule, FormulaStores, FormulaOptions } from '../../types';
+import { FormEl, FormulaError, FormulaOptions, FormulaStores, ValidationFn, ValidationRule } from '../../types';
 
 /**
  * The object returned by the {@link https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation|Contraints Validation API} cannot
@@ -78,11 +78,18 @@ export function createFormValidator<T extends Record<string, unknown | unknown[]
  * @private
  *
  * @param inputGroup The name of the group of elements that this validation message will update
+ * @param elementGroup
  * @param options The passed formula options
+ * @param noValidate
  *
  * @returns Function that is called each time an element is updated which returns field validity state
  */
-export function createValidationChecker(inputGroup: string, elementGroup: FormEl[], options?: FormulaOptions) {
+export function createValidationChecker(
+  inputGroup: string,
+  elementGroup: FormEl[],
+  options?: FormulaOptions,
+  noValidate?: boolean,
+) {
   /**
    * Method called each time a field is updated
    *
@@ -99,6 +106,16 @@ export function createValidationChecker(inputGroup: string, elementGroup: FormEl
       gel.setCustomValidity('');
       gel.removeAttribute('data-formula-invalid');
     });
+
+    // If the form no validate is set, always return valid
+    if (noValidate) {
+      return {
+        valid: true,
+        invalid: false,
+        message: '',
+        errors: {},
+      };
+    }
 
     // If there's no options, just return the current error
     if (!options) {

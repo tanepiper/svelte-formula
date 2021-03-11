@@ -8,18 +8,20 @@ import { createEnrichField } from './enrichment';
  * @param allGroups
  * @param stores
  * @param options
+ * @param noValidate
  */
 function getInitialFormValues<T extends Record<string, unknown | unknown[]>>(
   node: HTMLElement,
   allGroups: [string, FormEl[]][],
   stores: FormulaStores<T>,
   options: FormulaOptions,
+  noValidate?: boolean,
 ): [Record<string, unknown | unknown[]>, Record<string, FormulaError>, Record<string, Record<string, unknown>>] {
   const formValues: Record<string, unknown | unknown[]> = {};
   const validityValues: Record<string, FormulaError> = {};
   const enrichmentValues: Record<string, Record<string, unknown>> = {};
   for (const [key, elements] of allGroups) {
-    const extract = createFieldExtract(key, elements, options, stores);
+    const extract = createFieldExtract(key, elements, options, stores, noValidate);
     const { name, value, ...validity } = extract(elements[0], true);
     formValues[name] = value;
     validityValues[name] = validity;
@@ -46,8 +48,15 @@ export function createReset<T extends Record<string, unknown | unknown[]>>(
   allGroups: [string, FormEl[]][],
   stores: FormulaStores<T>,
   options: FormulaOptions,
+  noValidate?: boolean,
 ) {
-  const [formValues, validityValues, enrichmentValues] = getInitialFormValues(node, allGroups, stores, options);
+  const [formValues, validityValues, enrichmentValues] = getInitialFormValues(
+    node,
+    allGroups,
+    stores,
+    options,
+    noValidate,
+  );
   /**
    * Resets the form to the initial values
    */
@@ -62,7 +71,7 @@ export function createReset<T extends Record<string, unknown | unknown[]>>(
 
     // Update the elements
     for (const [key, elements] of allGroups) {
-      const extract = createFieldExtract(key, elements, options, stores);
+      const extract = createFieldExtract(key, elements, options, stores, noValidate);
       extract(elements[0], false, true);
     }
   };

@@ -115,14 +115,16 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
  * @param elementGroup
  * @param options
  * @param stores
+ * @param noValidate
  */
 export function createFieldExtract<T extends Record<string, unknown | unknown[]>>(
   name: string,
   elementGroup: FormEl[],
   options: FormulaOptions,
   stores: FormulaStores<T>,
+  noValidate?: boolean,
 ) {
-  const validator = createValidationChecker(name, elementGroup, options);
+  const validator = createValidationChecker(name, elementGroup, options, noValidate);
   const isMultiValue =
     (() => {
       if (elementGroup[0].type === 'radio') {

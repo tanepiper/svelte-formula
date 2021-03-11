@@ -1,7 +1,6 @@
 import { FormEl, FormulaError, FormulaField, FormulaOptions, FormulaStores } from '../../types';
 import { createFieldExtract } from './extract';
 import { createEnrichField } from './enrichment';
-import { get } from 'svelte/store';
 
 /**
  * Update the value and error stores, also update form validity
@@ -54,6 +53,7 @@ function createHandlerForData<T extends Record<string, unknown | unknown[]>>(
  * @param groupElements
  * @param stores
  * @param options
+ * @param noValidate
  */
 export function createHandler<T extends Record<string, unknown | unknown[]>>(
   name: string,
@@ -62,8 +62,9 @@ export function createHandler<T extends Record<string, unknown | unknown[]>>(
   groupElements: FormEl[],
   stores: FormulaStores<T>,
   options: FormulaOptions,
+  noValidate?: boolean,
 ): () => void {
-  const extract = createFieldExtract(name, groupElements, options, stores);
+  const extract = createFieldExtract(name, groupElements, options, stores, noValidate);
   let enrich;
   if (options?.enrich?.[name]) {
     enrich = createEnrichField(name, options);
@@ -81,13 +82,16 @@ export function createHandler<T extends Record<string, unknown | unknown[]>>(
  * Create a handler for a form element submission, when called it copies the contents
  * of the current value store to the submit store and then unsubscribes
  * @param stores
+ * @param form
  */
 export function createSubmitHandler<T extends Record<string, unknown | unknown[]>>(
   stores: FormulaStores<T>,
   form: HTMLFormElement,
 ): (event: Event) => void {
   return (): void => {
-    form.reportValidity();
+    if (!form.hasAttribute('novalidate')) {
+      form.reportValidity();
+    }
     stores.formValues.subscribe((v) => stores.submitValues.set(v))();
   };
 }
