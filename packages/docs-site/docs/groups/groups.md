@@ -46,8 +46,8 @@ with the numerical index of the array item to remove.
 ### Note about `radio` groups
 
 Due to the way [HTML Radio Groups](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio) work it is
-required to have unique names as well as ID properties in your HTML. To support this you can provide a `data-beaker-key`
-attribute on any radio groups - this will match the group back to the correct data.
+required to have unique names as well as ID properties in your HTML. To support this you can provide a `data-formula-name`
+[attribute](../attributes.md) on any radio groups - this will match the group back to the correct data.
 
 ## Example
 
@@ -135,23 +135,23 @@ attribute on any radio groups - this will match the group back to the correct da
           <input type='email' id='email-{i}' name='email' required />
         </td>
         <td>
-          <!-- In multi-group forms, radio groups require a unique name in the DOM - her you can provide 'data-beaker-key' to specify the data key -->
+          <!-- In multi-group forms, radio groups require a unique name in the DOM - her you can provide 'data-formula-name' to specify the data key -->
           <label for='subscriptionLevel-{i}-1'>None
             <input type='radio' id='subscriptionLevel-{i}-1'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='none' />
+                   data-formula-name='subscriptionLevel' value='none' />
           </label>
 
           <label for='subscriptionLevel-{i}-1'>Partial
             <input type='radio' id='subscriptionLevel-{i}-2'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='partial' />
+                   data-formula-name='subscriptionLevel' value='partial' />
           </label>
 
           <label for='subscriptionLevel-{i}-1'>Full
             <input type='radio' id='subscriptionLevel-{i}-3'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='full' />
+                   data-formula-name='subscriptionLevel' value='full' />
           </label>
 
         </td>

@@ -74,11 +74,3 @@ export interface Formula<T extends Record<string, unknown | unknown[]>> extends 
    */
   stores: FormulaStores<Record<string, unknown | unknown[]>>;
 }
-
-export interface Form<T extends Record<string, unknown | unknown[]>> {
-  create: (node: HTMLElement, isGroup?: boolean) => { destroy: () => void };
-  update: (updatedOpts: FormulaOptions) => void;
-  destroy: () => void;
-  reset: () => void;
-  stores: FormulaStores<T>;
-}

@@ -18,7 +18,7 @@ template.
 
 Pass initial data into the form group, or reset the form to initial data - this will the form store data with the
 current items to render. Each key and value should match the fields in the group template (the exception
-is [radio fields](./groups.md) which should be based on the `data-beaker-key` attribute passed).
+is [radio fields](./groups.md) which should be based on the `data-formula-name` attribute passed).
 
 ```svelte
 

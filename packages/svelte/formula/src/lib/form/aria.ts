@@ -8,7 +8,7 @@ import { FormEl } from '../../types';
 function getRadioGroupParent(el: HTMLElement) {
   const isContainer = Array.from(el.querySelectorAll(':scope input[type=radio]')).length > 1;
   if (!isContainer) {
-    if (el.parentElement.dataset?.beakerGroup || el.parentElement.dataset?.beakerForm) {
+    if (el.parentElement.dataset?.beakerGroup || el.parentElement.dataset?.formulaForm) {
       return undefined;
     }
     return getRadioGroupParent(el.parentElement);

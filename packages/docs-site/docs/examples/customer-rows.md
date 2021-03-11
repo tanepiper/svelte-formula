@@ -98,23 +98,23 @@ sidebar_label: Row Data
           <input type='email' id='email-{i}' name='email' required />
         </td>
         <td>
-          <!-- In multi-group forms, radio groups require a unique name in the DOM - her you can provide 'data-beaker-key' to specify the data key -->
+          <!-- In multi-group forms, radio groups require a unique name in the DOM - her you can provide 'data-formula-name' to specify the data key -->
           <label for='subscriptionLevel-{i}-1'>None
             <input type='radio' id='subscriptionLevel-{i}-1'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='none' />
+                   data-formula-name='subscriptionLevel' value='none' />
           </label>
 
           <label for='subscriptionLevel-{i}-1'>Partial
             <input type='radio' id='subscriptionLevel-{i}-2'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='partial' />
+                   data-formula-name='subscriptionLevel' value='partial' />
           </label>
 
           <label for='subscriptionLevel-{i}-1'>Full
             <input type='radio' id='subscriptionLevel-{i}-3'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='full' />
+                   data-formula-name='subscriptionLevel' value='full' />
           </label>
 
         </td>

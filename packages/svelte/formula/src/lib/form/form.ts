@@ -3,7 +3,7 @@ import { createHandler, createSubmitHandler } from './event';
 import { createReset } from './init';
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
-import { createFormValidator } from './errors';
+
 import { FormEl, Formula, FormulaOptions, FormulaStores } from '../../types';
 import { createFormStores } from '../shared/stores';
 import { setAriaButtons, setAriaContainer, setAriaRole, setAriaStates } from './aria';
@@ -24,8 +24,8 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
   /**
    * Store for all keyup handlers than need removed when destroyed
    */
-  const keyupHandlers = new Map<FormEl, () => void>();
-  const changeHandlers = new Map<FormEl, () => void>();
+  const eventHandlers = new Map<FormEl, () => void>();
+  const hiddenGroups = new Map<string, HTMLInputElement[]>();
   const touchHandlers = new Set<() => void>();
   const dirtyHandlers = new Set<() => void>();
 
@@ -45,15 +45,15 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
   function bindElements(node: HTMLElement, innerOpt: FormulaOptions) {
     const formElements = isGroup ? getGroupFields(node) : getFormFields(node);
 
-    node.setAttribute(`data-beaker-${isGroup ? 'row' : 'form'}`, 'true');
+    node.setAttribute(`data-formula-${isGroup ? 'row' : 'form'}`, 'true');
     setAriaContainer(node, isGroup);
     setAriaButtons(node);
 
     // Group elements by name
     groupedMap = [
       ...formElements.reduce((entryMap, e) => {
-        const beakerKey = e.dataset.beakerKey;
-        const name = beakerKey || e.getAttribute('name');
+        const formulaName = e.dataset.formulaName;
+        const name = formulaName || e.getAttribute('name');
         return entryMap.set(name, [...(entryMap.get(name) || []), e]);
       }, new Map()),
     ];
@@ -63,6 +63,13 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
     // Loop over each group and setup up their initial touch and dirty handlers,
     // also get initial values
     groupedMap.forEach(([name, elements]) => {
+      // Special case for hidden fields, put into the hidden set to pass only on form submission
+      // as they don't react to event anyway
+      if (elements[0].type === 'hidden') {
+        hiddenGroups.set(name, elements as HTMLInputElement[]);
+        return;
+      }
+
       touchHandlers.add(createTouchHandlers(name, elements, stores));
       dirtyHandlers.add(createDirtyHandler(name, elements, stores));
 
@@ -74,32 +81,41 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
         setAriaRole(el, elements);
         setAriaStates(el);
 
-        if (el instanceof HTMLSelectElement) {
-          changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
+        const customBindings = el.dataset.formulaBind;
+        if (customBindings) {
+          customBindings.split('|').forEach((event) => {
+            eventHandlers.set(el, createHandler(name, event, el, elements, stores, innerOpt, hiddenGroups));
+          });
+        } else if (el instanceof HTMLSelectElement) {
+          eventHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt, hiddenGroups));
         } else {
           switch (el.type) {
             case 'radio':
             case 'checkbox':
             case 'file':
             case 'range':
-            case 'color':
+            case 'color': {
+              eventHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt, hiddenGroups));
+              break;
+            }
             case 'date':
             case 'time':
-            case 'week': {
-              changeHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt));
+            case 'week':
+            case 'number': {
+              eventHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt, hiddenGroups));
+              eventHandlers.set(el, createHandler(name, 'keyup', el, elements, stores, innerOpt, hiddenGroups));
+              break;
+            }
+            case 'hidden': {
+              // Ensure no handlers on hidden fields as
               break;
             }
             default:
-              keyupHandlers.set(el, createHandler(name, 'keyup', el, elements, stores, innerOpt));
+              eventHandlers.set(el, createHandler(name, 'keyup', el, elements, stores, innerOpt, hiddenGroups));
           }
         }
       });
     });
-
-    // If form validator options are passed, create a subscription to it
-    if (innerOpt?.formValidators) {
-      unsub = createFormValidator(stores, innerOpt.formValidators);
-    }
 
     // If the field has a global store, set the ID
     if (node.id && globalStore) {
@@ -123,12 +139,12 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
    */
   function cleanupSubscriptions() {
     unsub && unsub();
-    [...keyupHandlers, ...changeHandlers].forEach(([el, fn]) => {
+    [...eventHandlers].forEach(([el, fn]) => {
       el.setCustomValidity('');
       fn();
     });
     [...touchHandlers, ...dirtyHandlers].forEach((fn) => fn());
-    [keyupHandlers, changeHandlers, touchHandlers, dirtyHandlers].forEach((h) => h.clear());
+    [eventHandlers, touchHandlers, dirtyHandlers].forEach((h) => h.clear());
 
     if (submitHandler) {
       currentNode.removeEventListener('submit', submitHandler);

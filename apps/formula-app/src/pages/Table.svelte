@@ -27,23 +27,35 @@
   };
 
 
-  function getContactData() {
-    return [{
-      firstName: 'Finn',
-      lastName: 'McSvelte',
-      email: 'foo@bar.com',
-      subscriptionLevel: 'full',
-      signups: ['weekly', 'news'],
-    }, {
-      firstName: 'Bob',
-      lastName: 'McCool',
-      email: 'bar@foo.com',
-      subscriptionLevel: 'partial',
-      signups: ['daily', 'news'],
-    }];
+  function getContactData(len?: number) {
+    if (len) {
+      const result = new Array(len)
+      result.fill({
+        firstName: 'Finn',
+        lastName: 'McSvelte',
+        email: 'foo@bar.com',
+        subscriptionLevel: 'full',
+        signups: ['weekly', 'news'],
+      })
+      return result
+    } else {
+      return [{
+        firstName: 'Finn',
+        lastName: 'McSvelte',
+        email: 'foo@bar.com',
+        subscriptionLevel: 'full',
+        signups: ['weekly', 'news'],
+      }, {
+        firstName: 'Bob',
+        lastName: 'McCool',
+        email: 'bar@foo.com',
+        subscriptionLevel: 'partial',
+        signups: ['daily', 'news'],
+      }];
+    }
   }
 
-  customers.init(getContactData());
+  customers.init(getContactData(100));
 
   // Add a row to the store
   function addCustomer() {
