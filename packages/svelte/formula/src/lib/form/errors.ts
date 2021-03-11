@@ -78,6 +78,7 @@ export function createFormValidator<T extends Record<string, unknown | unknown[]
  * @private
  *
  * @param inputGroup The name of the group of elements that this validation message will update
+ * @param elementGroup The element group containing the elment siblings
  * @param options The passed formula options
  *
  * @returns Function that is called each time an element is updated which returns field validity state
@@ -103,6 +104,9 @@ export function createValidationChecker(inputGroup: string, elementGroup: FormEl
     // If there's no options, just return the current error
     if (!options) {
       const valid = el.checkValidity();
+      if (!valid) {
+        el.setAttribute('data-formula-invalid', 'true');
+      }
       return {
         valid,
         invalid: !valid,
