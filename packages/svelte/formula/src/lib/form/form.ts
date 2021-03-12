@@ -166,6 +166,17 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
         },
       };
     },
+
+    /**
+     * Set the form with new data
+     * @param newData
+     */
+    set: (newData: T) => {
+      const newOpts = {...initialOptions, defaultValues: newData};
+      stores.isFormReady.set(false);
+      cleanupSubscriptions();
+      bindElements(currentNode, newOpts);
+    },
     /**
      * Update a form instance , new options can be passed to the form instance, if not it will use the original
      * values passed

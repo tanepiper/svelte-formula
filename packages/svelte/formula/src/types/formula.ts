@@ -58,6 +58,11 @@ export interface Formula<T extends Record<string, unknown | unknown[]>> extends 
    */
   form: (node: HTMLElement) => { destroy: () => void };
   /**
+   * Allows a form's data to be set, this will override any previous default values and become the new ones
+   * @param newData
+   */
+  set: (newData: T) => void;
+  /**
    * Update
    */
   updateForm: (updatedOpts?: FormulaOptions) => void;
