@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { BeakerOptions, BeakerStores, FormulaError, FormulaOptions, FormulaStores } from '../../types';
+import { BeakerOptions, BeakerStores, FormulaError, FormulaOptions, FormulaStores, FormulaValue } from '../../types';
 
 /**
  * Function to create initial state values for the store using any passed default values, this is not the final initial
@@ -14,7 +14,7 @@ import { BeakerOptions, BeakerStores, FormulaError, FormulaOptions, FormulaStore
  * @param options Initial options to use
  * @param initialData
  */
-function createFirstState<T extends {} = Record<string, unknown>>(options?: FormulaOptions, initialData?: T) {
+function createFirstState<T extends FormulaValue = Record<string, unknown>>(options?: FormulaOptions, initialData?: T) {
   let initialValues = options?.defaultValues || {};
   initialValues = { ...initialValues, ...initialData };
   const initialKeys = Object.keys(initialValues);
@@ -73,7 +73,7 @@ function createFirstState<T extends {} = Record<string, unknown>>(options?: Form
  *
  * @returns An object containing the stores for the form instance
  */
-export function createFormStores<T extends {} = Record<string, unknown>>(
+export function createFormStores<T extends FormulaValue = Record<string, unknown>>(
   options?: FormulaOptions,
   initialData?: T,
 ): FormulaStores<T> {
@@ -95,7 +95,9 @@ export function createFormStores<T extends {} = Record<string, unknown>>(
 /**
  * Create a group store which contains arrays of form store values
  */
-export function createGroupStores<T extends {} = Record<string, unknown>>(options?: BeakerOptions): BeakerStores<T> {
+export function createGroupStores<T extends FormulaValue = Record<string, unknown>>(
+  options?: BeakerOptions,
+): BeakerStores<T> {
   let initialValues = [];
   let initialFieldState = [];
   let initialValidity = [];

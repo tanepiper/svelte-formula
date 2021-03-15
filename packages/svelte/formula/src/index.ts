@@ -1,6 +1,15 @@
 import { createForm } from './lib/form/form';
 import { createGroup } from './lib/group/group';
-import { Beaker, BeakerOptions, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaStores } from './types';
+import {
+  Beaker,
+  BeakerOptions,
+  BeakerStores,
+  Formula,
+  FormulaError,
+  FormulaOptions,
+  FormulaStores,
+  FormulaValue,
+} from './types';
 
 export { Beaker, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaStores };
 
@@ -9,8 +18,8 @@ export { Beaker, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaSto
  * if no ID is used the store is not added
  * @type Map<string, FormulaStores>
  */
-export const formulaStores = new Map<string, FormulaStores<Record<string, unknown | unknown[]>>>() as any;
-export const beakerStores = new Map<string, BeakerStores<Record<string, unknown | unknown[]>>>() as any;
+export const formulaStores = new Map<string, FormulaStores>();
+export const beakerStores = new Map<string, BeakerStores>();
 
 /**
  * The `formula` function returns a form object that can be bound to any HTML
@@ -22,7 +31,7 @@ export const beakerStores = new Map<string, BeakerStores<Record<string, unknown 
  * @returns Formula object containing the current form, function to update or destroy
  * the form and all the stores available for the form
  */
-export function formula<T extends {} = Record<string, unknown>>(options?: FormulaOptions): Formula<T> {
+export function formula<T extends FormulaValue = Record<string, unknown>>(options?: FormulaOptions): Formula<T> {
   return createForm<T>(options, formulaStores);
 }
 
@@ -34,6 +43,6 @@ export function formula<T extends {} = Record<string, unknown>>(options?: Formul
  *
  * @returns Beaker object containing the form group and it's associated methods
  */
-export function beaker<T extends {} = Record<string, unknown>>(options?: BeakerOptions): Beaker<T> {
+export function beaker<T extends FormulaValue = Record<string, unknown>>(options?: BeakerOptions): Beaker<T> {
   return createGroup<T>(options, beakerStores);
 }

@@ -1,10 +1,10 @@
 import { Writable } from 'svelte/store';
-import { Formula, FormulaError, FormulaOptions } from '../types';
+import { Formula, FormulaError, FormulaOptions, FormulaValue } from '../types';
 
 /**
  * The stores available in Beaker
  */
-export interface BeakerStores<T extends {} = Record<string, unknown>> {
+export interface BeakerStores<T extends FormulaValue = Record<string, unknown>> {
   /**
    * A store containing the current form values
    */
@@ -44,13 +44,13 @@ export interface BeakerStores<T extends {} = Record<string, unknown>> {
   /**
    * A store containing additional field enrichment
    */
-  enrichment: Writable<Record<string, Record<string, unknown>>[]>;
+  enrichment: Writable<Record<string, T>[]>;
 }
 
 /**
  * The Formula interface with stores and form factory
  */
-export interface Beaker<T extends {} = Record<string, unknown>> extends BeakerStores<T> {
+export interface Beaker<T extends FormulaValue = Record<string, unknown>> extends BeakerStores<T> {
   /**
    * The form object for use with the Svelte use directive
    * @param node

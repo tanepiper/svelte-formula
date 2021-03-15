@@ -3,9 +3,14 @@ import { FormulaError } from './forms';
 import { FormulaOptions } from './options';
 
 /**
+ * Internal type for object
+ */
+export class FormulaValue {}
+
+/**
  * The stores available in Formula
  */
-export interface FormulaStores<T extends {} = Record<string, unknown>> {
+export interface FormulaStores<T extends FormulaValue = Record<string, unknown>> {
   /**
    * A store containing the current form values
    */
@@ -51,7 +56,7 @@ export interface FormulaStores<T extends {} = Record<string, unknown>> {
 /**
  * The Formula interface with stores and form factory
  */
-export interface Formula<T extends {} = Record<string, unknown>> extends FormulaStores<T> {
+export interface Formula<T extends FormulaValue = Record<string, unknown>> extends FormulaStores<T> {
   /**
    * The form object for use with the Svelte use directive
    * @param node

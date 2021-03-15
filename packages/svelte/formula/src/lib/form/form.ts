@@ -4,7 +4,7 @@ import { createReset } from './init';
 import { createTouchHandlers } from './touch';
 import { createDirtyHandler } from './dirty';
 
-import { FormEl, Formula, FormulaOptions, FormulaStores } from '../../types';
+import { FormEl, Formula, FormulaOptions, FormulaStores, FormulaValue } from '../../types';
 import { createFormStores } from '../shared/stores';
 import { setAriaButtons, setAriaContainer, setAriaRole, setAriaStates } from './aria';
 
@@ -15,9 +15,9 @@ import { setAriaButtons, setAriaContainer, setAriaRole, setAriaStates } from './
  * @param groupName
  * @param initialData
  */
-export function createForm<T extends {} = Record<string, unknown>>(
+export function createForm<T extends FormulaValue = Record<string, unknown>>(
   options: FormulaOptions,
-  globalStore?: Map<string, FormulaStores<T>>,
+  globalStore?: Map<string, FormulaStores>,
   groupName?: string,
   initialData?: T,
 ): Formula<T> {

@@ -1,5 +1,6 @@
 import { CustomValidationMessages, ValidationRule, ValidationRules } from './validation';
 import { EnrichFields } from './enrich';
+import { FormulaValue } from '../types/formula';
 
 interface BaseOptions {
   /**
@@ -27,7 +28,7 @@ interface BaseOptions {
 /**
  * Optional settings for Formula
  */
-export interface FormulaOptions<T extends {} = Record<string, unknown>> extends BaseOptions {
+export interface FormulaOptions<T extends FormulaValue = Record<string, unknown>> extends BaseOptions {
   /**
    * Default values are used as initial values for the form fields if there is no value already set on the form
    */
@@ -45,7 +46,7 @@ export interface FormulaOptions<T extends {} = Record<string, unknown>> extends 
 /**
  * Optional settings for Beaker
  */
-export interface BeakerOptions<T extends {} = Record<string, unknown>> extends BaseOptions {
+export interface BeakerOptions<T extends FormulaValue = Record<string, unknown>> extends BaseOptions {
   /**
    * Default values are used as initial values for the form fields if there is no value already set on the form
    */

@@ -1,4 +1,4 @@
-import { Beaker, BeakerOptions, BeakerStores, Formula, FormulaOptions } from '../../types';
+import { Beaker, BeakerOptions, BeakerStores, Formula, FormulaOptions, FormulaValue } from '../../types';
 import { createGroupStores } from '../shared/stores';
 import { createForm } from '../form/form';
 import { get } from 'svelte/store';
@@ -10,7 +10,7 @@ let groupCounter = 0;
  * @param options
  * @param beakerStores
  */
-export function createGroup<T extends {} = Record<string, unknown>>(
+export function createGroup<T extends FormulaValue = Record<string, unknown>>(
   options: BeakerOptions,
   beakerStores: Map<string, BeakerStores<T>>,
 ): Beaker<T> {
@@ -82,7 +82,15 @@ export function createGroup<T extends {} = Record<string, unknown>>(
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
       row.setAttribute('data-beaker-index', `${i}`);
-      const form = createForm<T>(formulaOptions, undefined, groupName, currentVals[i]);
+      const form = createForm<T>(
+        {
+          ...formulaOptions,
+          defaultValues: defaultValues[i] || {},
+        },
+        undefined,
+        groupName,
+        currentVals[i],
+      );
       const instance = form.form(row as HTMLElement);
       formulaInstances.set(row, form);
       formInstances.set(row, instance);
@@ -96,7 +104,7 @@ export function createGroup<T extends {} = Record<string, unknown>>(
    * @param node
    */
   function setupGroupContainer(node: HTMLElement) {
-    globalObserver = new MutationObserver((mutations) => {
+    globalObserver = new MutationObserver(() => {
       const rows = node.querySelectorAll(':scope > *');
       groupHasChanged(Array.from(rows) as HTMLElement[]);
     });

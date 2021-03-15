@@ -1,4 +1,12 @@
-import { FormEl, FormulaError, FormulaField, FormulaOptions, FormulaStores, ValidationFn } from '../../types';
+import {
+  FormEl,
+  FormulaError,
+  FormulaField,
+  FormulaOptions,
+  FormulaStores,
+  FormulaValue,
+  ValidationFn,
+} from '../../types';
 import { createFieldExtract } from './extract';
 import { createEnrichField } from './enrichment';
 import { get } from 'svelte/store';
@@ -77,7 +85,7 @@ export function valueUpdate(
  * @param hiddenFields
  * @param enrich
  */
-function createHandlerForData<T extends {} = Record<string, unknown>>(
+function createHandlerForData<T extends FormulaValue = Record<string, unknown>>(
   extractor: (el: FormEl) => FormulaField,
   stores: FormulaStores<T>,
   options: FormulaOptions,
@@ -104,7 +112,7 @@ function createHandlerForData<T extends {} = Record<string, unknown>>(
  * @param options
  * @param hiddenGroups
  */
-export function createHandler<T extends {} = Record<string, unknown>>(
+export function createHandler<T extends FormulaValue = Record<string, unknown>>(
   name: string,
   eventName: string,
   element: FormEl,
@@ -127,7 +135,7 @@ export function createHandler<T extends {} = Record<string, unknown>>(
  * @param stores
  * @param form
  */
-export function createSubmitHandler<T extends {} = Record<string, unknown>>(
+export function createSubmitHandler<T extends FormulaValue = Record<string, unknown>>(
   stores: FormulaStores<T>,
   form: HTMLFormElement,
 ): (event: Event) => void {
