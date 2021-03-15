@@ -14,7 +14,7 @@ import { BeakerOptions, BeakerStores, FormulaError, FormulaOptions, FormulaStore
  * @param options Initial options to use
  * @param initialData
  */
-function createFirstState<T extends Record<string, unknown | unknown[]>>(options?: FormulaOptions, initialData?: T) {
+function createFirstState<T extends {} = Record<string, unknown>>(options?: FormulaOptions, initialData?: T) {
   let initialValues = options?.defaultValues || {};
   initialValues = { ...initialValues, ...initialData };
   const initialKeys = Object.keys(initialValues);
@@ -73,7 +73,7 @@ function createFirstState<T extends Record<string, unknown | unknown[]>>(options
  *
  * @returns An object containing the stores for the form instance
  */
-export function createFormStores<T extends Record<string, unknown | unknown[]>>(
+export function createFormStores<T extends {} = Record<string, unknown>>(
   options?: FormulaOptions,
   initialData?: T,
 ): FormulaStores<T> {
@@ -88,16 +88,14 @@ export function createFormStores<T extends Record<string, unknown | unknown[]>>(
     formValidity: writable<Record<string, string>>(initialStoreState.initialFormValidity),
     isFormValid: writable<boolean>(false),
     isFormReady: writable<boolean>(false),
-    enrichment: writable<Record<string, Record<string, unknown>>>(initialStoreState.initialEnrichment),
+    enrichment: writable<Record<string, T>>(initialStoreState.initialEnrichment),
   };
 }
 
 /**
  * Create a group store which contains arrays of form store values
  */
-export function createGroupStores<T extends Record<string, unknown | unknown[]>>(
-  options?: BeakerOptions,
-): BeakerStores<T> {
+export function createGroupStores<T extends {} = Record<string, unknown>>(options?: BeakerOptions): BeakerStores<T> {
   let initialValues = [];
   let initialFieldState = [];
   let initialValidity = [];
@@ -126,6 +124,6 @@ export function createGroupStores<T extends Record<string, unknown | unknown[]>>
     formValidity: writable<Record<string, string>[]>(initialFormValidity),
     isFormValid: writable<boolean>(false),
     isFormReady: writable<boolean>(false),
-    enrichment: writable<Record<string, Record<string, unknown>>[]>(initialEnrichment),
+    enrichment: writable<Record<string, T>[]>(initialEnrichment),
   };
 }

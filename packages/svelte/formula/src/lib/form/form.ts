@@ -15,7 +15,7 @@ import { setAriaButtons, setAriaContainer, setAriaRole, setAriaStates } from './
  * @param groupName
  * @param initialData
  */
-export function createForm<T extends Record<string, unknown | unknown[]>>(
+export function createForm<T extends {} = Record<string, unknown>>(
   options: FormulaOptions,
   globalStore?: Map<string, FormulaStores<T>>,
   groupName?: string,
@@ -58,7 +58,7 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
       }, new Map()),
     ];
 
-    innerReset = createReset<T>(node, groupedMap, stores, innerOpt);
+    innerReset = createReset(node, groupedMap, stores, innerOpt);
 
     // Loop over each group and setup up their initial touch and dirty handlers,
     // also get initial values
@@ -83,9 +83,11 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
 
         const customBindings = el.dataset.formulaBind;
         if (customBindings) {
-          customBindings.split('|').forEach((event) => {
-            eventHandlers.set(el, createHandler(name, event, el, elements, stores, innerOpt, hiddenGroups));
-          });
+          customBindings
+            .split('|')
+            .forEach((event) =>
+              eventHandlers.set(el, createHandler(name, event, el, elements, stores, innerOpt, hiddenGroups)),
+            );
         } else if (el instanceof HTMLSelectElement) {
           eventHandlers.set(el, createHandler(name, 'change', el, elements, stores, innerOpt, hiddenGroups));
         } else {
@@ -118,9 +120,7 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
     });
 
     // If the field has a global store, set the ID
-    if (node.id && globalStore) {
-      globalStore.set(node.id, stores);
-    }
+    if (node.id && globalStore) globalStore.set(node.id, stores);
 
     // If the HTML element attached is a form, also listen for the submit event
     if (node instanceof HTMLFormElement) {
@@ -145,10 +145,7 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
     });
     [...touchHandlers, ...dirtyHandlers].forEach((fn) => fn());
     [eventHandlers, touchHandlers, dirtyHandlers].forEach((h) => h.clear());
-
-    if (submitHandler) {
-      currentNode.removeEventListener('submit', submitHandler);
-    }
+    if (submitHandler) currentNode.removeEventListener('submit', submitHandler);
   }
 
   return {

@@ -1,7 +1,32 @@
-import { FormEl, FormulaError, FormulaField, FormulaOptions, FormulaStores } from '../../types';
+import { FormEl, FormulaError, FormulaField, FormulaOptions, FormulaStores, ValidationFn } from '../../types';
 import { createFieldExtract } from './extract';
 import { createEnrichField } from './enrichment';
 import { get } from 'svelte/store';
+
+/**
+ * Do validation on the form and set the form validity state and set the form to invalid if there
+ * are any form validations
+ * @param formValidators
+ * @param stores
+ */
+function formValidation(formValidators: Record<string, ValidationFn>, stores: FormulaStores) {
+  const currentValues = get(stores.formValues);
+  stores.formValidity.set({});
+  const validators = Object.entries(formValidators);
+
+  const invalidStates = {};
+  for (let i = 0; i < validators.length; i++) {
+    const [name, validator] = validators[i];
+    const invalid = validator(currentValues);
+    if (invalid !== null) {
+      invalidStates[name] = invalid;
+    }
+  }
+  if (Object.keys(invalidStates).length > 0) {
+    stores.formValidity.set(invalidStates);
+    stores.isFormValid.set(false);
+  }
+}
 
 /**
  * Update the value and error stores, also update form validity
@@ -11,56 +36,36 @@ import { get } from 'svelte/store';
  * @param hiddenFields
  * @param enrich
  */
-export function valueUpdate<T extends Record<string, unknown | unknown[]>>(
+export function valueUpdate(
   details: FormulaField,
-  stores: FormulaStores<T>,
+  stores: FormulaStores,
   options: FormulaOptions,
   hiddenFields: Map<string, HTMLInputElement[]>,
   enrich?: (value: unknown | unknown[]) => Record<string, unknown>,
 ): void {
   const { name, value, ...validity } = details;
-  // Update form values and if onChanges passed run it
-  stores.formValues.update((state) => {
-    const result = { ...state, [name]: value };
-    hiddenFields.forEach(
-      (group, name) => ((result as any)[name] = group.length > 1 ? group.map((e) => e.value) : group[0].value),
-    );
-    return result;
-  });
 
-  const currentValues = get(stores.formValues);
-
+  stores.formValues.update((state) => ({ ...state, [name]: value }));
+  if (hiddenFields.size) {
+    stores.formValues.update((state) => {
+      hiddenFields.forEach(
+        (group, name) => (state[name] = group.length > 1 ? group.map((e) => e.value) : group[0].value),
+      );
+      return state;
+    });
+  }
   // Update validity and form validity
-  stores.validity.update((state) => {
-    const result = {
-      ...state,
-      [name]: validity,
-    };
-    stores.isFormValid.set(Object.values(result).every((v: FormulaError) => v.valid));
-    if (options?.formValidators) {
-      stores.formValidity.set({});
-      const validators = Object.entries(options?.formValidators);
-
-      const invalidStates = {};
-      for (let i = 0; i < validators.length; i++) {
-        const [name, validator] = validators[i];
-        const invalid = validator(currentValues);
-        if (invalid !== null) {
-          invalidStates[name] = invalid;
-        }
-      }
-      if (Object.keys(invalidStates).length > 0) {
-        stores.formValidity.set(invalidStates);
-        stores.isFormValid.set(false);
-      }
-    }
-    return result;
-  });
-
+  stores.validity.update((state) => ({ ...state, [name]: validity }));
+  stores.isFormValid.set(Object.values(get(stores.validity)).every((v: FormulaError) => v.valid));
+  if (options?.formValidators) {
+    formValidation(options.formValidators, stores);
+  }
   if (enrich) {
     stores.enrichment.set({ [name]: enrich(value) });
   }
-  if (options?.postChanges) options?.postChanges(currentValues);
+  if (typeof options?.postChanges === 'function') {
+    options?.postChanges(get(stores.formValues));
+  }
 }
 
 /**
@@ -71,7 +76,7 @@ export function valueUpdate<T extends Record<string, unknown | unknown[]>>(
  * @param hiddenFields
  * @param enrich
  */
-function createHandlerForData<T extends Record<string, unknown | unknown[]>>(
+function createHandlerForData<T extends {} = Record<string, unknown>>(
   extractor: (el: FormEl) => FormulaField,
   stores: FormulaStores<T>,
   options: FormulaOptions,
@@ -79,7 +84,7 @@ function createHandlerForData<T extends Record<string, unknown | unknown[]>>(
   enrich?: (value: unknown | unknown[]) => Record<string, unknown>,
 ) {
   return (event: Event) => {
-    if (options?.preChanges) options?.preChanges();
+    if (typeof options?.preChanges === 'function') options.preChanges();
     // Allow elements to update by letting the browser do a tick
     setTimeout(() => {
       const el = (event.currentTarget || event.target) as FormEl;
@@ -98,7 +103,7 @@ function createHandlerForData<T extends Record<string, unknown | unknown[]>>(
  * @param options
  * @param hiddenGroups
  */
-export function createHandler<T extends Record<string, unknown | unknown[]>>(
+export function createHandler<T extends {} = Record<string, unknown>>(
   name: string,
   eventName: string,
   element: FormEl,
@@ -109,16 +114,10 @@ export function createHandler<T extends Record<string, unknown | unknown[]>>(
 ): () => void {
   const extract = createFieldExtract(name, groupElements, options, stores);
   let enrich;
-  if (options?.enrich?.[name]) {
-    enrich = createEnrichField(name, options);
-  }
-
+  if (options?.enrich?.[name]) enrich = createEnrichField(name, options);
   const handler = createHandlerForData(extract, stores, options, hiddenGroups, enrich);
   element.addEventListener(eventName, handler);
-
-  return () => {
-    element.removeEventListener(eventName, handler);
-  };
+  return () => element.removeEventListener(eventName, handler);
 }
 
 /**
@@ -127,14 +126,12 @@ export function createHandler<T extends Record<string, unknown | unknown[]>>(
  * @param stores
  * @param form
  */
-export function createSubmitHandler<T extends Record<string, unknown | unknown[]>>(
+export function createSubmitHandler<T extends {} = Record<string, unknown>>(
   stores: FormulaStores<T>,
   form: HTMLFormElement,
 ): (event: Event) => void {
   return (): void => {
-    if (!form.noValidate) {
-      form.reportValidity();
-    }
+    if (!form.noValidate) form.reportValidity();
     stores.formValues.subscribe((v) => stores.submitValues.set(v))();
   };
 }

@@ -5,7 +5,7 @@ import { FormulaOptions } from './options';
 /**
  * The stores available in Formula
  */
-export interface FormulaStores<T extends Record<string, unknown | unknown[]>> {
+export interface FormulaStores<T extends {} = Record<string, unknown>> {
   /**
    * A store containing the current form values
    */
@@ -45,13 +45,13 @@ export interface FormulaStores<T extends Record<string, unknown | unknown[]>> {
   /**
    * A store containing additional field enrichment
    */
-  enrichment: Writable<Record<string, Record<string, unknown>>>;
+  enrichment: Writable<Record<string, T>>;
 }
 
 /**
  * The Formula interface with stores and form factory
  */
-export interface Formula<T extends Record<string, unknown | unknown[]>> extends FormulaStores<T> {
+export interface Formula<T extends {} = Record<string, unknown>> extends FormulaStores<T> {
   /**
    * The form object for use with the Svelte use directive
    * @param node
@@ -60,7 +60,7 @@ export interface Formula<T extends Record<string, unknown | unknown[]>> extends 
   /**
    * Update
    */
-  updateForm: (updatedOpts?: FormulaOptions) => void;
+  updateForm: (updatedOpts?: FormulaOptions<T>) => void;
   /**
    * Destroy
    */
@@ -72,5 +72,5 @@ export interface Formula<T extends Record<string, unknown | unknown[]>> extends 
   /**
    * Stores
    */
-  stores: FormulaStores<Record<string, unknown | unknown[]>>;
+  stores: FormulaStores<T>;
 }

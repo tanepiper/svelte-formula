@@ -27,11 +27,11 @@ interface BaseOptions {
 /**
  * Optional settings for Formula
  */
-export interface FormulaOptions extends BaseOptions {
+export interface FormulaOptions<T extends {} = Record<string, unknown>> extends BaseOptions {
   /**
    * Default values are used as initial values for the form fields if there is no value already set on the form
    */
-  defaultValues?: Record<string, unknown | unknown[]>;
+  defaultValues?: T;
   /**
    * Method called as soon as a change has been detected, before any values are read or stores are updated
    */
@@ -39,15 +39,15 @@ export interface FormulaOptions extends BaseOptions {
   /**
    * Method called after all updates to the stores have been made
    */
-  postChanges?: (values: Record<string, unknown | unknown[]>) => void;
+  postChanges?: (values: T) => void;
 }
 
 /**
  * Optional settings for Beaker
  */
-export interface BeakerOptions extends BaseOptions {
+export interface BeakerOptions<T extends {} = Record<string, unknown>> extends BaseOptions {
   /**
    * Default values are used as initial values for the form fields if there is no value already set on the form
    */
-  defaultValues?: Record<string, unknown | unknown[]>[];
+  defaultValues?: T[];
 }

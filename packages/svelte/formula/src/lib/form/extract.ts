@@ -116,20 +116,16 @@ function getElementValues(element: FormEl, isMultiValue: boolean, elementGroup: 
  * @param options
  * @param stores
  */
-export function createFieldExtract<T extends Record<string, unknown | unknown[]>>(
+export function createFieldExtract(
   name: string,
   elementGroup: FormEl[],
   options: FormulaOptions,
-  stores: FormulaStores<T>,
+  stores: FormulaStores,
 ) {
   const validator = createValidationChecker(name, elementGroup, options);
   const isMultiValue =
-    (() => {
-      if (elementGroup[0].type === 'radio') {
-        return false;
-      }
-      return !(elementGroup[0] as HTMLSelectElement).multiple;
-    })() && elementGroup.length > 1;
+    (() => (elementGroup[0].type === 'radio' ? false : !(elementGroup[0] as HTMLSelectElement).multiple))() &&
+    elementGroup.length > 1;
 
   /**
    * Function called on every element update, can also be called at initial value

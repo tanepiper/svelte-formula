@@ -1,13 +1,12 @@
 import { FormEl, FormulaStores } from '../../types';
+import { get } from 'svelte/store';
 
 /**
  * Check if two arrays match
  * @param array1
  * @param array2
  */
-function matchingArrays(array1: unknown[], array2: unknown[]) {
-  return array1.every((e) => array2.includes(e));
-}
+const matchingArrays = (array1: unknown[], array2: unknown[]) => array1.every((e) => array2.includes(e));
 
 /**
  * Creates the handler for a group of elements for the dirty event on the group name, once an
@@ -21,11 +20,7 @@ function matchingArrays(array1: unknown[], array2: unknown[]) {
  *
  * @returns Function that when called will remove all blur handlers from the elements, if not removed by user action
  */
-export function createDirtyHandler<T extends Record<string, unknown | unknown[]>>(
-  name: string,
-  elements: FormEl[],
-  stores: FormulaStores<T>,
-): () => void {
+export function createDirtyHandler(name: string, elements: FormEl[], stores: FormulaStores): () => void {
   /**
    * Internal map of element blur handlers
    */
@@ -36,7 +31,7 @@ export function createDirtyHandler<T extends Record<string, unknown | unknown[]>
    */
   const initialValues = new Map<string, unknown | unknown[]>();
 
-  const destroy = () => {
+  const setDirtyAndStopListening = () => {
     for (const [el, handler] of elementHandlers) {
       el.setAttribute('data-formula-dirty', 'true');
       el.removeEventListener('blur', handler);
@@ -51,19 +46,16 @@ export function createDirtyHandler<T extends Record<string, unknown | unknown[]>
   function createElementHandler(groupName: string) {
     return () => {
       const startValue = initialValues.get(groupName);
-
-      // Take the current form values and check if the user has changed it
-      stores.formValues.subscribe((v) => {
-        if (Array.isArray(v[groupName])) {
-          if (!matchingArrays(v[groupName] as unknown[], startValue as unknown[])) {
-            stores.dirty.update((state) => ({ ...state, [groupName]: true }));
-            destroy();
-          }
-        } else if (v[groupName] !== startValue) {
+      const currentValues = get(stores.formValues);
+      if (Array.isArray(currentValues[groupName])) {
+        if (!matchingArrays(currentValues[groupName] as unknown[], startValue as unknown[])) {
           stores.dirty.update((state) => ({ ...state, [groupName]: true }));
-          destroy();
+          setDirtyAndStopListening();
         }
-      })();
+      } else if (currentValues[groupName] !== startValue) {
+        stores.dirty.update((state) => ({ ...state, [groupName]: true }));
+        setDirtyAndStopListening();
+      }
     };
   }
 
@@ -73,5 +65,5 @@ export function createDirtyHandler<T extends Record<string, unknown | unknown[]>
     elementHandlers.set(el, handler);
   }
 
-  return destroy;
+  return setDirtyAndStopListening;
 }

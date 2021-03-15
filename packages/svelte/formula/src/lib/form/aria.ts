@@ -5,13 +5,19 @@ import { FormEl } from '../../types';
  * group or form
  * @param el
  */
-function getRadioGroupParent(el: HTMLElement) {
+function getRadioGroupParent(el?: HTMLElement) {
+  if (!el) {
+    return undefined;
+  }
   const isContainer = Array.from(el.querySelectorAll(':scope input[type=radio]')).length > 1;
   if (!isContainer) {
+    if (!el.parentElement) {
+      return undefined;
+    }
     if (el.parentElement.dataset?.beakerGroup || el.parentElement.dataset?.formulaForm) {
       return undefined;
     }
-    return getRadioGroupParent(el.parentElement);
+    return getRadioGroupParent(el?.parentElement);
   }
   return el;
 }
@@ -22,6 +28,9 @@ function getRadioGroupParent(el: HTMLElement) {
  * @param elements
  */
 export function setAriaRole(el: FormEl, elements: FormEl[]) {
+  if (el.hasAttribute('aria-role')) {
+    return;
+  }
   if (el.type === 'radio') {
     if (elements.length < 2) {
       el.parentElement.setAttribute('aria-role', 'radiogroup');
@@ -66,17 +75,19 @@ export function setAriaStates(el: FormEl) {
 
 /**
  * Sets ARIA attributes based on the current value
- * @param el
+ * @param element
  * @param elGroup
  */
-export function setAriaValue(el: FormEl, elGroup: FormEl[]) {
-  if (el.type === 'radio') {
-    elGroup.forEach((el) => el.removeAttribute('aria-checked'));
+export function setAriaValue(element: FormEl, elGroup: FormEl[]): void {
+  if (element.type === 'radio') {
+    for (const el of elGroup) {
+      el.removeAttribute('aria-checked');
+    }
   }
-  if ((el as HTMLInputElement).checked) {
-    el.setAttribute('aria-checked', 'checked');
+  if ((element as HTMLInputElement).checked) {
+    element.setAttribute('aria-checked', 'checked');
   } else {
-    el.removeAttribute('aria-checked');
+    element.removeAttribute('aria-checked');
   }
 }
 
@@ -86,9 +97,18 @@ export function setAriaValue(el: FormEl, elGroup: FormEl[]) {
  * @param isGroup
  */
 export function setAriaContainer(container: HTMLElement, isGroup: boolean) {
-  container.setAttribute('aria-role', isGroup ? 'row' : 'form');
+  if (!container.hasAttribute('aria-role')) {
+    container.setAttribute('aria-role', isGroup ? 'row' : 'form');
+  }
 }
 
+/**
+ * Add the ARIA button role to all buttons contained in the form that don't already have an ARIA role
+ * @param container
+ */
 export function setAriaButtons(container: HTMLElement) {
-  Array.from(container.querySelectorAll('button')).forEach((el) => el.setAttribute('aria-role', 'button'));
+  const nonAriaButtons = Array.from(container.querySelectorAll('button:not([aria-role])'));
+  for (const el of nonAriaButtons) {
+    el.setAttribute('aria-role', 'button');
+  }
 }
