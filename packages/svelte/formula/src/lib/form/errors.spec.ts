@@ -1,9 +1,9 @@
-import { createFormValidator, createValidationChecker } from 'packages/svelte/formula/src/lib/form/errors';
-import { writable } from 'svelte/store';
+import { createValidationChecker } from './errors';
 
 describe('Formula Field Validation', () => {
   let validationChecker;
   let element;
+  let elGroup;
 
   beforeEach(() => {
     element = document.createElement('input');
@@ -13,9 +13,11 @@ describe('Formula Field Validation', () => {
     element.setAttribute('required', 'required');
     element.setAttribute('pattern', '.{5,}');
 
+    elGroup = [element];
+
     document.body.appendChild(element);
 
-    validationChecker = createValidationChecker('testing', {
+    validationChecker = createValidationChecker('testing', elGroup, {
       messages: {
         testing: {
           patternMismatch: 'You have not matched the pattern',
@@ -72,59 +74,5 @@ describe('Formula Field Validation', () => {
     element.value = 'Testing';
     const result = validationChecker(element, 'Testing');
     expect(result.valid).toBeTruthy();
-  });
-});
-
-describe('Formula Form Validation', () => {
-  let validationChecker;
-
-  const storeMock: any = {
-    formValues: writable({}),
-    formValidity: writable({}),
-    isFormValid: writable(true),
-  };
-
-  beforeEach(() => {
-    storeMock.isFormValid.set(true);
-    validationChecker = createFormValidator(storeMock, {
-      fieldsMatch: (values: Record<string, string>) =>
-        values.test1 === values.test2 ? null : 'Your fields must match',
-    });
-  });
-
-  afterEach(() => {
-    validationChecker();
-  });
-
-  it('should create an unsub', () => {
-    expect(validationChecker).toBeInstanceOf(Function);
-  });
-
-  it('should set the form validity when not matched', () => {
-    storeMock.formValues.update(() => ({ test1: 'Testing', test2: 'Test' }));
-    storeMock.formValidity.subscribe((errors) => {
-      expect(errors.fieldsMatch).toBe('Your fields must match');
-    })();
-  });
-
-  it('should set the form to not when not matched', () => {
-    storeMock.formValues.update(() => ({ test1: 'Testing', test2: 'Test' }));
-    storeMock.isFormValid.subscribe((errors) => {
-      expect(errors).toBeFalsy();
-    })();
-  });
-
-  it('should not set the form validity when matched', () => {
-    storeMock.formValues.update(() => ({ test1: 'Testing', test2: 'Testing' }));
-    storeMock.formValidity.subscribe((errors) => {
-      expect(errors.fieldsMatch).toBeUndefined();
-    })();
-  });
-
-  it('should not change the valid state when valid', () => {
-    storeMock.formValues.update(() => ({ test1: 'Testing', test2: 'Testing' }));
-    storeMock.isFormValid.subscribe((valid) => {
-      expect(valid).toBeTruthy();
-    })();
   });
 });

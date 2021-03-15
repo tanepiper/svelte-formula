@@ -22,7 +22,7 @@ export const beakerStores = new Map<string, BeakerStores<Record<string, unknown 
  * @returns Formula object containing the current form, function to update or destroy
  * the form and all the stores available for the form
  */
-export function formula<T extends Record<string, unknown | unknown[]>>(options?: FormulaOptions): Formula<T> {
+export function formula<T extends {} = Record<string, unknown>>(options?: FormulaOptions): Formula<T> {
   return createForm<T>(options, formulaStores);
 }
 
@@ -34,6 +34,6 @@ export function formula<T extends Record<string, unknown | unknown[]>>(options?:
  *
  * @returns Beaker object containing the form group and it's associated methods
  */
-export function beaker<T extends Record<string, unknown | unknown[]>>(options?: BeakerOptions): Beaker<T> {
+export function beaker<T extends {} = Record<string, unknown>>(options?: BeakerOptions): Beaker<T> {
   return createGroup<T>(options, beakerStores);
 }

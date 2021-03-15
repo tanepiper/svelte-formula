@@ -65,6 +65,7 @@
     formValidity,
     formValues,
     touched,
+    dirty,
     isFormValid,
     updateForm,
     destroyForm,
@@ -78,6 +79,8 @@
   $: console.log($validity);
   $: console.log($formValues);
   $: console.log($enrichment);
+  $: console.log($touched);
+  $: console.log($dirty);
 
   $: usernameInvalid = ($touched.username && $validity.username.invalid) && $validity.username.message;
   $: passwordInvalid = ($touched?.password && $validity?.password?.invalid) && $validity?.password?.message;

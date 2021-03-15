@@ -4,7 +4,7 @@ import { Formula, FormulaError, FormulaOptions } from '../types';
 /**
  * The stores available in Beaker
  */
-export interface BeakerStores<T extends Record<string, unknown | unknown[]>> {
+export interface BeakerStores<T extends {} = Record<string, unknown>> {
   /**
    * A store containing the current form values
    */
@@ -50,7 +50,7 @@ export interface BeakerStores<T extends Record<string, unknown | unknown[]>> {
 /**
  * The Formula interface with stores and form factory
  */
-export interface Beaker<T extends Record<string, unknown | unknown[]>> extends BeakerStores<T> {
+export interface Beaker<T extends {} = Record<string, unknown>> extends BeakerStores<T> {
   /**
    * The form object for use with the Svelte use directive
    * @param node
@@ -59,7 +59,7 @@ export interface Beaker<T extends Record<string, unknown | unknown[]>> extends B
   /**
    * Update all the underlying forms
    */
-  update: (options?: FormulaOptions) => void;
+  update: (options?: FormulaOptions<T>) => void;
   /**
    * Destroy
    */

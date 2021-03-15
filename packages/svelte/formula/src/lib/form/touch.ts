@@ -12,11 +12,7 @@ import { FormEl, FormulaStores } from '../../types';
  *
  * @returns Function that when called will remove all focus handlers from the elements, if not removed by user action
  */
-export function createTouchHandlers<T extends Record<string, unknown | unknown[]>>(
-  name: string,
-  elements: FormEl[],
-  stores: FormulaStores<T>,
-): () => void {
+export function createTouchHandlers(name: string, elements: FormEl[], stores: FormulaStores): () => void {
   /**
    * Internal map of element focus handlers
    */

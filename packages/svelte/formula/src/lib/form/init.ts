@@ -9,10 +9,10 @@ import { createEnrichField } from './enrichment';
  * @param stores
  * @param options
  */
-function getInitialFormValues<T extends Record<string, unknown | unknown[]>>(
+function getInitialFormValues(
   node: HTMLElement,
   allGroups: [string, FormEl[]][],
-  stores: FormulaStores<T>,
+  stores: FormulaStores,
   options: FormulaOptions,
 ): [Record<string, unknown | unknown[]>, Record<string, FormulaError>, Record<string, Record<string, unknown>>] {
   const formValues: Record<string, unknown | unknown[]> = {};
@@ -28,8 +28,8 @@ function getInitialFormValues<T extends Record<string, unknown | unknown[]>>(
       enrichmentValues[name] = enrich(value);
     }
   }
-  stores.formValues.set({ ...formValues } as T);
-  stores.initialValues.set({ ...formValues } as T);
+  stores.formValues.set({ ...formValues });
+  stores.initialValues.set({ ...formValues });
   stores.validity.set({ ...validityValues });
   stores.isFormValid.set(Object.values({ ...validityValues }).every((v: FormulaError) => v.valid));
   stores.enrichment.set({ ...enrichmentValues });
@@ -41,10 +41,10 @@ function getInitialFormValues<T extends Record<string, unknown | unknown[]>>(
  * Create the form reset method
 
  */
-export function createReset<T extends Record<string, unknown | unknown[]>>(
+export function createReset(
   node: HTMLElement,
   allGroups: [string, FormEl[]][],
-  stores: FormulaStores<T>,
+  stores: FormulaStores,
   options: FormulaOptions,
 ) {
   const [formValues, validityValues, enrichmentValues] = getInitialFormValues(node, allGroups, stores, options);
@@ -52,7 +52,7 @@ export function createReset<T extends Record<string, unknown | unknown[]>>(
    * Resets the form to the initial values
    */
   return () => {
-    stores.formValues.set(formValues as T);
+    stores.formValues.set(formValues);
     stores.validity.set(validityValues);
     stores.isFormValid.set(Object.values(validityValues).every((v: FormulaError) => v.valid));
     stores.enrichment.set(enrichmentValues);

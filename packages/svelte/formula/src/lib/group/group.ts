@@ -10,7 +10,7 @@ let groupCounter = 0;
  * @param options
  * @param beakerStores
  */
-export function createGroup<T extends Record<string, unknown | unknown[]>>(
+export function createGroup<T extends {} = Record<string, unknown>>(
   options: BeakerOptions,
   beakerStores: Map<string, BeakerStores<T>>,
 ): Beaker<T> {
@@ -40,10 +40,10 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
    * @param rows
    */
   function cleanupStores(rows: HTMLElement[]) {
-    Object.keys(groupStores).forEach((key) => {
+    for (const key of Object.keys(groupStores)) {
       if (['formValues', 'initialValues', 'submitValues'].includes(key)) return;
       groupStores[key].update((state) => (Array.isArray(state) ? state.slice(0, rows.length) : state));
-    });
+    }
   }
 
   /**
@@ -53,9 +53,10 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
    */
   function setupSubscriptions(form: Formula<T>, index: number) {
     let initial = true;
-    Object.entries(form.stores).forEach(([key, store]) => {
+    const formStores = Object.entries(form.stores);
+    for (const [key, store] of formStores) {
       const unsub = store.subscribe((value) => {
-        if (initial && key === 'formValues') return; //Don't emit the form values when there is a form value change from the group
+        if (initial && key === 'formValues') return; // Don't emit the initial change
         groupStores[key].update((state) => {
           if (Array.isArray(state)) {
             state.splice(index, 1, value);
@@ -65,7 +66,7 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
         });
       });
       subscriptions.add(unsub);
-    });
+    }
     initial = false;
   }
 
@@ -116,7 +117,9 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
       }
 
       node.setAttribute('data-beaker-group', 'true');
-      node.setAttribute('aria-role', 'group');
+      if (!node.hasAttribute('aria-role')) {
+        node.setAttribute('aria-role', 'group');
+      }
       setupGroupContainer(node);
 
       return {
@@ -129,7 +132,7 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
         },
       };
     },
-    update: (options?: FormulaOptions) => {
+    update: (options?: FormulaOptions<T>) => {
       [...formulaInstances].forEach(([_, form]) => form.updateForm(options));
     },
     destroy: () => {
@@ -141,8 +144,8 @@ export function createGroup<T extends Record<string, unknown | unknown[]>>(
     },
     forms: formulaInstances,
     stores: groupStores,
-    init: (items) => groupStores.formValues.set(items),
-    add: (item) => groupStores.formValues.update((state) => [...state, item]),
+    init: (items: T[]) => groupStores.formValues.set(items),
+    add: (item: T) => groupStores.formValues.update((state) => [...state, item]),
     set: (index: number, item: T) =>
       groupStores.formValues.update((state) => {
         state.splice(index, 1, item);
