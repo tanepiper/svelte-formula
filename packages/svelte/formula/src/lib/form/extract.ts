@@ -135,10 +135,14 @@ export function createFieldExtract<T extends Record<string, unknown | unknown[]>
    * Function called on every element update, can also be called at initial value
    * Welcome to edge-case hell
    */
-  return (element: FormEl, isInit?: boolean, isReset?: boolean): FormulaField => {
+  return (element: FormEl, isInit?: boolean, isReset?: boolean, newOpts?: FormulaOptions): FormulaField => {
+    let defaultValues = options?.defaultValues || {};
+    if (newOpts) {
+      defaultValues = newOpts.defaultValues;
+    }
     let value;
-    if (isInit && options?.defaultValues?.[name]) {
-      value = isMultiValue ? options?.defaultValues?.[name] || [] : options?.defaultValues?.[name] || '';
+    if (isInit && typeof defaultValues?.[name] !== 'undefined') {
+      value = isMultiValue ? defaultValues?.[name] || [] : defaultValues?.[name] || '';
     } else {
       const storeValue = get(stores.formValues)?.[name];
       value = storeValue ? storeValue : isMultiValue ? [] : '';
@@ -148,7 +152,7 @@ export function createFieldExtract<T extends Record<string, unknown | unknown[]>
       if (isInit) {
         if (isMultiValue || element.type === 'select-multiple') {
           value = (elValue as unknown[]).length === 0 ? value : elValue;
-        } else if (!value) {
+        } else if (!value && typeof newOpts === 'undefined') {
           value = elValue === null ? '' : elValue;
         }
       } else {

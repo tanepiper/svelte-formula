@@ -55,7 +55,7 @@
     }
   }
 
-  customers.init(getContactData(100));
+  customers.init(getContactData(10));
 
   // Add a row to the store
   function addCustomer() {
@@ -138,7 +138,7 @@
           <label for='subscriptionLevel-{i}-1'>None
             <input type='radio' id='subscriptionLevel-{i}-1'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='none'
+                   data-formula-name='subscriptionLevel' value='none'
                    required
             />
           </label>
@@ -146,7 +146,7 @@
           <label for='subscriptionLevel-{i}-1'>Partial
             <input type='radio' id='subscriptionLevel-{i}-2'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='partial'
+                   data-formula-name='subscriptionLevel' value='partial'
                    required
             />
           </label>
@@ -154,7 +154,7 @@
           <label for='subscriptionLevel-{i}-1'>Full
             <input type='radio' id='subscriptionLevel-{i}-3'
                    name='subscriptionLevel-{i}'
-                   data-beaker-key='subscriptionLevel' value='full'
+                   data-formula-name='subscriptionLevel' value='full'
                    required
             />
           </label>

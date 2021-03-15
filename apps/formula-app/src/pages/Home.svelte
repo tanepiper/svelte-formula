@@ -15,4 +15,7 @@
   <li>
     <a href='/wee-page' use:link>Wee Page</a>
   </li>
+  <li>
+    <a href='/new-form' use:link>New Form</a>
+  </li>
 </ul>

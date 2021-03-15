@@ -6,13 +6,15 @@
   import App2 from './pages/App2.svelte'
   import Table from './pages/Table.svelte'
   import WeePage from './pages/WeePage.svelte'
+  import NewForm from './pages/NewForm.svelte';
 
  const routes = {
    '/': Home,
    '/login-form': LoginForm,
    '/app2': App2,
    '/table': Table,
-   '/wee-page': WeePage
+   '/wee-page': WeePage,
+   '/new-form': NewForm,
  }
 </script>
 

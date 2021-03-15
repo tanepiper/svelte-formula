@@ -34,7 +34,7 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
   const initialOptions = options;
   let submitHandler = undefined;
   let unsub: () => void;
-  let innerReset: () => void;
+  let innerReset: (newData?: T) => void;
   let groupedMap: [string, FormEl[]][] = [];
 
   /**
@@ -172,10 +172,16 @@ export function createForm<T extends Record<string, unknown | unknown[]>>(
      * @param newData
      */
     set: (newData: T) => {
-      const newOpts = {...initialOptions, defaultValues: newData};
-      stores.isFormReady.set(false);
-      cleanupSubscriptions();
-      bindElements(currentNode, newOpts);
+      let opts;
+      if (newData) {
+        opts = { ...initialOptions, defaultValues: newData };
+      }
+      innerReset(opts);
+      [...touchHandlers, ...dirtyHandlers].forEach((fn) => fn());
+      groupedMap.forEach(([name, elements]) => {
+        touchHandlers.add(createTouchHandlers(name, elements, stores));
+        dirtyHandlers.add(createDirtyHandler(name, elements, stores));
+      });
     },
     /**
      * Update a form instance , new options can be passed to the form instance, if not it will use the original
