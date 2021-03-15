@@ -1,6 +1,29 @@
 {
   "extends": ["../../.eslintrc.json"],
   "ignorePatterns": ["!**/*"],
-  "env": { "browser": true, "commonjs": true, "es6": true, "jest": true, "node": true },
-  "plugins": ["import", "jsx-a11y", "react", "react-hooks"]
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "jest": true,
+    "node": true
+  },
+  "plugins": ["import", "jsx-a11y", "react", "react-hooks"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "parserOptions": {
+        "project": ["apps/formula-app/tsconfig.*?.json"]
+      },
+      "rules": {}
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {}
+    }
+  ]
 }
