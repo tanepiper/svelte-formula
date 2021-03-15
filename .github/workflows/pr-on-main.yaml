@@ -1,0 +1,56 @@
+# File for Pull Request on main branch
+name: PR on main
+
+# When a PR is opened to main
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, reopened, synchronize]
+
+jobs:
+  build:
+    # Setup OS and Node Version
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Latest nodes only
+        node-version: [15.x]
+
+    # Pipeline Steps
+    steps:
+      #1 - Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      #2 - Make sure we have all branches
+      - name: Fetch other branches
+        run: git fetch --no-tags --prune --depth=5 origin main
+
+      #3 - Run initial node setup
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+      #4 - Clean up folders and run a new install
+      - name: Install environment
+        run: |
+          rm -rf node_modules && rm -rf dist && rm -rf coverage
+          yarn
+
+      - name: Run Unit Tests
+        run: yarn test svelte-formula --codeCoverage
+
+      - name: Configure E2E
+        run: |
+          yarn build svelte-formula
+          cd apps/formula-app
+          yarn install
+
+      - name: Run E2E Tests
+        run: |
+          yarn e2e formula-app-e2e --codeCoverage --headless

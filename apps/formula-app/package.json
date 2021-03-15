@@ -1,8 +1,10 @@
 {
   "name": "formula-app",
   "version": "0.0.1",
+  "dependencies": {
+    "svelte-formula": "file:../../dist/packages/svelte/formula"
+  },
   "peerDependencies": {
-    "svelte": ">= 3.0.0",
-    "svelte-formula": "*"
+    "svelte": ">= 3.0.0"
   }
 }

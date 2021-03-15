@@ -21,7 +21,10 @@
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "svelte-formula": ["dist/packages/svelte/formula"]
+    }
   },
   "files": [],
   "include": [],

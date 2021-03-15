@@ -73,7 +73,8 @@
     "swizzle": "^1.1.0",
     "ts-jest": "26.4.0",
     "ts-node": "~9.1.1",
-    "typescript": "~4.0.3"
+    "tslib": "^2.1.0",
+    "typescript": "~4.2.3"
   },
   "resolutions": {
     "terser": "^4.0.0"

@@ -4,17 +4,16 @@ module.exports = (config) => {
   const updatedOutput = {
     ...output,
     globals: [
+      ...(output?.globals ?? []),
       {
         moduleId: 'svelte-formula',
         global: 'SvelteFormula',
       },
     ],
   };
-  const updatedExternal = [...[external || []], 'svelte-formula'];
-  const result = {
+
+  return {
     ...rest,
     output: { ...updatedOutput },
-    external: [...updatedExternal],
   };
-  return result;
 };

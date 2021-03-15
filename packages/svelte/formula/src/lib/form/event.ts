@@ -22,6 +22,7 @@ function formValidation(formValidators: Record<string, ValidationFn>, stores: Fo
       invalidStates[name] = invalid;
     }
   }
+
   if (Object.keys(invalidStates).length > 0) {
     stores.formValidity.set(invalidStates);
     stores.isFormValid.set(false);

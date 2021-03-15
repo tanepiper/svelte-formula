@@ -159,7 +159,7 @@ export function createForm<T extends {} = Record<string, unknown>>(
       return {
         destroy: () => {
           cleanupSubscriptions();
-          currentNode.id && globalStore && globalStore.delete(name);
+          currentNode.id && globalStore && globalStore.delete(currentNode.id);
         },
       };
     },
@@ -179,7 +179,7 @@ export function createForm<T extends {} = Record<string, unknown>>(
     destroyForm: () => {
       stores.isFormReady.set(false);
       cleanupSubscriptions();
-      currentNode.id && globalStore && globalStore.delete(name);
+      currentNode.id && globalStore && globalStore.delete(currentNode.id);
     },
     /**
      * Reset the data in the form instance

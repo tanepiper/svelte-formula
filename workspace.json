@@ -149,6 +149,7 @@
             "entryFile": "packages/svelte/formula/src/index.ts",
             "external": ["svelte"],
             "babelConfig": "@nrwl/web/babel",
+            "umdName": "svelteFormula",
             "assets": [
               {
                 "glob": "README.md",
