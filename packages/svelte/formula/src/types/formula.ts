@@ -5,12 +5,14 @@ import { FormulaOptions } from './options';
 /**
  * Internal type for object
  */
-export class FormulaValue {}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FormulaValue = Record<string, any>;
+export type FormulaValueDefault = Record<string, unknown>;
 
 /**
  * The stores available in Formula
  */
-export interface FormulaStores<T extends FormulaValue = Record<string, unknown>> {
+export interface FormulaStores<T extends FormulaValue = FormulaValueDefault> {
   /**
    * A store containing the current form values
    */
@@ -56,7 +58,7 @@ export interface FormulaStores<T extends FormulaValue = Record<string, unknown>>
 /**
  * The Formula interface with stores and form factory
  */
-export interface Formula<T extends FormulaValue = Record<string, unknown>> extends FormulaStores<T> {
+export interface Formula<T extends FormulaValue = FormulaValueDefault> extends FormulaStores<T> {
   /**
    * The form object for use with the Svelte use directive
    * @param node
