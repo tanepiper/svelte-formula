@@ -1,5 +1,13 @@
 import { writable } from 'svelte/store';
-import { BeakerOptions, BeakerStores, FormulaError, FormulaOptions, FormulaStores, FormulaValue, FormulaValueDefault } from '../../types';
+import {
+  BeakerOptions,
+  BeakerStores,
+  FormulaError,
+  FormulaOptions,
+  FormulaStores,
+  FormulaValue,
+  FormulaValueDefault,
+} from '../../types';
 
 /**
  * Function to create initial state values for the store using any passed default values, this is not the final initial

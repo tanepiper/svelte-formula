@@ -1,4 +1,12 @@
-import { Beaker, BeakerOptions, BeakerStores, Formula, FormulaOptions, FormulaValue, FormulaValueDefault } from '../../types';
+import {
+  Beaker,
+  BeakerOptions,
+  BeakerStores,
+  Formula,
+  FormulaOptions,
+  FormulaValue,
+  FormulaValueDefault,
+} from '../../types';
 import { createGroupStores } from '../shared/stores';
 import { createForm } from '../form/form';
 import { get } from 'svelte/store';
