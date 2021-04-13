@@ -5,6 +5,7 @@ import {
   FormulaOptions,
   FormulaStores,
   FormulaValue,
+  FormulaValueDefault,
   ValidationFn,
 } from '../../types';
 import { createFieldExtract } from './extract';
@@ -85,7 +86,7 @@ export function valueUpdate(
  * @param hiddenFields
  * @param enrich
  */
-function createHandlerForData<T extends FormulaValue = Record<string, unknown>>(
+function createHandlerForData<T extends FormulaValue = FormulaValueDefault>(
   extractor: (el: FormEl) => FormulaField,
   stores: FormulaStores<T>,
   options: FormulaOptions,
@@ -112,7 +113,7 @@ function createHandlerForData<T extends FormulaValue = Record<string, unknown>>(
  * @param options
  * @param hiddenGroups
  */
-export function createHandler<T extends FormulaValue = Record<string, unknown>>(
+export function createHandler<T extends FormulaValue = FormulaValueDefault>(
   name: string,
   eventName: string,
   element: FormEl,
@@ -135,7 +136,7 @@ export function createHandler<T extends FormulaValue = Record<string, unknown>>(
  * @param stores
  * @param form
  */
-export function createSubmitHandler<T extends FormulaValue = Record<string, unknown>>(
+export function createSubmitHandler<T extends FormulaValue = FormulaValueDefault>(
   stores: FormulaStores<T>,
   form: HTMLFormElement,
 ): (event: Event) => void {

@@ -1,11 +1,11 @@
-import { FormulaOptions, FormulaValue } from '../../types';
+import { FormulaOptions, FormulaValue, FormulaValueDefault } from '../../types';
 
 /**
  * Creates an enrichment object for the named group,
  * @param name
  * @param options
  */
-export function createEnrichField<T extends FormulaValue = Record<string, unknown>>(
+export function createEnrichField<T extends FormulaValue = FormulaValueDefault>(
   name: string,
   options: FormulaOptions,
 ): (value: unknown) => T {

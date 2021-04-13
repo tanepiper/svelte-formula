@@ -1,4 +1,4 @@
-import { Beaker, BeakerOptions, BeakerStores, Formula, FormulaOptions, FormulaValue } from '../../types';
+import { Beaker, BeakerOptions, BeakerStores, Formula, FormulaOptions, FormulaValue, FormulaValueDefault } from '../../types';
 import { createGroupStores } from '../shared/stores';
 import { createForm } from '../form/form';
 import { get } from 'svelte/store';
@@ -10,9 +10,9 @@ let groupCounter = 0;
  * @param options
  * @param beakerStores
  */
-export function createGroup<T extends FormulaValue = Record<string, unknown>>(
+export function createGroup<T extends FormulaValue = FormulaValueDefault>(
   options: BeakerOptions,
-  beakerStores: Map<string, BeakerStores<T>>,
+  beakerStores: Map<string, BeakerStores>,
 ): Beaker<T> {
   const groupStores = createGroupStores<T>(options);
   let groupName;

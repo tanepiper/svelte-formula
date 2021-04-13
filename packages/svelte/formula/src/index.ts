@@ -9,6 +9,7 @@ import {
   FormulaOptions,
   FormulaStores,
   FormulaValue,
+  FormulaValueDefault,
 } from './types';
 
 export { Beaker, BeakerStores, Formula, FormulaError, FormulaOptions, FormulaStores };
@@ -31,7 +32,7 @@ export const beakerStores = new Map<string, BeakerStores>();
  * @returns Formula object containing the current form, function to update or destroy
  * the form and all the stores available for the form
  */
-export function formula<T extends FormulaValue = Record<string, unknown>>(options?: FormulaOptions): Formula<T> {
+export function formula<T extends FormulaValue = FormulaValueDefault>(options?: FormulaOptions): Formula<T> {
   return createForm<T>(options, formulaStores);
 }
 
@@ -43,6 +44,6 @@ export function formula<T extends FormulaValue = Record<string, unknown>>(option
  *
  * @returns Beaker object containing the form group and it's associated methods
  */
-export function beaker<T extends FormulaValue = Record<string, unknown>>(options?: BeakerOptions): Beaker<T> {
+export function beaker<T extends FormulaValue = FormulaValueDefault>(options?: BeakerOptions): Beaker<T> {
   return createGroup<T>(options, beakerStores);
 }
