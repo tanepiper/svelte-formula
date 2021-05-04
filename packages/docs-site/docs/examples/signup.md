@@ -35,7 +35,7 @@ sidebar_label: Complex Form
       }
     },
     formValidators: {
-      passwordsMatch: (values) => values.password === values.matchPassword ? null : 'Your passwords must match'
+      passwordsMatch: (values) => values.password === values.passwordMatch ? null : 'Your passwords must match'
     }
   })
 
