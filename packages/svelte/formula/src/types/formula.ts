@@ -9,6 +9,8 @@ import { FormulaOptions } from './options';
 export type FormulaValue = Record<string, any>;
 export type FormulaValueDefault = Record<string, unknown>;
 
+type PartialFormValue<T, U> = Partial<Record<keyof T, U>>;
+
 /**
  * The stores available in Formula
  */
@@ -28,15 +30,15 @@ export interface FormulaStores<T extends FormulaValue = FormulaValueDefault> {
   /**
    * A store containing the touched status of each named field
    */
-  touched: Writable<Record<string, boolean>>;
+  touched: Writable<PartialFormValue<T, boolean>>;
   /**
    * A store containing the dirty status of each named field
    */
-  dirty: Writable<Record<string, boolean>>;
+  dirty: Writable<PartialFormValue<T, boolean>>;
   /**
    * A store containing the current validity of all named fields from HTML and custom validations
    */
-  validity: Writable<Record<string, FormulaError>>;
+  validity: Writable<PartialFormValue<T, FormulaError>>;
   /**
    * A store containing the current validity of all custom form validations
    */
