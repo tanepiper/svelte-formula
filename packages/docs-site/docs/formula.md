@@ -47,7 +47,7 @@ directive, and form input fields with their `name` property set.
 ```svelte
   <script>
     import { formula } from 'svelte-formula'
-    const { form, formIsValid, validity, touched } = formula();
+    const { form, isFormValid, validity, touched } = formula();
 
     // Here we can provide a default value
     export let projectname = '';
@@ -60,6 +60,6 @@ directive, and form input fields with their `name` property set.
     <label for="project-name">Project Name</label>
     <input type="text" name="projectName" required minlength="8" class:error={projectNameInvalid} bind:value={projectName} />
     <span hidden={!projectNameInvalid}>{validity?.projectName?.message}</span>
-    <button disabled={!$formIsValid}>Update Project Name</button>
+    <button disabled={!$isFormValid}>Update Project Name</button>
   </div>
 ```
