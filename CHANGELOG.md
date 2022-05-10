@@ -159,7 +159,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - New `beaker` API that provides functionality for working with groups of data as multi-line forms.
-  See [documentation](https://formula.svelte.codes/docs/beaker) for more details on use
+  See [documentation](https://tanepiper.github.io/svelte-formula/docs/beaker) for more details on use
 
   ```sveltehtml
   import { beaker } from 'svelte-formula'
@@ -305,13 +305,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Correct URL for docs site: https://formula.svelte.codes
+- Correct URL for docs site: https://tanepiper.github.io/svelte-formula
 
 ## [0.5.0] 2021-02-17
 
 ### Added
 
-- New [Documentation Site](https://formula.svelte.codes) (still WIP)
+- New [Documentation Site](https://tanepiper.github.io/svelte-formula) (still WIP)
 - Added `messages` option to FormulaOptions, this is a key/value `Object` for setting custom validation messages per
   error:
 

@@ -10,7 +10,7 @@
 
 [![svelte-formula](https://img.shields.io/npm/v/svelte-formula?label=svelte-formula)](https://www.npmjs.com/package/svelte-formula)
 
-- [Documentation](https://formula.svelte.codes)
+- [Documentation](https://tanepiper.github.io/svelte-formula)
 - [Changelog](https://github.com/tanepiper/svelte-formula/blob/main/CHANGELOG.md)
 
 `svelte-formula` is a Library for use with [Svelte](https://svelte.dev) that super-charges your ability to create rich
@@ -25,7 +25,7 @@ data-driven for applications.
 All you need is an element container with the Svelte [use](https://svelte.dev/docs#use_action) directive and form input
 fields with their `name` property set.
 
-Visit the [documentation](https://formula.svelte.codes) for more details API instructions.
+Visit the [documentation](https://tanepiper.github.io/svelte-formula) for more details API instructions.
 
 ## Formula
 
@@ -46,19 +46,19 @@ Accessing the input requires only setting the `name` property, and for validatio
 or `minlength`. Formula supports single and multi-value inputs across all widely supported HTML inputs and extends them
 with checkbox groups and radio groups, and composite fields of values like text or number.
 
-Formula creates a form instance that contains Svelte [stores](https://formula.svelte.codes/docs/stores/stores) that
+Formula creates a form instance that contains Svelte [stores](https://tanepiper.github.io/svelte-formula/docs/stores/stores) that
 contain value and validation information, and some
-additional [lifecycle methods](https://formula.svelte.codes/docs/lifecycle) that allow your to dynamically add and
+additional [lifecycle methods](https://tanepiper.github.io/svelte-formula/docs/lifecycle) that allow your to dynamically add and
 remove customisations, and reset or destroy the form. It also attempts to apply ARIA attributes to help with
 accessibility.
 
 ### Extending Formula
 
-Formula also supports a bunch of [powerful options](https://formula.svelte.codes/docs/options) that provide additional
+Formula also supports a bunch of [powerful options](https://tanepiper.github.io/svelte-formula/docs/options) that provide additional
 validation, enrichment and custom messages.
 
-For example with the `enrich` [option](https://formula.svelte.codes/docs/options#enrich)
-and `enrichment` [store](https://formula.svelte.codes/docs/stores/stores-enrichment) you can provide functions that
+For example with the `enrich` [option](https://tanepiper.github.io/svelte-formula/docs/options#enrich)
+and `enrichment` [store](https://tanepiper.github.io/svelte-formula/docs/stores/stores-enrichment) you can provide functions that
 calculate additional computed values based on user input - for example calculating a password strength, or the length of
 text a user has entered. These are useful.
 
@@ -84,4 +84,4 @@ Beaker also provides methods for setting, adding and removing items from the in-
 Svelte's `{#each}{/each}` blocks to create a re-usable template in the component
 
 With this you can build applications such as multi-row editable tables or lists. See
-the [documentation](https://formula.svelte.codes/docs/groups/beaker) for more details and examples.
+the [documentation](https://tanepiper.github.io/svelte-formula/docs/groups/beaker) for more details and examples.

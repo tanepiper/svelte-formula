@@ -1,7 +1,7 @@
 module.exports = {
   title: 'Formula',
   tagline: 'Zero Configuration Reactive Forms for Svelte',
-  url: 'https://formula.svelte.codes/',
+  url: 'https://tanepiper.github.io/svelte-formula/',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.ico',
