@@ -2,7 +2,7 @@ module.exports = {
   title: 'Formula',
   tagline: 'Zero Configuration Reactive Forms for Svelte',
   url: 'https://tanepiper.github.io/svelte-formula/',
-  baseUrl: '/',
+  baseUrl: '/svelte-formula/',
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.ico',
   organizationName: 'tanepiper', // Usually your GitHub org/user name.
