@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://formula.svelte.codes/blog</id>
+    <id>https://tanepiper.github.io/blog</id>
     <title>Formula Blog</title>
     <updated>2015-10-25T23:29:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://formula.svelte.codes/blog"/>
+    <link rel="alternate" href="https://tanepiper.github.io/blog"/>
     <subtitle>Formula Blog</subtitle>
-    <icon>https://formula.svelte.codes/img/favicon.ico</icon>
+    <icon>https://tanepiper.github.io/img/favicon.ico</icon>
 </feed>
