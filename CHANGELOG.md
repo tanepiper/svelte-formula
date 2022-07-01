@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2022-07-01
+
+# Changed
+
+- Documentation now located at https://tanepiper.github.io/svelte-formula/
+
+### Fixed
+
+- Update example to use `isFormValid` correctly (thanks @macmillen)
+- Improved types of form states (thanks @macmillen)
+- Default value added to Beaker default values (thanks @fabien)
+
 ## [0.11.0] - 2021-04-13
 
 ### Changed
