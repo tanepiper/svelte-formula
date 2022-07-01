@@ -26,7 +26,7 @@ export function createGroup<T extends FormulaValue = FormulaValueDefault>(
   let groupName;
   let globalObserver: MutationObserver;
 
-  const { defaultValues, ...formulaOptions } = options || {};
+  const { defaultValues = [], ...formulaOptions } = options || {};
 
   const formulaInstances = new Map<HTMLElement, Formula<T>>();
   const formInstances = new Map<HTMLElement, { destroy: () => void }>();
@@ -93,7 +93,7 @@ export function createGroup<T extends FormulaValue = FormulaValueDefault>(
       const form = createForm<T>(
         {
           ...formulaOptions,
-          defaultValues: defaultValues[i] || {},
+          defaultValues: defaultValues?.[i] || {},
         },
         undefined,
         groupName,
